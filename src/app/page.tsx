@@ -92,41 +92,45 @@ export default function Home() {
 
   const ProductCard = ({ product }: { product: any }) => (
     <div 
-      className="group cursor-pointer flex flex-col h-full bg-white p-5 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-slate-100"
+      className="group cursor-pointer flex flex-col h-full bg-white p-6 rounded-[2.5rem] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12)] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] border border-slate-100/50 hover:border-primary/20 hover:-translate-y-2"
       onClick={() => handleProductClick(product)}
     >
-      <div className="relative aspect-square bg-slate-50 rounded-[2rem] overflow-hidden p-6 mb-6">
+      <div className="relative aspect-square bg-slate-50/50 rounded-[2rem] overflow-hidden p-6 mb-6 group-hover:bg-white transition-colors duration-500">
         <Image 
           src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
           alt={product.name} 
           fill 
-          className="object-contain transition-transform duration-700 group-hover:scale-110 p-2" 
+          className="object-contain transition-transform duration-1000 ease-out group-hover:scale-110 p-2" 
         />
         {product.isDeal && (
-          <Badge className="absolute top-4 left-4 bg-red-600 text-white border-none text-[8px] font-black tracking-widest px-2 py-0.5 rounded-lg shadow-lg">
+          <Badge className="absolute top-4 left-4 bg-red-600 text-white border-none text-[8px] font-black tracking-widest px-2.5 py-1 rounded-lg shadow-lg animate-pulse">
             DEAL
           </Badge>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
       
       <div className="flex flex-col flex-1 space-y-4">
         <div className="space-y-1">
-           <p className="text-[9px] font-black text-primary uppercase tracking-widest">{product.category}</p>
-           <h3 className="text-[13px] font-black text-slate-800 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors h-8">
+           <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-1">{product.category}</p>
+           <h3 className="text-[13px] font-extrabold text-slate-800 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors h-8">
              {product.name}
            </h3>
-           <div className="flex items-center gap-1 mt-1">
-             <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-             <span className="text-[10px] font-bold text-slate-500">{product.rating}</span>
+           <div className="flex items-center gap-1 mt-2">
+             <div className="flex items-center gap-0.5">
+               <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+               <span className="text-[10px] font-black text-slate-900">{product.rating}</span>
+             </div>
+             <span className="text-[9px] font-bold text-slate-300 uppercase tracking-tighter">({(product.reviews || 0).toLocaleString()})</span>
            </div>
         </div>
         
-        <div className="mt-auto space-y-4 pt-2">
+        <div className="mt-auto space-y-4 pt-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <span className="text-xl font-black text-slate-900">{formatCurrency(product.price)}</span>
+              <span className="text-xl font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
               {product.originalPrice && (
-                <span className="text-[9px] text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
+                <span className="text-[9px] text-slate-300 line-through font-bold tracking-tight">{formatCurrency(product.originalPrice)}</span>
               )}
             </div>
             <button 
@@ -134,16 +138,16 @@ export default function Home() {
                 e.stopPropagation();
                 addItem(product);
               }}
-              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all shadow-sm"
+              className="h-11 w-11 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-white hover:bg-slate-900 hover:border-slate-900 transition-all duration-500 shadow-sm"
             >
               <ShoppingBag className="h-4 w-4" />
             </button>
           </div>
           <Button 
             onClick={(e) => handleBuyNowClick(e, product)}
-            className="w-full h-11 bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-xl transition-all shadow-lg active:scale-95"
+            className="w-full h-12 bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-2xl transition-all duration-500 shadow-xl shadow-slate-900/10 active:scale-95 border-none"
           >
-            <Zap className="h-3 w-3 mr-2 fill-current" /> Buy Now
+            <Zap className="h-3.5 w-3.5 mr-2 fill-current" /> Buy Now
           </Button>
         </div>
       </div>
@@ -190,7 +194,7 @@ export default function Home() {
               <Link key={idx} href={cat.href}>
                 <Card className="bg-white p-7 rounded-[2.5rem] shadow-xl flex flex-col h-full group cursor-pointer hover:-translate-y-2 transition-all duration-500 border-none">
                   <h3 className="text-xl font-black text-slate-900 mb-5 uppercase tracking-tight">{cat.title}</h3>
-                  <div className="relative aspect-[16/10] w-full bg-slate-50 rounded-2xl overflow-hidden mb-6 shadow-inner">
+                  <div className="relative aspect-[16/10] w-full bg-slate-50 rounded-2xl overflow-hidden mb-6 shadow-inner border border-slate-100">
                     <Image 
                       src={`https://picsum.photos/seed/${cat.seed}/600/400`}
                       alt={cat.title}
