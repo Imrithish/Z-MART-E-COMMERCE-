@@ -2,7 +2,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Product } from "@/lib/mock-data";
-import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight, ShieldCheck, Zap, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -85,120 +85,158 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-body">
+    <div className="min-h-screen bg-white flex flex-col font-body">
       <Navbar />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative w-full h-[500px] md:h-[700px] overflow-hidden">
+        {/* Hero Section: Cinematic & Layered */}
+        <section className="relative w-full h-[700px] md:h-[850px] overflow-hidden bg-slate-950">
           <Image 
-            src="https://picsum.photos/seed/zmart-hero/1920/1080"
+            src="https://picsum.photos/seed/zmart-hero-luxury/1920/1080"
             alt="Hero Background"
             fill
-            className="object-cover"
+            className="object-cover opacity-60 mix-blend-overlay"
             priority
             data-ai-hint="luxury electronics"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-white" />
           
-          <div className="absolute inset-0 flex items-center px-6 md:px-20">
-            <div className="max-w-2xl space-y-6 md:space-y-10">
-              <div className="space-y-4">
-                <span className="inline-block px-4 py-1.5 bg-primary text-slate-900 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
-                  New Collection 2024
-                </span>
-                <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">
-                  THE FUTURE <br /> OF PREMIUM.
+          <div className="absolute inset-0 flex items-center justify-center text-center px-6">
+            <div className="max-w-4xl space-y-10">
+              <div className="space-y-6">
+                <Badge className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md px-6 py-2 rounded-full font-black uppercase tracking-[0.4em] text-[10px]">
+                  Curated Collection 2024
+                </Badge>
+                <h1 className="text-6xl md:text-9xl font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl">
+                  BEYOND <br /> ORDINARY.
                 </h1>
-                <p className="text-slate-300 text-lg md:text-xl font-medium max-w-lg leading-relaxed">
-                  Experience the next generation of lifestyle technology. Handpicked, curated, and delivered with precision.
+                <p className="text-slate-300 text-lg md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
+                  Discover the next generation of lifestyle technology. Handpicked, curated, and delivered with surgical precision.
                 </p>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Button asChild className="h-16 px-10 rounded-2xl amazon-btn-primary text-xs">
-                  <Link href="/products">Explore Catalog <ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <div className="flex flex-wrap justify-center gap-6">
+                <Button asChild className="h-20 px-12 rounded-[2rem] amazon-btn-primary text-sm shadow-2xl shadow-primary/40">
+                  <Link href="/products">Shop The Future <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
-                <Button variant="outline" className="h-16 px-10 rounded-2xl border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px]">
-                  Watch Film
+                <Button variant="outline" className="h-20 px-12 rounded-[2rem] border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px] backdrop-blur-md">
+                  Our Story
                 </Button>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Categories / Featured Grid */}
-        <div className="max-w-[1400px] mx-auto px-6 -mt-32 relative z-30 pb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Brand Trust Bar */}
+        <section className="max-w-7xl mx-auto px-6 -mt-16 relative z-40">
+           <div className="bg-white rounded-[3rem] shadow-2xl p-10 md:p-16 grid grid-cols-1 md:grid-cols-3 gap-12 border border-slate-50">
+              <div className="flex items-center gap-6 group">
+                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <ShieldCheck className="h-8 w-8 text-slate-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Secure Protocol</h4>
+                  <p className="text-xs font-medium text-slate-500">256-bit Encrypted Checkouts</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 group">
+                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <Zap className="h-8 w-8 text-slate-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Instant Dispatch</h4>
+                  <p className="text-xs font-medium text-slate-500">Under 24h Fulfillment Cycle</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 group">
+                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <Globe className="h-8 w-8 text-slate-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Global Curation</h4>
+                  <p className="text-xs font-medium text-slate-500">Premium Items From 20+ Countries</p>
+                </div>
+              </div>
+           </div>
+        </section>
+
+        {/* Asymmetric Category Showcase */}
+        <section className="max-w-[1400px] mx-auto px-6 py-32 space-y-16">
+          <div className="flex flex-col md:flex-row items-end justify-between gap-8">
+            <div className="space-y-4">
+              <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px]">Lifestyle Tiers</span>
+              <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">The Archetypes</h2>
+            </div>
+            <p className="text-slate-500 font-medium max-w-sm">Every piece tells a story of craftsmanship and technological prowess.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { title: "Smart Living", hint: "smart home", color: "bg-blue-500" },
-              { title: "Audio Excellence", hint: "high end headphones", color: "bg-purple-500" },
-              { title: "Elite Tech", hint: "modern laptop", color: "bg-emerald-500" },
-              { title: "Curated Style", hint: "fashion model", color: "bg-orange-500" }
+              { title: "Living", hint: "smart home", color: "bg-blue-500", h: "h-[500px]" },
+              { title: "Audio", hint: "headphones", color: "bg-purple-500", h: "h-[650px] lg:-mt-20" },
+              { title: "Workspace", hint: "setup", color: "bg-emerald-500", h: "h-[450px]" },
+              { title: "Attire", hint: "fashion", color: "bg-orange-500", h: "h-[550px] lg:-mt-10" }
             ].map((cat, idx) => (
-              <Card key={idx} className="group relative overflow-hidden h-[400px] rounded-3xl border-none shadow-2xl hover:scale-[1.02] transition-all duration-500">
+              <Card key={idx} className={`group relative overflow-hidden ${cat.h} rounded-[2.5rem] border-none shadow-xl hover:shadow-2xl transition-all duration-700`}>
                 <Image 
-                  src={`https://picsum.photos/seed/cat-${idx}/600/800`}
+                  src={`https://picsum.photos/seed/cat-${idx}-creative/800/1200`}
                   alt={cat.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
                   data-ai-hint={cat.hint}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-0 left-0 right-0 p-8 space-y-2">
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight leading-none">{cat.title}</h3>
-                  <Link href="/products" className="inline-flex items-center text-xs font-black text-primary uppercase tracking-widest hover:translate-x-2 transition-transform">
-                    Discover Now <ChevronRight className="ml-1 h-4 w-4" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
+                <div className="absolute bottom-0 left-0 right-0 p-10 space-y-4">
+                  <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">{cat.title}</h3>
+                  <Link href="/products" className="inline-flex items-center text-xs font-black text-primary uppercase tracking-widest hover:translate-x-3 transition-transform">
+                    Explore Tier <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </div>
               </Card>
             ))}
           </div>
+        </section>
 
-          {/* Today's Deals Section */}
-          <section className="mt-24 space-y-12">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
-              <div className="space-y-2">
-                <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Today's Deals</h2>
-                <p className="text-slate-500 font-medium">Limited time offers on world-class products.</p>
-              </div>
-              <Button variant="ghost" asChild className="font-black uppercase tracking-widest text-[10px] hover:text-primary">
-                <Link href="/products">View All Listings</Link>
-              </Button>
+        {/* Featured Deals Section */}
+        <section className="bg-slate-50 py-32">
+          <div className="max-w-[1400px] mx-auto px-6 space-y-20">
+            <div className="text-center space-y-6">
+              <h2 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter uppercase">Flash Genesis</h2>
+              <p className="text-slate-500 font-medium text-lg">Limited production runs. Absolute price points.</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
               {deals.slice(0, 4).map((product: any) => (
                 <Card 
                   key={product.id} 
-                  className="group relative flex flex-col border-none bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                  className="group relative flex flex-col border-none bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer"
                   onClick={() => handleProductClick(product)}
                 >
-                  <div className="relative aspect-[4/5] bg-slate-50 overflow-hidden">
+                  <div className="relative aspect-square bg-white overflow-hidden p-10">
                     <Image 
                       src={product.imageUrl} 
                       alt={product.name} 
                       fill 
-                      className="object-contain p-8 group-hover:scale-110 transition-transform duration-700" 
+                      className="object-contain transition-transform duration-1000 group-hover:scale-110" 
                     />
-                    <div className="absolute top-4 left-4">
-                      <Badge className="bg-[#cc0c39] text-white font-black uppercase text-[9px] tracking-widest px-3 py-1.5 border-none">
-                        - {Math.round((1 - product.price / (product.originalPrice || product.price * 1.2)) * 100)}% OFF
+                    <div className="absolute top-6 left-6">
+                      <Badge className="bg-[#cc0c39] text-white font-black uppercase text-[9px] tracking-[0.2em] px-4 py-2 border-none rounded-full shadow-lg">
+                        -{Math.round((1 - product.price / (product.originalPrice || product.price * 1.2)) * 100)}% OFF
                       </Badge>
                     </div>
                   </div>
-                  <div className="p-8 flex-1 flex flex-col gap-4">
-                    <div className="space-y-1">
+                  <div className="p-10 flex-1 flex flex-col gap-6">
+                    <div className="space-y-2">
                       <div className="flex items-center gap-1">
                         <Star className="h-3 w-3 fill-primary text-primary" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.rating} Rating</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.rating} Performance Score</span>
                       </div>
-                      <h3 className="text-lg font-black text-slate-900 line-clamp-1 leading-tight group-hover:text-primary transition-colors">
+                      <h3 className="text-xl font-black text-slate-900 line-clamp-1 tracking-tight group-hover:text-primary transition-colors">
                         {product.name}
                       </h3>
                     </div>
                     <div className="flex items-end justify-between mt-auto">
                       <div className="flex flex-col">
-                        <span className="text-2xl font-black text-slate-900">{formatCurrency(product.price)}</span>
+                        <span className="text-3xl font-black text-slate-900">{formatCurrency(product.price)}</span>
                         {product.originalPrice && (
                           <span className="text-xs text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
                         )}
@@ -206,42 +244,63 @@ export default function Home() {
                       <Button 
                         size="icon"
                         onClick={(e) => handleAddToCart(e, product)}
-                        className="h-12 w-12 rounded-2xl amazon-btn-primary"
+                        className="h-14 w-14 rounded-2xl amazon-btn-primary"
                       >
-                        <CheckCircle2 className="h-5 w-5" />
+                        <CheckCircle2 className="h-6 w-6" />
                       </Button>
                     </div>
                   </div>
                 </Card>
               ))}
             </div>
-          </section>
-        </div>
+
+            <div className="text-center">
+              <Button asChild variant="ghost" className="h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:text-primary hover:bg-white transition-all">
+                <Link href="/products">Initialize Full Catalog <ChevronRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
+            </div>
+          </div>
+        </section>
       </main>
 
-      <footer className="bg-slate-900 text-white py-20">
-        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16">
-          <div className="space-y-6">
-            <h2 className="text-3xl font-black tracking-tighter">Z-MART</h2>
-            <p className="text-slate-400 text-sm font-medium leading-relaxed">
-              Redefining e-commerce with a focus on quality, speed, and premium user experience.
+      <footer className="bg-slate-950 text-white py-32 border-t border-white/5">
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-20">
+          <div className="col-span-1 md:col-span-2 space-y-10">
+            <h2 className="text-5xl font-black tracking-tighter">Z-MART</h2>
+            <p className="text-slate-400 text-lg font-medium leading-relaxed max-w-md">
+              The architecture of modern commerce. We curate technology that defines generations.
             </p>
+            <div className="flex gap-4">
+              <div className="h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-slate-950 transition-all cursor-pointer">
+                <Globe className="h-5 w-5" />
+              </div>
+              <div className="h-12 w-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-slate-950 transition-all cursor-pointer">
+                <Zap className="h-5 w-5" />
+              </div>
+            </div>
           </div>
-          <div className="space-y-6">
-            <h4 className="font-black uppercase tracking-widest text-xs text-slate-500">Quick Links</h4>
-            <ul className="space-y-4 text-sm font-bold">
-              <li><Link href="/products" className="hover:text-primary transition-colors">Our Catalog</Link></li>
-              <li><Link href="/account" className="hover:text-primary transition-colors">Your Orders</Link></li>
-              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Merchant Portal</Link></li>
+          <div className="space-y-8">
+            <h4 className="font-black uppercase tracking-[0.3em] text-[10px] text-slate-500">Navigation</h4>
+            <ul className="space-y-6 text-sm font-bold">
+              <li><Link href="/products" className="hover:text-primary transition-colors">Catalog Interface</Link></li>
+              <li><Link href="/account" className="hover:text-primary transition-colors">Member Orders</Link></li>
+              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Merchant Hub</Link></li>
+            </ul>
+          </div>
+          <div className="space-y-8">
+            <h4 className="font-black uppercase tracking-[0.3em] text-[10px] text-slate-500">Legal Core</h4>
+            <ul className="space-y-6 text-sm font-bold">
+              <li><Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Usage Terms</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Help Terminal</Link></li>
             </ul>
           </div>
         </div>
-        <div className="max-w-[1400px] mx-auto px-6 mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">© 2024 Z-MART GLOBAL • ALL RIGHTS RESERVED</p>
-          <div className="flex gap-8 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-            <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-white transition-colors">Legal</Link>
+        <div className="max-w-[1400px] mx-auto px-6 mt-32 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
+          <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">© 2024 Z-MART GLOBAL OPERATIONS • ALL RIGHTS RESERVED</p>
+          <div className="flex gap-10 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">
+            <span>ISO 27001 SECURE</span>
+            <span>PREMIUM VERIFIED</span>
           </div>
         </div>
       </footer>
