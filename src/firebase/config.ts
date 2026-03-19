@@ -1,3 +1,6 @@
+// IMPORTANT: Replace the values below with your actual Firebase project configuration 
+// found in Project Settings > General > Your apps in the Firebase Console.
+
 export const firebaseConfig = {
   apiKey: "placeholder-api-key",
   authDomain: "placeholder-project-id.firebaseapp.com",

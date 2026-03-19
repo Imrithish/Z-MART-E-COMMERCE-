@@ -1,11 +1,10 @@
-
 "use client"
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Store, Loader2, Info, ArrowRight, AlertCircle } from "lucide-react";
+import { Store, Loader2, Info, ArrowRight, AlertCircle, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -42,9 +41,11 @@ export default function AdminLoginPage() {
       let message = "Invalid credentials. Please check your password and try again.";
       
       if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        message = "User not found or incorrect credentials. Have you created this user in the Firebase Console?";
+        message = "Account not found or incorrect credentials. Have you created this user in your Firebase Console under 'Authentication > Users'?";
       } else if (error.code === 'auth/operation-not-allowed') {
-        message = "Email/Password sign-in is not enabled in your Firebase Console.";
+        message = "Email/Password sign-in is not enabled in your Firebase Console. Go to 'Authentication > Sign-in method' to enable it.";
+      } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/network-request-failed') {
+        message = "Configuration Error: Please ensure your Firebase credentials in 'src/firebase/config.ts' are correct.";
       }
 
       setErrorMessage(message);
@@ -71,11 +72,15 @@ export default function AdminLoginPage() {
       });
       router.push('/admin/dashboard');
     } catch (error: any) {
-      setErrorMessage(error.message || "An error occurred during Google sign-in.");
+      let message = error.message || "An error occurred during Google sign-in.";
+      if (error.code === 'auth/operation-not-allowed') {
+        message = "Google Sign-in is not enabled in your Firebase Console.";
+      }
+      setErrorMessage(message);
       toast({
         variant: "destructive",
         title: "Google Authentication Failed",
-        description: error.message || "An error occurred during Google sign-in.",
+        description: message,
       });
     } finally {
       setIsGoogleLoading(false);
@@ -106,9 +111,16 @@ export default function AdminLoginPage() {
             {errorMessage && (
               <Alert variant="destructive" className="mb-6 rounded-2xl bg-red-50 border-red-100">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle className="font-black uppercase tracking-widest text-[10px]">Security Alert</AlertTitle>
-                <AlertDescription className="text-xs font-bold leading-relaxed">
-                  {errorMessage}
+                <AlertTitle className="font-black uppercase tracking-widest text-[10px]">Setup Required</AlertTitle>
+                <AlertDescription className="text-xs font-bold leading-relaxed space-y-2">
+                  <p>{errorMessage}</p>
+                  <Link 
+                    href="https://console.firebase.google.com/" 
+                    target="_blank" 
+                    className="flex items-center gap-1 text-primary hover:underline"
+                  >
+                    Open Firebase Console <ExternalLink className="h-3 w-3" />
+                  </Link>
                 </AlertDescription>
               </Alert>
             )}
@@ -184,8 +196,8 @@ export default function AdminLoginPage() {
             <Info className="h-5 w-5 text-primary" />
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Security Notice</p>
-            <p className="text-xs font-medium text-slate-700 leading-relaxed">This terminal is restricted to registered merchants. All access attempts are logged for security purposes.</p>
+            <p className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Setup Guide</p>
+            <p className="text-xs font-medium text-slate-700 leading-relaxed">Ensure Authentication is enabled in your console and the admin user is created.</p>
           </div>
         </div>
       </div>
