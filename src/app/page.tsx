@@ -69,23 +69,21 @@ export default function Home() {
   const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
     addItem(product);
-    toast({
-      title: "Added to Cart",
-      description: `${product.name} has been added to your shopping bag.`,
-    });
-  }, [addItem, toast]);
+    // Silent add as requested earlier, but keeping functional
+  }, [addItem]);
 
   const handleBuyNowClick = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    // Instead of going to checkout, we open the details as requested
     handleProductClick(product);
   }, [handleProductClick]);
 
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 font-black text-slate-400 uppercase tracking-widest text-[10px]">Syncing Premium Catalog...</p>
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Syncing Premium Catalog...</p>
+        </div>
       </div>
     );
   }
@@ -159,11 +157,12 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
+              {/* Converted from horizontal scroll to grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
                 {deals.map((product: any) => (
                   <div 
                     key={product.id} 
-                    className="group cursor-pointer min-w-[240px] max-w-[240px] flex flex-col"
+                    className="group cursor-pointer flex flex-col"
                     onClick={() => handleProductClick(product)}
                   >
                     <div className="relative aspect-square bg-slate-50 rounded-xl overflow-hidden p-6 mb-4">
@@ -177,20 +176,20 @@ export default function Home() {
                         Deal
                       </Badge>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 flex-1">
                       <div className="flex items-baseline gap-2">
                         <span className="text-lg font-black text-slate-900">{formatCurrency(product.price)}</span>
                         {product.originalPrice && (
                           <span className="text-[10px] text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
                         )}
                       </div>
-                      <h3 className="text-xs font-bold text-slate-700 line-clamp-2 leading-snug uppercase tracking-tight">
+                      <h3 className="text-xs font-bold text-slate-700 line-clamp-2 leading-snug uppercase tracking-tight group-hover:text-primary transition-colors">
                         {product.name}
                       </h3>
-                      <div className="pt-2">
+                      <div className="pt-2 mt-auto">
                         <Button 
                           onClick={(e) => handleBuyNowClick(e, product)}
-                          className="w-full h-8 bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest text-[9px] rounded-lg shadow-sm"
+                          className="w-full h-9 bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest text-[9px] rounded-lg shadow-sm"
                         >
                           <Zap className="h-3 w-3 mr-1 fill-current" /> Buy Now
                         </Button>
@@ -242,7 +241,10 @@ export default function Home() {
                       <Button 
                         variant="ghost"
                         size="icon"
-                        onClick={(e) => handleAddToCart(e, product)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addItem(product);
+                        }}
                         className="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-primary transition-all"
                       >
                         <ShoppingBag className="h-4 w-4" />
