@@ -29,7 +29,7 @@ export function ReceiptModal({ order, isOpen, onClose }: ReceiptModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[420px] p-0 bg-transparent border-none shadow-none flex items-center justify-center overflow-visible [&>button]:text-white/50 [&>button]:hover:text-white [&>button]:right-8 [&>button]:top-8 [&>button]:z-50 [&>button]:transition-all [&>button]:hover:scale-110 [&>button]:bg-transparent [&>button]:border-none [&>button]:shadow-none">
+      <DialogContent className="max-w-[420px] p-0 bg-transparent border-none shadow-none flex items-center justify-center overflow-visible [&>button]:text-white/70 [&>button]:hover:text-white [&>button]:right-6 [&>button]:top-6 [&>button]:z-50 [&>button]:transition-all [&>button]:bg-transparent [&>button]:border-none [&>button]:shadow-none [&>button]:hover:bg-transparent [&>button]:rounded-none [&>button]:scale-125">
         <DialogHeader className="sr-only">
           <DialogTitle>Order Receipt - #{order.id?.slice(-8).toUpperCase()}</DialogTitle>
         </DialogHeader>
