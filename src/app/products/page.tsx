@@ -52,16 +52,37 @@ function ProductList() {
 
   const { data: allProducts, loading } = useCollection(productsQuery);
 
+  // Calculate the "Base" maximum price for the current category/search context
   const absoluteMaxPrice = useMemo(() => {
     if (!allProducts || allProducts.length === 0) return 100000;
-    return Math.max(...allProducts.map((p: any) => p.price));
-  }, [allProducts]);
+    
+    let baseItems = [...allProducts];
+    
+    // Filter by category
+    if (categoryFilter !== "All Categories") {
+      baseItems = baseItems.filter((p: any) => p.category?.toLowerCase() === categoryFilter.toLowerCase());
+    }
 
+    // Filter by search query
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      baseItems = baseItems.filter((p: any) => 
+        p.name?.toLowerCase().includes(q) || 
+        p.description?.toLowerCase().includes(q) || 
+        p.category?.toLowerCase().includes(q)
+      );
+    }
+
+    if (baseItems.length === 0) return 0;
+    return Math.max(...baseItems.map((p: any) => p.price));
+  }, [allProducts, categoryFilter, searchQuery]);
+
+  // Sync the filter when the dynamic ceiling changes
   useEffect(() => {
-    if (allProducts && allProducts.length > 0 && maxPriceFilter === null) {
+    if (maxPriceFilter === null || maxPriceFilter > absoluteMaxPrice) {
       setMaxPriceFilter(absoluteMaxPrice);
     }
-  }, [allProducts, absoluteMaxPrice, maxPriceFilter]);
+  }, [absoluteMaxPrice]);
 
   const displayProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -82,7 +103,7 @@ function ProductList() {
       );
     }
 
-    // Price Range Filter (Slider)
+    // Price Range Filter (Slider) - using the state value
     if (maxPriceFilter !== null) {
       filtered = filtered.filter((p: any) => p.price <= maxPriceFilter);
     }
@@ -163,8 +184,9 @@ function ProductList() {
                         <span className="text-xs font-black text-slate-900">{formatCurrency(maxPriceFilter || absoluteMaxPrice)}</span>
                       </div>
                       <Slider 
-                        defaultValue={[maxPriceFilter || absoluteMaxPrice]}
-                        max={absoluteMaxPrice}
+                        value={[maxPriceFilter || absoluteMaxPrice]}
+                        max={absoluteMaxPrice || 1000}
+                        min={0}
                         step={100}
                         onValueChange={(vals) => setMaxPriceFilter(vals[0])}
                         className="py-4"
