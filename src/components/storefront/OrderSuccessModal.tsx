@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ShoppingBag, ArrowRight, Star, Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -35,6 +35,9 @@ export function OrderSuccessModal({ isOpen, onClose, orderTotal }: OrderSuccessM
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md p-0 overflow-hidden border-none rounded-[3rem] bg-white shadow-[0_32px_64px_-12px_rgba(0,0,0,0.14)]">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Order Successful</DialogTitle>
+        </DialogHeader>
         <div className="relative p-12 flex flex-col items-center text-center overflow-hidden">
           {/* Animated Background Celebration */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 bg-primary/20 blur-[120px] rounded-full pointer-events-none animate-pulse" />
