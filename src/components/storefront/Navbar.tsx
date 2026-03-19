@@ -2,7 +2,7 @@
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight, Home, LogOut } from "lucide-react";
+import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight, Home, LogOut, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
@@ -129,20 +129,46 @@ export function Navbar() {
               <ChevronDown className="h-3 w-3" />
             </div>
           </Link>
-          {user && (
-            <div className="absolute top-full right-0 w-48 bg-white text-slate-900 shadow-xl rounded-sm p-4 hidden group-hover:block border border-slate-200 z-50">
-              <div className="text-xs font-bold mb-3">Your Account</div>
-              <ul className="text-[11px] space-y-2 mb-4">
-                <li><Link href="/cart" className="hover:text-[#c45500] hover:underline">Your Orders</Link></li>
-                <li><Link href="/admin/dashboard" className="hover:text-[#c45500] hover:underline">Seller Central</Link></li>
+          {user ? (
+            <div className="absolute top-full right-0 w-56 bg-white text-slate-900 shadow-2xl rounded-sm p-4 hidden group-hover:block border border-slate-200 z-50">
+              <div className="text-xs font-bold mb-4 uppercase tracking-widest text-slate-400">Your Account</div>
+              <ul className="text-[13px] space-y-3 mb-4">
+                <li><Link href="/cart" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Orders</Link></li>
+                <li><Link href="/cart" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Wish List</Link></li>
               </ul>
-              <Separator className="my-3" />
+              
+              <Separator className="my-4" />
+              
+              <div className="text-xs font-bold mb-4 uppercase tracking-widest text-slate-400">Business Tools</div>
+              <ul className="text-[13px] space-y-3 mb-4">
+                <li>
+                  <Link href="/admin/dashboard" className="text-primary hover:underline font-bold flex items-center gap-2">
+                    <ShieldCheck className="h-4 w-4" /> Seller Central
+                  </Link>
+                </li>
+              </ul>
+
+              <Separator className="my-4" />
+              
               <button 
                 onClick={handleSignOut}
-                className="flex items-center gap-2 text-[11px] font-bold text-red-600 hover:text-red-700 w-full"
+                className="flex items-center gap-2 text-[13px] font-bold text-red-600 hover:text-red-700 w-full mt-2"
               >
-                <LogOut className="h-3 w-3" /> Sign Out
+                <LogOut className="h-4 w-4" /> Sign Out
               </button>
+            </div>
+          ) : (
+            <div className="absolute top-full right-0 w-56 bg-white text-slate-900 shadow-2xl rounded-sm p-6 hidden group-hover:block border border-slate-200 z-50 text-center">
+              <Button asChild className="amazon-btn-primary w-full h-9 mb-3">
+                <Link href="/login">Sign in</Link>
+              </Button>
+              <p className="text-[11px] text-gray-600">
+                New customer? <Link href="/signup" className="text-[#0066c0] hover:underline">Start here.</Link>
+              </p>
+              <Separator className="my-4" />
+              <Link href="/admin/login" className="text-[11px] font-bold text-gray-700 hover:text-primary flex items-center justify-center gap-1">
+                <ShieldCheck className="h-3 w-3" /> Merchant Access
+              </Link>
             </div>
           )}
         </div>
@@ -202,13 +228,16 @@ export function Navbar() {
                   {idx < CATEGORIES.length - 1 && <Separator className="my-4 mx-0" />}
                 </div>
               ))}
-              {user && (
-                <div className="px-8 py-4">
-                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-8 rounded-sm text-xs font-bold uppercase tracking-widest">
-                     Sign Out
-                   </Button>
-                </div>
-              )}
+              <div className="px-8 py-4 space-y-4">
+                 <Link href="/admin/login" className="flex items-center gap-2 text-sm font-bold text-primary hover:underline">
+                    <ShieldCheck className="h-5 w-5" /> Sell on Z-Mart
+                 </Link>
+                 {user && (
+                    <Button onClick={handleSignOut} variant="destructive" className="w-full h-8 rounded-sm text-xs font-bold uppercase tracking-widest">
+                      Sign Out
+                    </Button>
+                 )}
+              </div>
             </ScrollArea>
           </SheetContent>
         </Sheet>
@@ -222,7 +251,7 @@ export function Navbar() {
         <Link href="/products?category=Fashion" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Fashion</Link>
         <Link href="/products?category=Home%20%26%20Kitchen" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Home & Kitchen</Link>
         <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Customer Service</Link>
-        <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Sell</Link>
+        <Link href="/admin/login" className="px-2 py-1 border border-transparent hover:border-white rounded-sm font-bold text-[#ff9900]">Sell</Link>
       </div>
     </header>
   );

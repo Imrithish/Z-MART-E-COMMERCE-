@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Store, Loader2, Info, ArrowRight, AlertCircle, ExternalLink } from "lucide-react";
+import { Store, Loader2, Info, ArrowRight, AlertCircle, ExternalLink, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
-        title: "Login Successful",
+        title: "Access Granted",
         description: "Welcome back to the Merchant Dashboard.",
       });
       router.push('/admin/dashboard');
@@ -76,26 +76,14 @@ export default function AdminLoginPage() {
     try {
       await signInWithPopup(auth, provider);
       toast({
-        title: "Google Login Successful",
+        title: "Merchant Verified",
         description: "Welcome to the Merchant Dashboard.",
       });
       router.push('/admin/dashboard');
     } catch (error: any) {
       console.error("Google Login Error:", error.code, error.message);
       let message = "An error occurred during Google sign-in. Ensure Google provider is enabled in Firebase.";
-      
-      if (error.code === 'auth/operation-not-allowed') {
-        message = "Google Sign-in is not enabled in your Firebase Console.";
-      } else if (error.code === 'auth/popup-blocked') {
-        message = "Popup was blocked by your browser. Please allow popups for this site.";
-      }
-      
       setErrorMessage(message);
-      toast({
-        variant: "destructive",
-        title: "Google Authentication Failed",
-        description: message,
-      });
     } finally {
       setIsGoogleLoading(false);
     }
@@ -114,8 +102,8 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 text-slate-900 font-black text-2xl tracking-tighter hover:scale-105 transition-transform">
-            <Store className="h-6 w-6 text-primary" />
-            Z-MART
+            <ShieldCheck className="h-6 w-6 text-primary" />
+            Z-MART MERCHANT
           </Link>
         </div>
 
@@ -125,8 +113,8 @@ export default function AdminLoginPage() {
               <Store className="h-8 w-8 text-primary" />
             </div>
             <div className="space-y-1">
-              <CardTitle className="text-3xl font-black tracking-tight text-slate-900">Merchant Access</CardTitle>
-              <CardDescription className="text-slate-600 font-medium">Manage your marketplace operations</CardDescription>
+              <CardTitle className="text-3xl font-black tracking-tight text-slate-900 uppercase">Merchant Portal</CardTitle>
+              <CardDescription className="text-slate-600 font-medium">Secure access to catalog and order management</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="px-8 pb-10">
@@ -149,7 +137,7 @@ export default function AdminLoginPage() {
 
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-1">Admin Email</Label>
+                <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-1">Merchant Email</Label>
                 <Input 
                   id="email" 
                   type="email" 
@@ -162,8 +150,7 @@ export default function AdminLoginPage() {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between ml-1">
-                  <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-slate-600">Security Password</Label>
-                  <Link href="#" className="text-[10px] text-primary hover:underline font-black uppercase tracking-widest">Forgot Access?</Link>
+                  <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-slate-600">Security Key</Label>
                 </div>
                 <Input 
                   id="password" 
@@ -177,7 +164,7 @@ export default function AdminLoginPage() {
               </div>
               <Button type="submit" className="w-full h-16 bg-slate-900 hover:bg-slate-800 text-white font-black uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all text-xs group" disabled={isLoading || isGoogleLoading}>
                 {isLoading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
-                {isLoading ? "Authenticating..." : "Login to Dashboard"}
+                {isLoading ? "Verifying Credentials..." : "Access Dashboard"}
                 {!isLoading && !isGoogleLoading && <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />}
               </Button>
             </form>
@@ -187,7 +174,7 @@ export default function AdminLoginPage() {
                 <span className="w-full border-t border-slate-200" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-black tracking-widest">
-                <span className="bg-white px-4 text-slate-400">Or continue with</span>
+                <span className="bg-white px-4 text-slate-400">Merchant SSO</span>
               </div>
             </div>
 
