@@ -5,7 +5,7 @@ import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { useUser, useCollection, useFirestore } from "@/firebase";
 import { collection, query, where, doc, updateDoc } from "firebase/firestore";
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +14,11 @@ import { ShoppingBag, Package, ShieldCheck, MapPin, Loader2, ArrowRight, XCircle
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import Link from "next/link";
+import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -31,6 +33,8 @@ export default function UserDashboard() {
   const db = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -146,7 +150,7 @@ export default function UserDashboard() {
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Order ID</TableHead>
+                      <TableHead className="px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Items</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Date</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Status</TableHead>
                       <TableHead className="text-right font-black text-slate-400 uppercase text-[10px] tracking-widest">Total</TableHead>
@@ -156,8 +160,49 @@ export default function UserDashboard() {
                   <TableBody>
                     {orders.map((order: any) => (
                       <TableRow key={order.id} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="px-8 font-mono text-[11px] font-bold text-slate-600 uppercase">
-                          {order.id.slice(0, 12)}
+                        <TableCell className="px-8 py-4">
+                          {order.items && order.items.length > 0 && (
+                            <div 
+                              className="flex items-center gap-4 cursor-pointer group"
+                              onClick={() => {
+                                const displayProduct = {
+                                  id: order.items[0].productId,
+                                  description: "Purchased item in Z-MART history.",
+                                  rating: 5,
+                                  reviews: 120,
+                                  category: "Order Item",
+                                  features: [],
+                                  ...order.items[0]
+                                };
+                                setSelectedProduct(displayProduct);
+                                setIsModalOpen(true);
+                              }}
+                            >
+                              <div className="relative h-14 w-14 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0 shadow-sm">
+                                <Image 
+                                  src={order.items[0].imageUrl || 'https://placehold.co/100x100?text=No+Image'} 
+                                  alt={order.items[0].name} 
+                                  fill 
+                                  className="object-contain p-1 group-hover:scale-110 transition-transform duration-500" 
+                                />
+                              </div>
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
+                                  {order.items[0].name}
+                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                                    {order.items.length} {order.items.length === 1 ? 'Item' : 'Items'}
+                                  </span>
+                                  {order.items.length > 1 && (
+                                    <span className="text-[9px] font-black text-primary uppercase tracking-widest">
+                                      + View Details
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </TableCell>
                         <TableCell className="font-bold text-slate-700 text-sm">
                           {order.createdAt?.toDate ? format(order.createdAt.toDate(), 'MMMM dd, yyyy') : 'Recently'}
@@ -213,6 +258,12 @@ export default function UserDashboard() {
       </main>
 
       <Footer />
+
+      <ProductDetailsModal 
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

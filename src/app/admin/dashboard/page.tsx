@@ -1,3 +1,4 @@
+
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -9,7 +10,9 @@ import { Button } from "@/components/ui/button";
 import { useUser, useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
+import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -23,6 +26,8 @@ export default function AdminDashboard() {
   const { user, loading: authLoading } = useUser();
   const db = useFirestore();
   const router = useRouter();
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const ordersQuery = useMemo(() => {
     if (!db) return null;
@@ -109,7 +114,7 @@ export default function AdminDashboard() {
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest">Order ID</TableHead>
+                      <TableHead className="px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest">Items</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Customer</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Status</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-10">Amount</TableHead>
@@ -118,7 +123,40 @@ export default function AdminDashboard() {
                   <TableBody>
                     {recentOrders.map((order: any) => (
                       <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50">
-                        <TableCell className="px-10 font-mono text-[11px] font-bold text-slate-500 uppercase">{order.id.slice(0, 8)}</TableCell>
+                        <TableCell className="px-10 py-6">
+                           {order.items && order.items.length > 0 && (
+                            <div 
+                              className="flex items-center gap-4 cursor-pointer group"
+                              onClick={() => {
+                                const displayProduct = {
+                                  id: order.items[0].productId,
+                                  description: "Transaction preview item.",
+                                  rating: 5,
+                                  reviews: 0,
+                                  category: "Order Item",
+                                  features: [],
+                                  ...order.items[0]
+                                };
+                                setSelectedProduct(displayProduct);
+                                setIsModalOpen(true);
+                              }}
+                            >
+                              <div className="relative h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0 shadow-sm">
+                                <Image 
+                                  src={order.items[0].imageUrl || 'https://placehold.co/100x100?text=No+Image'} 
+                                  alt={order.items[0].name} 
+                                  fill 
+                                  className="object-contain p-1 group-hover:scale-110 transition-transform duration-500" 
+                                />
+                              </div>
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-[11px] font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
+                                  {order.items[0].name}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </TableCell>
                         <TableCell className="py-6">
                           <div className="font-black text-slate-900">{order.customerName}</div>
                           <div className="text-[10px] text-slate-400 font-bold uppercase">{order.customerEmail}</div>
@@ -173,6 +211,12 @@ export default function AdminDashboard() {
           </div>
         </section>
       </main>
+
+      <ProductDetailsModal 
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
