@@ -119,17 +119,17 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
               
               <div className="flex items-center gap-4 py-2 border-b border-slate-100">
                 <div className="flex items-center gap-1">
-                  <span className="text-sm font-bold mr-1">{product.rating}</span>
+                  <span className="text-sm font-bold mr-1">{product.rating || 0}</span>
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <Star 
                         key={i} 
-                        className={`h-4 w-4 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-slate-200'}`} 
+                        className={`h-4 w-4 ${i <= Math.floor(product.rating || 0) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-slate-200'}`} 
                       />
                     ))}
                   </div>
                 </div>
-                <span className="text-[#007185] text-sm hover:text-[#c45500] cursor-pointer">{product.reviews.toLocaleString()} ratings</span>
+                <span className="text-[#007185] text-sm hover:text-[#c45500] cursor-pointer">{(product.reviews || 0).toLocaleString()} ratings</span>
               </div>
             </DialogHeader>
 
@@ -142,7 +142,7 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
                   )}
                   <div className="flex items-start">
                     <span className="text-sm font-medium mt-1">₹</span>
-                    <span className="text-4xl font-medium">{product.price.toLocaleString()}</span>
+                    <span className="text-4xl font-medium">{(product.price || 0).toLocaleString()}</span>
                   </div>
                 </div>
                 {product.originalPrice && (
@@ -189,7 +189,7 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
                   <h4 className="font-bold">Description</h4>
                 </div>
                 <p className="text-sm text-slate-600 leading-relaxed italic">
-                  {product.description}
+                  {product.description || "Premium quality item curated for Z-MART."}
                 </p>
               </div>
 
