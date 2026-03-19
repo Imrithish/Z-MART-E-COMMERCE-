@@ -2,7 +2,7 @@ import { Navbar } from "@/components/storefront/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
-import { Star, Truck, ShieldCheck, Clock, ChevronRight, Zap, ArrowRight, ShoppingBag } from "lucide-react";
+import { Star, Truck, ShieldCheck, Clock, ChevronRight, Zap, ArrowRight, ShoppingBag, LayoutDashboard, Settings, Package } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -237,11 +237,16 @@ export default function Home() {
             </div>
           </div>
           
+          <div className="space-y-8">
+            <h5 className="font-black text-white text-lg uppercase tracking-widest">Merchant Portal</h5>
+            <ul className="space-y-4">
+              <li><Link href="/admin/login" className="text-sm font-medium hover:text-secondary transition-colors flex items-center gap-2"><LayoutDashboard className="h-4 w-4" /> Admin Dashboard</Link></li>
+              <li><Link href="/admin/products/new" className="text-sm font-medium hover:text-secondary transition-colors flex items-center gap-2"><Package className="h-4 w-4" /> Add New Product</Link></li>
+              <li><Link href="/admin/login" className="text-sm font-medium hover:text-secondary transition-colors flex items-center gap-2"><Settings className="h-4 w-4" /> Store Settings</Link></li>
+            </ul>
+          </div>
+
           {[
-            { 
-              title: "Shop Categories", 
-              links: ["Electronics & Gadgets", "Home & Kitchen", "Fashion & Apparel", "Beauty & Care", "Sports & Outdoors"] 
-            },
             { 
               title: "Customer Service", 
               links: ["Track Your Order", "Shipping Policy", "Return Center", "FAQ / Help", "Contact Support"] 
