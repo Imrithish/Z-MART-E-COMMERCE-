@@ -109,7 +109,7 @@ export function AdminSidebar() {
               <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-80 bg-slate-900 border-none text-white">
+          <SheetContent side="right" className="p-0 w-80 bg-slate-900 border-none text-white">
             <SheetTitle className="sr-only">Admin Navigation</SheetTitle>
             <SidebarContent />
           </SheetContent>
