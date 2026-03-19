@@ -260,7 +260,7 @@ export function Navbar() {
                   <ul className="space-y-2">
                     <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Member Dashboard</Link></li>
                     <li><Link href="/account#orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Order History</Link></li>
-                    <li><Link href="/admin/login" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest text-primary">Merchant Hub</Link></li>
+                    <li><Link href="/admin/login" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest text-primary">Admin Panel</Link></li>
                   </ul>
                   <Separator />
                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-10 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/10">
