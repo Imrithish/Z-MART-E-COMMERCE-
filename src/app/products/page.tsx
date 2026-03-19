@@ -156,7 +156,7 @@ function ProductList() {
           ))
         ) : (
           <div className="col-span-full py-20 text-center bg-white rounded-sm shadow-sm">
-            <p className="text-lg font-medium text-gray-600">No results found for your search.</p>
+            <p className="text-lg font-medium text-gray-600">No products found.</p>
             <p className="text-sm text-gray-400 mt-1">Try checking your spelling or use more general terms.</p>
           </div>
         )}
@@ -182,9 +182,9 @@ export default function StorefrontProducts() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 bg-white p-6 shadow-sm rounded-sm">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight">
-              {q ? `Results for "${q}"` : "Search Results"}
+              {q ? `Results for "${q}"` : "Full Catalog"}
             </h1>
-            <p className="text-sm text-gray-500">Showing items from our live collection.</p>
+            <p className="text-sm text-gray-500">Explore our premium live collection.</p>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="outline" className="gap-2 h-9 text-xs">

@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -129,9 +130,6 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
                   </div>
                 </div>
                 <span className="text-[#007185] text-sm hover:text-[#c45500] cursor-pointer">{product.reviews.toLocaleString()} ratings</span>
-                <Badge variant="outline" className="text-[10px] text-slate-500 font-bold uppercase border-slate-200">
-                  Search Results
-                </Badge>
               </div>
             </DialogHeader>
 
