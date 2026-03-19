@@ -217,14 +217,6 @@ export function Navbar() {
                   </div>
                 ))}
               </div>
-              <div className="bg-slate-50 p-6 border-t border-slate-100 flex items-center justify-between">
-                <button 
-                  onClick={() => selectCategoryFromMenu("All")}
-                  className="text-[10px] font-black text-slate-400 hover:text-slate-900 uppercase tracking-widest flex items-center gap-2 transition-colors"
-                >
-                  Reset Selection
-                </button>
-              </div>
             </PopoverContent>
           </Popover>
         </div>
