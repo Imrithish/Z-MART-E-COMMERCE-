@@ -13,6 +13,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
