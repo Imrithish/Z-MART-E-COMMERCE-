@@ -1,3 +1,4 @@
+
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -5,15 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Settings, User, Bell, Shield, Store, Save, Loader2, Database, Sparkles } from "lucide-react";
+import { User, Bell, Shield, Save, Loader2, Database, Sparkles, AlertCircle } from "lucide-react";
 import { useUser, useFirestore } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, getDocs, writeBatch, doc } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function AdminSettings() {
   const { user, loading: authLoading } = useUser();
@@ -22,6 +24,7 @@ export default function AdminSettings() {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isSeeding, setIsSeeding] = useState(false);
+  const [isCleaning, setIsCleaning] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -40,13 +43,31 @@ export default function AdminSettings() {
     }, 1000);
   };
 
+  const cleanDatabase = async () => {
+    if (!db) return;
+    setIsCleaning(true);
+    try {
+      const q = query(collection(db, 'products'));
+      const snapshot = await getDocs(q);
+      const batch = writeBatch(db);
+      snapshot.docs.forEach((doc) => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+      toast({ title: "Database Cleaned", description: "All products have been removed." });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Cleaning Failed", description: error.message });
+    } finally {
+      setIsCleaning(false);
+    }
+  };
+
   const seedDatabase = async () => {
     if (!db) return;
     setIsSeeding(true);
     
     try {
       const seedPromises = MOCK_PRODUCTS.map(product => {
-        // Remove the mock ID to let Firestore generate one
         const { id, ...productData } = product;
         return addDoc(collection(db, 'products'), {
           ...productData,
@@ -59,7 +80,7 @@ export default function AdminSettings() {
       
       toast({
         title: "Store Seeded",
-        description: `${MOCK_PRODUCTS.length} products have been added to your store.`,
+        description: `${MOCK_PRODUCTS.length} products have been added from the global dataset.`,
       });
       router.push('/admin/products');
     } catch (error: any) {
@@ -89,7 +110,7 @@ export default function AdminSettings() {
       <main className="flex-1 p-6 md:p-10 lg:p-14 space-y-12">
         <header className="flex flex-col gap-2">
           <h1 className="text-4xl font-black tracking-tight text-slate-900 uppercase">Settings</h1>
-          <p className="text-slate-600 text-lg font-medium">Manage your admin account and store preferences.</p>
+          <p className="text-slate-600 text-lg font-medium">Manage your admin account and global data.</p>
         </header>
 
         <div className="grid lg:grid-cols-3 gap-10">
@@ -123,22 +144,43 @@ export default function AdminSettings() {
                   <div className="p-2 bg-slate-100 rounded-xl text-primary">
                     <Database className="h-5 w-5" />
                   </div>
-                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Setup Tools</CardTitle>
+                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Global Data Operations</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="p-8 space-y-6">
+              <CardContent className="p-8 space-y-8">
                 <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-xs font-black text-slate-900 uppercase tracking-widest">
+                    <Sparkles className="h-4 w-4 text-primary" /> Dataset Synchronization
+                  </div>
                   <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
-                    Quickly populate your store with a curated list of sample products.
+                    Populate your store with the Kaggle-inspired e-commerce dataset (Fashion, Tech, Home, Beauty).
                   </p>
                   <Button 
                     onClick={seedDatabase} 
-                    disabled={isSeeding}
+                    disabled={isSeeding || isCleaning}
                     variant="outline"
-                    className="h-16 px-8 rounded-2xl border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-widest transition-all"
+                    className="h-16 px-8 rounded-2xl border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-widest transition-all w-full md:w-auto"
                   >
-                    {isSeeding ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <Sparkles className="h-5 w-5 mr-3" />}
-                    {isSeeding ? "Adding Sample Products..." : "Seed Sample Products"}
+                    {isSeeding ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <Database className="h-5 w-5 mr-3" />}
+                    {isSeeding ? "Syncing Dataset..." : "Seed Store with Dataset"}
+                  </Button>
+                </div>
+
+                <div className="pt-8 border-t border-slate-100 space-y-4">
+                  <div className="flex items-center gap-2 text-xs font-black text-red-500 uppercase tracking-widest">
+                    <AlertCircle className="h-4 w-4" /> Danger Zone
+                  </div>
+                  <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
+                    Remove all products currently in the database. This action is irreversible.
+                  </p>
+                  <Button 
+                    onClick={cleanDatabase} 
+                    disabled={isSeeding || isCleaning}
+                    variant="ghost"
+                    className="h-16 px-8 rounded-2xl text-red-500 hover:bg-red-50 font-black uppercase tracking-widest transition-all w-full md:w-auto"
+                  >
+                    {isCleaning ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : null}
+                    {isCleaning ? "Cleaning..." : "Clear All Products"}
                   </Button>
                 </div>
               </CardContent>
