@@ -182,39 +182,6 @@ export default function Home() {
           </section>
         )}
 
-        {/* Trust Bar */}
-        <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-4">
-           <div className="bg-white p-8 rounded-none grid grid-cols-1 md:grid-cols-3 gap-8 shadow-sm">
-              <div className="flex items-center gap-5 border-r border-slate-100 last:border-0">
-                <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900">
-                  <Truck className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs text-slate-900 uppercase tracking-widest">Fast Delivery</h4>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase">Free Express over ₹2000</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-5 border-r border-slate-100 last:border-0">
-                <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900">
-                  <RotateCcw className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs text-slate-900 uppercase tracking-widest">10 Days Return</h4>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase">Hassle-free exchanges</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-5 last:border-0">
-                <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900">
-                  <ShieldCheck className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="font-black text-xs text-slate-900 uppercase tracking-widest">Verified Seller</h4>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase">100% Genuine Products</p>
-                </div>
-              </div>
-           </div>
-        </section>
-
         {/* Freshly Dropped Grid */}
         <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-12">
           <Card className="bg-white rounded-none border-none shadow-sm p-8">
