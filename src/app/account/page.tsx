@@ -4,16 +4,19 @@
 import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { useUser, useCollection, useFirestore } from "@/firebase";
-import { collection, query, where } from "firebase/firestore";
+import { collection, query, where, doc, updateDoc } from "firebase/firestore";
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingBag, Package, ShieldCheck, MapPin, Loader2, ArrowRight } from "lucide-react";
+import { ShoppingBag, Package, ShieldCheck, MapPin, Loader2, ArrowRight, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -27,6 +30,7 @@ export default function UserDashboard() {
   const { user, loading: authLoading } = useUser();
   const db = useFirestore();
   const router = useRouter();
+  const { toast } = useToast();
 
   // Redirect if not logged in
   useEffect(() => {
@@ -53,6 +57,33 @@ export default function UserDashboard() {
       return dateB - dateA;
     });
   }, [rawOrders]);
+
+  const handleCancelOrder = (orderId: string) => {
+    if (!db) return;
+    
+    if (!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
+
+    const orderRef = doc(db, 'orders', orderId);
+    
+    updateDoc(orderRef, {
+      status: 'Cancelled',
+      updatedAt: new Date()
+    })
+    .then(() => {
+      toast({
+        title: "Order Cancelled",
+        description: "Your order has been successfully cancelled.",
+      });
+    })
+    .catch(async (error) => {
+      const permissionError = new FirestorePermissionError({
+        path: `orders/${orderId}`,
+        operation: 'update',
+        requestResourceData: { status: 'Cancelled' },
+      });
+      errorEmitter.emit('permission-error', permissionError);
+    });
+  };
 
   if (authLoading) {
     return (
@@ -120,7 +151,8 @@ export default function UserDashboard() {
                       <TableHead className="px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Order ID</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Date</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Status</TableHead>
-                      <TableHead className="text-right px-8 font-black text-slate-400 uppercase text-[10px] tracking-widest">Total</TableHead>
+                      <TableHead className="text-right font-black text-slate-400 uppercase text-[10px] tracking-widest">Total</TableHead>
+                      <TableHead className="text-right px-8 font-black text-slate-400 uppercase text-[10px] tracking-widest">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -137,14 +169,27 @@ export default function UserDashboard() {
                             className={`rounded-xl font-black px-4 py-1 text-[9px] uppercase tracking-widest ${
                               order.status === 'Delivered' ? 'bg-green-100 text-green-700' : 
                               order.status === 'Shipped' ? 'bg-blue-100 text-blue-700' : 
+                              order.status === 'Cancelled' ? 'bg-red-100 text-red-700' :
                               'bg-slate-200 text-slate-800'
                             }`}
                           >
                             {order.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right px-8 font-black text-slate-900 text-lg">
+                        <TableCell className="text-right font-black text-slate-900 text-lg">
                           {formatCurrency(order.totalAmount)}
+                        </TableCell>
+                        <TableCell className="text-right px-8">
+                          {(order.status === 'Pending' || order.status === 'Processing') && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => handleCancelOrder(order.id)}
+                              className="text-red-500 hover:text-red-600 hover:bg-red-50 font-black uppercase tracking-widest text-[9px] gap-2"
+                            >
+                              <XCircle className="h-3 w-3" /> Cancel
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

@@ -30,7 +30,7 @@
         "customerName": { "type": "string" },
         "customerEmail": { "type": "string", "format": "email" },
         "totalAmount": { "type": "number" },
-        "status": { "type": "string", "enum": ["Pending", "Processing", "Shipped", "Delivered"] },
+        "status": { "type": "string", "enum": ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"] },
         "shippingAddress": {
           "type": "object",
           "properties": {
