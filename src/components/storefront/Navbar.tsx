@@ -2,43 +2,65 @@
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Search, Home, LogOut, ShieldCheck, ChevronDown, MapPin } from "lucide-react";
+import { ShoppingCart, User, Search, Home, LogOut, ShieldCheck, ChevronDown, MapPin, Laptop, Shirt, Utensils, Sparkles, BookOpen, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useUser, useAuth } from "@/firebase";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
-const CATEGORY_STRUCTURE = [
+const CATEGORY_GROUPS = [
   {
-    label: "Electronics",
-    items: ["Laptops", "Mobiles", "Audio", "Wearables", "Cameras", "Gaming"]
+    label: "Digital & Tech",
+    icon: Laptop,
+    items: [
+      { name: "Laptops", desc: "Performance machines" },
+      { name: "Mobiles", desc: "Next-gen smartphones" },
+      { name: "Audio", desc: "Audiophile grade" },
+      { name: "Gaming", desc: "Pro gear & consoles" }
+    ]
   },
   {
-    label: "Fashion",
-    items: ["Men's Clothing", "Women's Clothing", "Accessories", "Footwear", "Watches"]
+    label: "Style & Trend",
+    icon: Shirt,
+    items: [
+      { name: "Men's Clothing", desc: "Modern classics" },
+      { name: "Women's Clothing", desc: "Designer labels" },
+      { name: "Accessories", desc: "The final touch" },
+      { name: "Watches", desc: "Precision time" }
+    ]
   },
   {
-    label: "Home & Kitchen",
-    items: ["Appliances", "Furniture", "Decor", "Cookware", "Garden"]
+    label: "Home & Life",
+    icon: Utensils,
+    items: [
+      { name: "Appliances", desc: "Smart home tech" },
+      { name: "Furniture", desc: "Luxury comfort" },
+      { name: "Decor", desc: "Aesthetic living" },
+      { name: "Garden", desc: "Outdoor oasis" }
+    ]
   },
   {
-    label: "Beauty & Health",
-    items: ["Skincare", "Makeup", "Haircare", "Supplements", "Personal Care"]
-  },
-  {
-    label: "Books",
-    items: ["Fiction", "Non-Fiction", "Educational", "Children's Books"]
+    label: "Beauty & Wellness",
+    icon: Sparkles,
+    items: [
+      { name: "Skincare", desc: "Premium care" },
+      { name: "Makeup", desc: "Artistic beauty" },
+      { name: "Haircare", desc: "Salon quality" },
+      { name: "Personal Care", desc: "Daily essentials" }
+    ]
   }
 ];
 
 export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const router = useRouter();
   const { user } = useUser();
@@ -48,8 +70,13 @@ export function Navbar() {
     e.preventDefault();
     const params = new URLSearchParams();
     if (searchQuery.trim()) params.append("q", searchQuery.trim());
-    if (selectedCategory !== "all") params.append("category", selectedCategory);
+    if (selectedCategory !== "All") params.append("category", selectedCategory);
     router.push(`/products?${params.toString()}`);
+  };
+
+  const selectCategoryFromMenu = (category: string) => {
+    setSelectedCategory(category);
+    setIsMenuOpen(false);
   };
 
   const handleSignOut = async () => {
@@ -64,7 +91,7 @@ export function Navbar() {
       <div className="amazon-header-bg text-white h-[65px] flex items-center px-4 md:px-6 gap-4 md:gap-8">
         {/* Logo */}
         <Link href="/" className="flex items-center group shrink-0">
-          <span className="text-2xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors">Z-MART</span>
+          <span className="text-2xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors uppercase">Z-MART</span>
           <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-1" />
         </Link>
 
@@ -77,48 +104,73 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Search Bar */}
-        <form 
-          onSubmit={handleSearch}
-          className="flex flex-1 items-center h-10 rounded-md overflow-hidden bg-white group focus-within:ring-2 focus-within:ring-primary"
-        >
+        {/* Search Bar with Mega Menu Trigger */}
+        <div className="flex flex-1 items-center h-10 rounded-md overflow-hidden bg-white group focus-within:ring-2 focus-within:ring-primary">
           <div className="h-full border-r border-slate-200 hidden md:block">
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="h-full border-none bg-slate-50 focus:ring-0 text-[10px] text-slate-600 px-4 gap-2 rounded-none shadow-none font-black uppercase tracking-widest min-w-[140px]">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent className="rounded-none border-slate-100 shadow-2xl p-4 w-[280px] max-h-[500px]">
-                <SelectItem value="all" className="text-[10px] py-2 cursor-pointer font-black uppercase tracking-widest rounded-sm mb-2 bg-slate-100">All Categories</SelectItem>
-                {CATEGORY_STRUCTURE.map((group) => (
-                  <SelectGroup key={group.label}>
-                    <SelectLabel className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] px-3 pt-4 pb-1 border-b border-slate-100 mb-2">
-                      {group.label}
-                    </SelectLabel>
-                    {group.items.map((item) => (
-                      <SelectItem 
-                        key={item} 
-                        value={item} 
-                        className="text-[10px] py-1.5 cursor-pointer font-black uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-colors"
-                      >
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                ))}
-              </SelectContent>
-            </Select>
+            <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <PopoverTrigger asChild>
+                <button className="h-full bg-slate-50 hover:bg-slate-100 text-slate-600 px-4 gap-2 flex items-center text-[10px] font-black uppercase tracking-widest min-w-[140px] transition-colors">
+                  <span className="truncate">{selectedCategory}</span>
+                  <ChevronDown className={cn("h-3 w-3 transition-transform", isMenuOpen && "rotate-180")} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[800px] p-0 border-none shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-none overflow-hidden" align="start">
+                <div className="grid grid-cols-4 p-8 bg-white gap-8">
+                  {CATEGORY_GROUPS.map((group) => (
+                    <div key={group.label} className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
+                          <group.icon className="h-4 w-4" />
+                        </div>
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{group.label}</h4>
+                      </div>
+                      <ul className="space-y-4">
+                        {group.items.map((item) => (
+                          <li key={item.name}>
+                            <button 
+                              onClick={() => selectCategoryFromMenu(item.name)}
+                              className="group flex flex-col items-start text-left hover:text-primary transition-colors w-full"
+                            >
+                              <span className="text-xs font-black text-slate-900 uppercase tracking-tight mb-0.5 group-hover:text-primary">{item.name}</span>
+                              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{item.desc}</span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-slate-50 p-4 border-t border-slate-100 flex items-center justify-between">
+                  <button 
+                    onClick={() => selectCategoryFromMenu("All")}
+                    className="text-[10px] font-black text-slate-400 hover:text-slate-900 uppercase tracking-widest flex items-center gap-2 transition-colors"
+                  >
+                    Reset to all categories
+                  </button>
+                  <Link 
+                    href="/products" 
+                    className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    View all features <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
           
-          <Input 
-            placeholder="Search Z-MART products..." 
-            className="flex-1 border-none focus-visible:ring-0 text-slate-900 placeholder:text-slate-400 h-full rounded-none px-4 font-bold text-sm"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-5 transition-all shrink-0">
-            <Search className="h-5 w-5 text-slate-900" />
-          </button>
-        </form>
+          <form onSubmit={handleSearch} className="flex-1 flex items-center h-full">
+            <Input 
+              placeholder="Search Z-MART products..." 
+              className="flex-1 border-none focus-visible:ring-0 text-slate-900 placeholder:text-slate-400 h-full rounded-none px-4 font-bold text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-5 transition-all shrink-0">
+              <Search className="h-5 w-5 text-slate-900" />
+            </button>
+          </form>
+        </div>
 
         {/* Actions */}
         <div className="flex items-center gap-2 md:gap-4">
