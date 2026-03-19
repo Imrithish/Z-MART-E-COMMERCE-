@@ -40,6 +40,7 @@ export default function AdminLoginPage() {
       console.error("Login Error:", error.code, error.message);
       let message = "Invalid credentials. Please check your password and try again.";
       
+      // Specifically handle invalid API keys
       if (error.code === 'auth/invalid-api-key' || error.message?.includes('api-key-not-valid')) {
         message = "Critical Error: Your Firebase API Key is missing or invalid. Please update 'src/firebase/config.ts' with your real credentials from the Firebase Console.";
       } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
