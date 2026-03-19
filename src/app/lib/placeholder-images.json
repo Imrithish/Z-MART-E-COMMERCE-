@@ -72,6 +72,30 @@
       "description": "Insulated Water Bottle",
       "imageUrl": "https://picsum.photos/seed/bottle/600/600",
       "imageHint": "bottle water"
+    },
+    {
+      "id": "laptop-pro",
+      "description": "Ultra-Slim Pro Laptop",
+      "imageUrl": "https://picsum.photos/seed/laptop/600/600",
+      "imageHint": "laptop computer"
+    },
+    {
+      "id": "smartphone-z",
+      "description": "Z-Phone Flagship",
+      "imageUrl": "https://picsum.photos/seed/phone/600/600",
+      "imageHint": "smartphone mobile"
+    },
+    {
+      "id": "serum-face",
+      "description": "Organic Vitamin C Serum",
+      "imageUrl": "https://picsum.photos/seed/serum/600/600",
+      "imageHint": "skincare serum"
+    },
+    {
+      "id": "chair-office",
+      "description": "Ergonomic Mesh Chair",
+      "imageUrl": "https://picsum.photos/seed/chair/600/600",
+      "imageHint": "office chair"
     }
   ]
 }
