@@ -138,7 +138,7 @@ export default function Home() {
 
         {/* Categories Grouped Sections */}
         <div className="max-w-[1450px] mx-auto px-4 md:px-8 py-12 space-y-24">
-          {Object.entries(productsByCategory).map(([category, catProducts]: [string, any[]]) => (
+          {Object.entries(productsByCategory).slice(0, 4).map(([category, catProducts]: [string, any[]]) => (
             <section key={category} className="space-y-10">
               <div className="flex items-end justify-between border-b border-slate-200 pb-6">
                 <div className="space-y-1">
