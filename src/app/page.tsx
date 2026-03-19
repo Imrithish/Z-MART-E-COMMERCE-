@@ -1,8 +1,9 @@
+
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Product } from "@/lib/mock-data";
-import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight, ShieldCheck, Zap, Globe } from "lucide-react";
+import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight, ShieldCheck, Zap, Globe, Truck, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -131,29 +132,29 @@ export default function Home() {
            <div className="bg-white rounded-[3rem] shadow-2xl p-10 md:p-16 grid grid-cols-1 md:grid-cols-3 gap-12 border border-slate-50">
               <div className="flex items-center gap-6 group">
                 <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <Truck className="h-8 w-8 text-slate-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Fast Delivery</h4>
+                  <p className="text-xs font-medium text-slate-500">Free Express Shipping on Orders over ₹2000</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 group">
+                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                  <RotateCcw className="h-8 w-8 text-slate-400 group-hover:text-white" />
+                </div>
+                <div>
+                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">10 Days Return</h4>
+                  <p className="text-xs font-medium text-slate-500">Hassle-free Returns & Exchanges</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6 group">
+                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   <ShieldCheck className="h-8 w-8 text-slate-400 group-hover:text-white" />
                 </div>
                 <div>
-                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Secure Protocol</h4>
-                  <p className="text-xs font-medium text-slate-500">256-bit Encrypted Checkouts</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-6 group">
-                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  <Zap className="h-8 w-8 text-slate-400 group-hover:text-white" />
-                </div>
-                <div>
-                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Instant Dispatch</h4>
-                  <p className="text-xs font-medium text-slate-500">Under 24h Fulfillment Cycle</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-6 group">
-                <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  <Globe className="h-8 w-8 text-slate-400 group-hover:text-white" />
-                </div>
-                <div>
-                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Global Curation</h4>
-                  <p className="text-xs font-medium text-slate-500">Premium Items From 20+ Countries</p>
+                  <h4 className="font-black uppercase tracking-widest text-xs text-slate-900 mb-1">Secure Payments</h4>
+                  <p className="text-xs font-medium text-slate-500">100% Protected & Encrypted Checkout</p>
                 </div>
               </div>
            </div>
