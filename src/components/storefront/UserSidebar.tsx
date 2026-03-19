@@ -97,7 +97,7 @@ export function UserSidebar() {
 
   if (isMobile) {
     return (
-      <div className="md:hidden fixed right-0 top-24 z-50">
+      <div className="md:hidden fixed right-0 top-[134px] z-50">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button 

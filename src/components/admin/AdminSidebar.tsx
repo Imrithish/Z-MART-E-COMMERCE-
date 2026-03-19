@@ -98,7 +98,7 @@ export function AdminSidebar() {
 
   if (isMobile) {
     return (
-      <div className="md:hidden fixed right-0 top-24 z-50">
+      <div className="md:hidden fixed right-0 top-6 z-50">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button 
