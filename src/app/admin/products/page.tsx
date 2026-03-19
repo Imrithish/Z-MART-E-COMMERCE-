@@ -1,3 +1,4 @@
+
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -47,11 +48,9 @@ export default function AdminProducts() {
   const handleDelete = (productId: string) => {
     if (!db) return;
     
-    if (!confirm("Are you sure you want to remove this item from the store?")) return;
-
     deleteDoc(doc(db, 'products', productId))
       .then(() => {
-        toast({ title: "Product Deleted", description: "The item has been removed from the products list." });
+        toast({ title: "Product Deleted", description: "The item has been removed from the catalog." });
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({

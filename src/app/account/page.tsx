@@ -61,8 +61,6 @@ export default function UserDashboard() {
   const handleCancelOrder = (orderId: string) => {
     if (!db) return;
     
-    if (!confirm("Are you sure you want to cancel this order? This action cannot be undone.")) return;
-
     const orderRef = doc(db, 'orders', orderId);
     
     updateDoc(orderRef, {
@@ -72,7 +70,7 @@ export default function UserDashboard() {
     .then(() => {
       toast({
         title: "Order Cancelled",
-        description: "Your order has been successfully cancelled.",
+        description: "The order has been successfully cancelled.",
       });
     })
     .catch(async (error) => {

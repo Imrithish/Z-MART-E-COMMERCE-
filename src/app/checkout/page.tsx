@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams } from "next/navigation";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
-import { OrderSuccessModal } from "@/components/storefront/OrderSuccessModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -38,8 +37,6 @@ function CheckoutContent() {
   const productId = searchParams.get('productId');
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [lastOrderTotal, setLastOrderTotal] = useState(0);
 
   // Form State
   const [address, setAddress] = useState({
@@ -119,16 +116,19 @@ function CheckoutContent() {
       createdAt: serverTimestamp(),
     };
 
-    // Simulate "Online Payment" processing delay
+    // Simulate processing delay
     if (paymentMethod === 'Online') {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
     }
 
     addDoc(collection(db, 'orders'), orderData)
       .then(() => {
-        setLastOrderTotal(grandTotal);
-        setShowSuccessModal(true);
         if (!productId) clearCart();
+        toast({
+          title: "Order Placed!",
+          description: `Total: ${formatCurrency(grandTotal)}. Track your items in the dashboard.`,
+        });
+        router.push('/account#orders');
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
@@ -354,15 +354,6 @@ function CheckoutContent() {
            </Card>
         </div>
       </main>
-
-      <OrderSuccessModal 
-        isOpen={showSuccessModal} 
-        onClose={() => {
-          setShowSuccessModal(false);
-          router.push('/account#orders');
-        }} 
-        orderTotal={lastOrderTotal}
-      />
     </div>
   );
 }
