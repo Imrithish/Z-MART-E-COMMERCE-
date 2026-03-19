@@ -1,3 +1,4 @@
+
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -74,7 +75,7 @@ export default function AdminProducts() {
             <h1 className="text-4xl font-black tracking-tight mb-2 text-slate-900">Products</h1>
             <p className="text-slate-500 text-lg font-medium">Manage your catalog, stock, and descriptions.</p>
           </div>
-          <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs transition-all active:scale-95">
+          <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest text-xs transition-all active:scale-95">
             <Link href="/admin/products/new">
               <Plus className="h-5 w-5 mr-2" /> Add New Product
             </Link>
@@ -157,7 +158,7 @@ export default function AdminProducts() {
                 </div>
                 <h3 className="font-black text-2xl text-slate-900 uppercase tracking-tight">No Products Found</h3>
                 <p className="text-slate-500 mb-10 font-medium">Start building your catalog by adding your first product.</p>
-                <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest">
+                <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest">
                   <Link href="/admin/products/new">Create First Listing</Link>
                 </Button>
               </div>
