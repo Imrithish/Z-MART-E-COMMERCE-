@@ -1,40 +1,53 @@
+
 {
   "placeholderImages": [
     {
-      "id": "amazon-hero-1",
-      "description": "Amazon Style Hero Banner - Electronics",
-      "imageUrl": "https://picsum.photos/seed/amzhero1/1500/600",
-      "imageHint": "electronics sale"
+      "id": "iphone-15-pro",
+      "description": "iPhone 15 Pro Blue Titanium",
+      "imageUrl": "https://picsum.photos/seed/iphone15pro/600/600",
+      "imageHint": "iphone 15"
     },
     {
-      "id": "amazon-hero-2",
-      "description": "Amazon Style Hero Banner - Fashion",
-      "imageUrl": "https://picsum.photos/seed/amzhero2/1500/600",
-      "imageHint": "fashion banner"
-    },
-    {
-      "id": "kindle-paperwhite",
-      "description": "Kindle E-reader",
-      "imageUrl": "https://picsum.photos/seed/kindle/400/400",
-      "imageHint": "kindle paperwhite"
-    },
-    {
-      "id": "echo-dot",
-      "description": "Echo Dot Smart Speaker",
-      "imageUrl": "https://picsum.photos/seed/echo/400/400",
+      "id": "echo-dot-5",
+      "description": "Echo Dot 5th Gen Charcoal",
+      "imageUrl": "https://picsum.photos/seed/echo5/600/600",
       "imageHint": "echo dot"
     },
     {
-      "id": "fire-tablet",
-      "description": "Fire Tablet",
-      "imageUrl": "https://picsum.photos/seed/tablet/400/400",
-      "imageHint": "fire tablet"
+      "id": "kindle-pw-11",
+      "description": "Kindle Paperwhite 11th Gen",
+      "imageUrl": "https://picsum.photos/seed/kindlepw11/600/600",
+      "imageHint": "kindle paperwhite"
     },
     {
-      "id": "ring-doorbell",
-      "description": "Ring Video Doorbell",
-      "imageUrl": "https://picsum.photos/seed/ring/400/400",
-      "imageHint": "ring doorbell"
+      "id": "sony-xm5",
+      "description": "Sony WH-1000XM5 Silver",
+      "imageUrl": "https://picsum.photos/seed/sonyxm5/600/600",
+      "imageHint": "sony headphones"
+    },
+    {
+      "id": "macbook-air-m2",
+      "description": "MacBook Air M2 Midnight",
+      "imageUrl": "https://picsum.photos/seed/macm2/600/600",
+      "imageHint": "macbook air"
+    },
+    {
+      "id": "pigeon-kettle",
+      "description": "Pigeon Electric Kettle",
+      "imageUrl": "https://picsum.photos/seed/kettle/600/600",
+      "imageHint": "electric kettle"
+    },
+    {
+      "id": "adidas-runner",
+      "description": "Adidas Response Runner",
+      "imageUrl": "https://picsum.photos/seed/adidasrun/600/600",
+      "imageHint": "adidas shoes"
+    },
+    {
+      "id": "atomic-habits",
+      "description": "Atomic Habits Book Cover",
+      "imageUrl": "https://picsum.photos/seed/atomichabits/600/600",
+      "imageHint": "atomic habits"
     }
   ]
 }
