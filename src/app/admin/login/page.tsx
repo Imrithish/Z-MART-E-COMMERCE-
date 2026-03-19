@@ -1,16 +1,18 @@
+
 "use client"
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Store, Loader2, Info, ArrowRight } from "lucide-react";
+import { Store, Loader2, Info, ArrowRight, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/firebase";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -20,12 +22,14 @@ export default function AdminLoginPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [email, setEmail] = useState("m.rithish1882007@gmail.com");
   const [password, setPassword] = useState("Rithish.m@2");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!auth) return;
     
     setIsLoading(true);
+    setErrorMessage(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
@@ -34,10 +38,20 @@ export default function AdminLoginPage() {
       });
       router.push('/admin/dashboard');
     } catch (error: any) {
+      console.error("Login Error:", error.code, error.message);
+      let message = "Invalid credentials. Please check your password and try again.";
+      
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        message = "User not found or incorrect credentials. Have you created this user in the Firebase Console?";
+      } else if (error.code === 'auth/operation-not-allowed') {
+        message = "Email/Password sign-in is not enabled in your Firebase Console.";
+      }
+
+      setErrorMessage(message);
       toast({
         variant: "destructive",
         title: "Authentication Failed",
-        description: "Invalid credentials. Please check your password and try again.",
+        description: message,
       });
     } finally {
       setIsLoading(false);
@@ -47,6 +61,7 @@ export default function AdminLoginPage() {
   const handleGoogleLogin = async () => {
     if (!auth) return;
     setIsGoogleLoading(true);
+    setErrorMessage(null);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
@@ -56,6 +71,7 @@ export default function AdminLoginPage() {
       });
       router.push('/admin/dashboard');
     } catch (error: any) {
+      setErrorMessage(error.message || "An error occurred during Google sign-in.");
       toast({
         variant: "destructive",
         title: "Google Authentication Failed",
@@ -87,6 +103,16 @@ export default function AdminLoginPage() {
             </div>
           </CardHeader>
           <CardContent className="px-8 pb-10">
+            {errorMessage && (
+              <Alert variant="destructive" className="mb-6 rounded-2xl bg-red-50 border-red-100">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="font-black uppercase tracking-widest text-[10px]">Security Alert</AlertTitle>
+                <AlertDescription className="text-xs font-bold leading-relaxed">
+                  {errorMessage}
+                </AlertDescription>
+              </Alert>
+            )}
+
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-1">Admin Email</Label>
@@ -150,13 +176,6 @@ export default function AdminLoginPage() {
               )}
               {isGoogleLoading ? "Connecting..." : "Continue with Google"}
             </Button>
-
-            <div className="mt-10 pt-8 border-t border-slate-200 text-center">
-              <p className="text-sm font-medium text-slate-600">
-                Authorized access only. By logging in, you agree to the{" "}
-                <Link href="#" className="text-primary font-black hover:underline uppercase tracking-widest text-[10px]">Merchant Terms</Link>
-              </p>
-            </div>
           </CardContent>
         </Card>
         
