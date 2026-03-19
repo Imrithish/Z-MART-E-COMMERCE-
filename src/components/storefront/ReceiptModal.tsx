@@ -1,10 +1,10 @@
 
 "use client"
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { format, addDays } from "date-fns";
-import { Package, MapPin, CreditCard, Calendar, ShoppingBag, QrCode } from "lucide-react";
+import { Package, MapPin, CreditCard, Calendar, ShoppingBag, QrCode, X } from "lucide-react";
 import Image from "next/image";
 
 interface ReceiptModalProps {
@@ -29,7 +29,7 @@ export function ReceiptModal({ order, isOpen, onClose }: ReceiptModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[420px] p-0 bg-transparent border-none shadow-none flex items-center justify-center overflow-visible [&>button]:hidden">
+      <DialogContent className="max-w-[420px] p-0 bg-transparent border-none shadow-none flex items-center justify-center overflow-visible">
         <DialogHeader className="sr-only">
           <DialogTitle>Order Receipt - #{order.id?.slice(-8).toUpperCase()}</DialogTitle>
         </DialogHeader>
@@ -41,6 +41,12 @@ export function ReceiptModal({ order, isOpen, onClose }: ReceiptModalProps) {
                <div className="absolute top-0 left-0 w-full h-full bg-primary/5 opacity-50" />
                <h2 className="text-3xl font-black text-white tracking-tighter uppercase relative z-10">Z-MART</h2>
                <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] relative z-10">Official Receipt</p>
+               
+               {/* Close Button Inside Header */}
+               <DialogClose className="absolute right-6 top-6 text-white/40 hover:text-white transition-colors outline-none">
+                 <X className="h-6 w-6" />
+                 <span className="sr-only">Close</span>
+               </DialogClose>
             </div>
 
             {/* Receipt Body */}
