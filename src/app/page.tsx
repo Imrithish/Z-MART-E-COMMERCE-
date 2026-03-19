@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
@@ -101,16 +102,17 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1 pb-24">
-        <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden bg-slate-900 flex items-center justify-center text-center p-8">
+        {/* Simplified Hero */}
+        <section className="relative w-full h-[250px] md:h-[350px] overflow-hidden bg-slate-900 flex items-center justify-center text-center p-8">
           <div className="space-y-4 max-w-2xl relative z-10">
-            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase">Premium Marketplace</h1>
-            <p className="text-slate-400 font-medium text-lg">Curated technology and lifestyle products for the modern world.</p>
+            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">Premium Marketplace</h1>
+            <p className="text-slate-400 font-medium text-lg">Curated technology and lifestyle products.</p>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-100/100" />
         </section>
 
-        <section className="max-w-[1450px] mx-auto px-4 md:px-8 relative -mt-[100px] md:-mt-[150px] z-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {/* Rectangular Category Boxes */}
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", seed: "tech" },
               { title: "Home & Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", seed: "kitchen" },
@@ -118,11 +120,11 @@ export default function Home() {
               { title: "New Arrivals", hint: "new drop", href: "/products", seed: "new" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
-                <Card className="bg-white p-6 rounded-none shadow-sm flex flex-col h-full group cursor-pointer hover:shadow-2xl transition-all duration-500 border-none">
-                  <h3 className="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">{cat.title}</h3>
-                  <div className="relative aspect-square w-full bg-slate-50 rounded-lg overflow-hidden mb-6">
+                <Card className="bg-white p-6 rounded-none shadow-sm flex flex-col h-full group cursor-pointer hover:shadow-xl transition-all duration-300 border-none">
+                  <h3 className="text-lg font-black text-slate-900 mb-4 uppercase tracking-tight">{cat.title}</h3>
+                  <div className="relative aspect-video w-full bg-slate-50 rounded-lg overflow-hidden mb-6">
                     <Image 
-                      src={`https://picsum.photos/seed/${cat.seed}/600/600`}
+                      src={`https://picsum.photos/seed/${cat.seed}/600/400`}
                       alt={cat.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -130,7 +132,7 @@ export default function Home() {
                     />
                   </div>
                   <span className="text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto flex items-center gap-2">
-                    Shop Now <ArrowRight className="h-3 w-3" />
+                    Explore Now <ArrowRight className="h-3 w-3" />
                   </span>
                 </Card>
               </Link>
@@ -233,13 +235,6 @@ export default function Home() {
                 </div>
               ))}
             </div>
-
-            {newArrivals.length === 0 && (
-              <div className="text-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-200 mt-6">
-                <ShoppingBag className="h-12 w-12 text-slate-200 mx-auto mb-4" />
-                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Our catalog is coming soon</h3>
-              </div>
-            )}
           </Card>
         </section>
       </main>
@@ -249,7 +244,7 @@ export default function Home() {
           <div className="col-span-1 md:col-span-2 space-y-6">
             <h2 className="text-3xl font-black tracking-tighter">Z-MART</h2>
             <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-md">
-              The premium gateway to modern commerce. We curate technology and lifestyle products that define the next generation of digital shopping.
+              The premium gateway to modern commerce.
             </p>
           </div>
           <div className="space-y-4">
@@ -259,11 +254,10 @@ export default function Home() {
               <li><Link href="/products" className="hover:text-primary transition-colors">Digital Catalog</Link></li>
               <li><Link href="/account" className="hover:text-primary transition-colors">Member Dashboard</Link></li>
               <li><Link href="/cart" className="hover:text-primary transition-colors">Shopping Basket</Link></li>
-              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Merchant Hub</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
-            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Support Core</h4>
+            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Support</h4>
             <ul className="space-y-2 text-xs font-medium text-slate-400">
               <li><Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Terms of Usage</Link></li>
@@ -272,7 +266,7 @@ export default function Home() {
           </div>
         </div>
         <div className="max-w-[1450px] mx-auto px-8 mt-16 pt-8 border-t border-white/5 text-center">
-          <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2024 Z-MART GLOBAL OPERATIONS • SECURE ENTERPRISE SHOPPING</p>
+          <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2024 Z-MART GLOBAL OPERATIONS</p>
         </div>
       </footer>
 

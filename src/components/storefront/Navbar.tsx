@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from "next/link";
@@ -86,18 +87,18 @@ export function Navbar() {
               <SelectTrigger className="h-full border-none bg-slate-50 focus:ring-0 text-[10px] text-slate-600 px-4 gap-2 rounded-none shadow-none font-black uppercase tracking-widest min-w-[140px]">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100 shadow-2xl p-2 max-h-[400px]">
-                <SelectItem value="all" className="text-[10px] py-2 cursor-pointer font-black uppercase tracking-widest rounded-lg">All Categories</SelectItem>
+              <SelectContent className="rounded-none border-slate-100 shadow-2xl p-4 w-[280px] max-h-[500px]">
+                <SelectItem value="all" className="text-[10px] py-2 cursor-pointer font-black uppercase tracking-widest rounded-sm mb-2 bg-slate-100">All Categories</SelectItem>
                 {CATEGORY_STRUCTURE.map((group) => (
                   <SelectGroup key={group.label}>
-                    <SelectLabel className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] px-3 pt-4 pb-1">
+                    <SelectLabel className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] px-3 pt-4 pb-1 border-b border-slate-100 mb-2">
                       {group.label}
                     </SelectLabel>
                     {group.items.map((item) => (
                       <SelectItem 
                         key={item} 
                         value={item} 
-                        className="text-[10px] py-2 cursor-pointer font-black uppercase tracking-widest rounded-lg"
+                        className="text-[10px] py-1.5 cursor-pointer font-black uppercase tracking-widest rounded-sm hover:bg-slate-50 transition-colors"
                       >
                         {item}
                       </SelectItem>
