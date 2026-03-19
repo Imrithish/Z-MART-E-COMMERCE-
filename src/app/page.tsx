@@ -2,7 +2,7 @@
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
-import { Star, CheckCircle2, Loader2, ShieldCheck, Truck, RotateCcw, ShoppingBag } from "lucide-react";
+import { Star, CheckCircle2, Loader2, ShieldCheck, Truck, RotateCcw, ShoppingBag, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -31,15 +31,13 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch the latest 20 products from Firestore
   const productsQuery = useMemo(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(20));
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(24));
   }, [db]);
 
   const { data: products, loading } = useCollection(productsQuery);
 
-  // Derived collections
   const deals = useMemo(() => products?.filter((p: any) => p.isDeal) || [], [products]);
   const newArrivals = useMemo(() => products || [], [products]);
 
@@ -80,9 +78,9 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 font-black text-slate-400 uppercase tracking-widest text-[10px]">Initializing Storefront...</p>
+        <p className="mt-4 font-black text-slate-400 uppercase tracking-widest text-[10px]">Syncing Premium Catalog...</p>
       </div>
     );
   }
@@ -91,54 +89,43 @@ export default function Home() {
     <div className="min-h-screen bg-slate-100 flex flex-col font-body">
       <Navbar />
 
-      <main className="flex-1">
-        {/* Simple Hero Section */}
-        <section className="relative w-full h-[500px] overflow-hidden bg-slate-900">
+      <main className="flex-1 pb-24">
+        {/* Amazon-Style Hero Banner */}
+        <section className="relative w-full h-[400px] md:h-[600px] overflow-hidden bg-slate-900">
           <Image 
-            src="https://picsum.photos/seed/zmart-hero/1920/1080"
+            src="https://picsum.photos/seed/zmart-hero-2/1920/1080"
             alt="Hero Banner"
             fill
-            className="object-cover opacity-60"
+            className="object-cover opacity-80"
             priority
-            data-ai-hint="minimalist setup"
+            data-ai-hint="luxury office"
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-4 uppercase">
-              The Future of <span className="text-primary">Commerce</span>
-            </h1>
-            <p className="text-slate-300 max-w-lg text-sm md:text-base font-medium mb-8">
-              Experience the absolute peak of modern shopping. Curated electronics, premium fashion, and home essentials.
-            </p>
-          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-100/100" />
         </section>
 
-        {/* Shop by Category Grid */}
-        <section className="max-w-[1400px] mx-auto px-6 py-12">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-slate-900 uppercase tracking-widest">Shop by Category</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Overlapping Category Grid (Amazon Style) */}
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 relative -mt-[150px] md:-mt-[350px] z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
-              { title: "Electronics", hint: "modern electronics", href: "/products?category=Electronics", desc: "Latest gadgets & tech" },
-              { title: "Home & Kitchen", hint: "modern kitchen", href: "/products?category=Home & Kitchen", desc: "Upgrade your living space" },
-              { title: "Fashion", hint: "luxury fashion", href: "/products?category=Fashion", desc: "Trendsetting styles" },
-              { title: "New Arrivals", hint: "premium boxes", href: "/products", desc: "Just added to our catalog" }
+              { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", desc: "Latest gadgets & high-end computing" },
+              { title: "Home & Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", desc: "Premium living essentials" },
+              { title: "Luxury Fashion", hint: "model pose", href: "/products?category=Fashion", desc: "Trendsetting global collections" },
+              { title: "New Arrivals", hint: "unboxing package", href: "/products", desc: "Freshly dropped inventory" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
-                <Card className="bg-white p-6 rounded-3xl shadow-sm flex flex-col h-full group cursor-pointer hover:shadow-xl transition-all duration-500 border-none">
-                  <div className="relative aspect-square w-full bg-slate-50 rounded-2xl overflow-hidden mb-6">
+                <Card className="bg-white p-6 rounded-none shadow-sm flex flex-col h-full group cursor-pointer hover:shadow-2xl transition-all duration-500 border-none">
+                  <h3 className="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">{cat.title}</h3>
+                  <div className="relative aspect-square w-full bg-slate-50 rounded-lg overflow-hidden mb-6">
                     <Image 
-                      src={`https://picsum.photos/seed/cat-grid-${idx}/600/600`}
+                      src={`https://picsum.photos/seed/cat-amazon-${idx}/600/600`}
                       alt={cat.title}
                       fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
                       data-ai-hint={cat.hint}
                     />
                   </div>
-                  <h3 className="text-lg font-black text-slate-900 mb-1 uppercase tracking-tight">{cat.title}</h3>
-                  <p className="text-xs text-slate-500 font-medium mb-4">{cat.desc}</p>
-                  <span className="text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto">
-                    Explore Now
+                  <span className="text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto flex items-center gap-2">
+                    Shop Now <ArrowRight className="h-3 w-3" />
                   </span>
                 </Card>
               </Link>
@@ -146,10 +133,59 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Flash Deals Section */}
+        {deals.length > 0 && (
+          <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-12">
+            <Card className="bg-white rounded-none border-none shadow-sm p-8">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Today's Flash Deals</h2>
+                  <Link href="/products" className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">
+                    See all offers
+                  </Link>
+                </div>
+              </div>
+
+              <div className="flex gap-6 overflow-x-auto no-scrollbar pb-4">
+                {deals.map((product: any) => (
+                  <div 
+                    key={product.id} 
+                    className="group cursor-pointer min-w-[220px] max-w-[220px] flex flex-col"
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <div className="relative aspect-square bg-slate-50 rounded-xl overflow-hidden p-6 mb-4">
+                      <Image 
+                        src={product.imageUrl} 
+                        alt={product.name} 
+                        fill 
+                        className="object-contain transition-transform duration-500 group-hover:scale-110" 
+                      />
+                      <Badge className="absolute top-2 left-2 bg-red-600 text-white font-black uppercase text-[8px] tracking-widest px-2 py-0.5 border-none rounded-sm">
+                        Deal
+                      </Badge>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-black text-slate-900">{formatCurrency(product.price)}</span>
+                        {product.originalPrice && (
+                          <span className="text-[10px] text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
+                        )}
+                      </div>
+                      <h3 className="text-xs font-bold text-slate-700 line-clamp-2 leading-snug uppercase tracking-tight">
+                        {product.name}
+                      </h3>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </section>
+        )}
+
         {/* Trust Bar */}
-        <section className="max-w-[1400px] mx-auto px-6 py-6">
-           <div className="bg-white p-8 rounded-[2rem] grid grid-cols-1 md:grid-cols-3 gap-8 shadow-sm">
-              <div className="flex items-center gap-5">
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-4">
+           <div className="bg-white p-8 rounded-none grid grid-cols-1 md:grid-cols-3 gap-8 shadow-sm">
+              <div className="flex items-center gap-5 border-r border-slate-100 last:border-0">
                 <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900">
                   <Truck className="h-6 w-6" />
                 </div>
@@ -158,7 +194,7 @@ export default function Home() {
                   <p className="text-[10px] text-slate-500 font-bold uppercase">Free Express over ₹2000</p>
                 </div>
               </div>
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-5 border-r border-slate-100 last:border-0">
                 <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900">
                   <RotateCcw className="h-6 w-6" />
                 </div>
@@ -167,150 +203,106 @@ export default function Home() {
                   <p className="text-[10px] text-slate-500 font-bold uppercase">Hassle-free exchanges</p>
                 </div>
               </div>
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-5 last:border-0">
                 <div className="h-12 w-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-900">
                   <ShieldCheck className="h-6 w-6" />
                 </div>
                 <div>
-                  <h4 className="font-black text-xs text-slate-900 uppercase tracking-widest">Secure Payments</h4>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase">100% Protected encryption</p>
+                  <h4 className="font-black text-xs text-slate-900 uppercase tracking-widest">Verified Seller</h4>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase">100% Genuine Products</p>
                 </div>
               </div>
            </div>
         </section>
 
-        {/* Flash Deals Row */}
-        {deals.length > 0 && (
-          <section className="max-w-[1400px] mx-auto px-6 py-12">
+        {/* Freshly Dropped Grid */}
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-12">
+          <Card className="bg-white rounded-none border-none shadow-sm p-8">
             <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Flash Deals</h2>
-                <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">Limited time offers</p>
+              <div className="space-y-1">
+                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Freshly Dropped</h2>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Newest additions to our inventory</p>
               </div>
               <Link href="/products" className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest">
-                See all deals
+                Browse Full Catalog
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {deals.slice(0, 4).map((product: any) => (
-                <Card 
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+              {newArrivals.slice(0, 12).map((product: any) => (
+                <div 
                   key={product.id} 
-                  className="group cursor-pointer flex flex-col bg-white rounded-[2rem] overflow-hidden border-none shadow-sm hover:shadow-xl transition-all duration-500"
+                  className="group cursor-pointer flex flex-col"
                   onClick={() => handleProductClick(product)}
                 >
-                  <div className="relative aspect-square bg-slate-50 overflow-hidden p-8">
+                  <div className="relative aspect-square bg-slate-50 rounded-lg overflow-hidden p-6 mb-4 group-hover:shadow-md transition-all">
                     <Image 
                       src={product.imageUrl} 
                       alt={product.name} 
                       fill 
-                      className="object-contain transition-transform duration-700 group-hover:scale-110" 
+                      className="object-contain transition-transform duration-500 group-hover:scale-105" 
                     />
-                    <Badge className="absolute top-4 left-4 bg-red-600 text-white font-black uppercase text-[8px] tracking-widest px-3 py-1 border-none rounded-full">
-                      Deal
-                    </Badge>
                   </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-sm font-black text-slate-900 line-clamp-1 mb-2 group-hover:text-primary transition-colors uppercase tracking-tight">
+                  <div className="space-y-1 flex-1">
+                    <p className="text-[9px] font-black text-primary uppercase tracking-widest">{product.category}</p>
+                    <h3 className="text-[11px] font-bold text-slate-900 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors">
                       {product.name}
                     </h3>
-                    <div className="flex items-baseline gap-2 mt-auto">
-                      <span className="text-xl font-black text-slate-900">{formatCurrency(product.price)}</span>
-                      {product.originalPrice && (
-                        <span className="text-xs text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
-                      )}
-                    </div>
                   </div>
-                </Card>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-md font-black text-slate-900">{formatCurrency(product.price)}</span>
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => handleAddToCart(e, product)}
+                      className="h-8 w-8 rounded-lg hover:bg-primary/10 hover:text-primary transition-all"
+                    >
+                      <ShoppingBag className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               ))}
             </div>
-          </section>
-        )}
 
-        {/* Just Dropped Row */}
-        <section className="max-w-[1400px] mx-auto px-6 py-12 pb-24">
-          <div className="flex items-center justify-between mb-8">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Just Dropped</h2>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Freshly added items</p>
-            </div>
-            <Link href="/products" className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest">
-              View catalog
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {newArrivals.slice(0, 8).map((product: any) => (
-              <div 
-                key={product.id} 
-                className="group cursor-pointer flex flex-col"
-                onClick={() => handleProductClick(product)}
-              >
-                <div className="relative aspect-square bg-white rounded-[2rem] shadow-sm overflow-hidden p-8 mb-4 border border-slate-50 group-hover:shadow-xl transition-all duration-500">
-                  <Image 
-                    src={product.imageUrl} 
-                    alt={product.name} 
-                    fill 
-                    className="object-contain transition-transform duration-700 group-hover:scale-110" 
-                  />
-                </div>
-                <div className="space-y-1 flex-1 px-2">
-                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{product.category}</p>
-                  <h3 className="text-sm font-black text-slate-900 line-clamp-2 group-hover:text-primary transition-colors uppercase tracking-tight leading-snug">
-                    {product.name}
-                  </h3>
-                </div>
-                <div className="flex items-center justify-between mt-4 px-2">
-                  <span className="text-xl font-black text-slate-900">{formatCurrency(product.price)}</span>
-                  <Button 
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => handleAddToCart(e, product)}
-                    className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all"
-                  >
-                    <ShoppingBag className="h-5 w-5" />
-                  </Button>
-                </div>
+            {newArrivals.length === 0 && (
+              <div className="text-center py-20 bg-slate-50 rounded-xl border border-dashed border-slate-200 mt-6">
+                <ShoppingBag className="h-12 w-12 text-slate-200 mx-auto mb-4" />
+                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Our catalog is coming soon</h3>
               </div>
-            ))}
-          </div>
-
-          {newArrivals.length === 0 && (
-            <div className="text-center py-20 bg-white rounded-[2rem] border border-dashed border-slate-200 mt-6 shadow-sm">
-              <ShoppingBag className="h-12 w-12 text-slate-100 mx-auto mb-4" />
-              <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Our catalog is coming soon</h3>
-            </div>
-          )}
+            )}
+          </Card>
         </section>
       </main>
 
+      {/* Global Footer */}
       <footer className="bg-slate-900 text-white py-20 border-t border-white/5">
-        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="max-w-[1450px] mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2 space-y-6">
             <h2 className="text-3xl font-black tracking-tighter">Z-MART</h2>
             <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-md">
-              The architecture of modern commerce. We curate technology that defines generations.
+              The premium gateway to modern commerce. We curate technology and lifestyle products that define the next generation of digital shopping.
             </p>
           </div>
           <div className="space-y-4">
-            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Navigation</h4>
+            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Storefront</h4>
             <ul className="space-y-2 text-xs font-medium text-slate-400">
-              <li><Link href="/products" className="hover:text-primary">Catalog Interface</Link></li>
-              <li><Link href="/account" className="hover:text-primary">Member Orders</Link></li>
-              <li><Link href="/admin/login" className="hover:text-primary">Merchant Hub</Link></li>
+              <li><Link href="/products" className="hover:text-primary transition-colors">Digital Catalog</Link></li>
+              <li><Link href="/account" className="hover:text-primary transition-colors">Member Dashboard</Link></li>
+              <li><Link href="/cart" className="hover:text-primary transition-colors">Shopping Basket</Link></li>
+              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Merchant Hub</Link></li>
             </ul>
           </div>
           <div className="space-y-4">
-            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Legal Core</h4>
+            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Support Core</h4>
             <ul className="space-y-2 text-xs font-medium text-slate-400">
-              <li><Link href="#" className="hover:text-primary">Privacy Protocol</Link></li>
-              <li><Link href="#" className="hover:text-primary">Usage Terms</Link></li>
-              <li><Link href="#" className="hover:text-primary">Help Terminal</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Terms of Usage</Link></li>
+              <li><Link href="#" className="hover:text-primary transition-colors">Help Terminal</Link></li>
             </ul>
           </div>
         </div>
-        <div className="max-w-[1400px] mx-auto px-6 mt-16 pt-8 border-t border-white/5 text-center">
-          <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2024 Z-MART GLOBAL OPERATIONS • ALL RIGHTS RESERVED</p>
+        <div className="max-w-[1450px] mx-auto px-8 mt-16 pt-8 border-t border-white/5 text-center">
+          <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">© 2024 Z-MART GLOBAL OPERATIONS • SECURE ENTERPRISE SHOPPING</p>
         </div>
       </footer>
 
