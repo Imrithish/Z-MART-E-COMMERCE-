@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CATEGORIES = [
   {
@@ -29,16 +30,39 @@ const CATEGORIES = [
   }
 ];
 
+const SEARCH_CATEGORIES = [
+  "All Categories",
+  "Electronics",
+  "Fashion",
+  "Home & Kitchen",
+  "Beauty",
+  "Books",
+  "Sports",
+  "Devices"
+];
+
 export function Navbar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const { totalItems } = useCart();
   const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    let url = "/products?";
+    const params = new URLSearchParams();
+    
     if (searchQuery.trim()) {
-      router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+      params.append("q", searchQuery.trim());
+    }
+    
+    if (selectedCategory !== "All Categories") {
+      params.append("category", selectedCategory);
+    }
+
+    if (params.toString()) {
+      router.push(`/products?${params.toString()}`);
     }
   };
 
@@ -66,18 +90,30 @@ export function Navbar() {
           onSubmit={handleSearch}
           className={`flex-1 flex items-center h-10 rounded-md overflow-hidden bg-white ${isSearchFocused ? 'ring-2 ring-[#ff9900]' : ''}`}
         >
-          <button type="button" className="h-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-3 border-r flex items-center gap-1">
-            All <ChevronDown className="h-3 w-3" />
-          </button>
+          <div className="h-full bg-gray-100 hover:bg-gray-200 border-r transition-colors">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="h-full border-none bg-transparent focus:ring-0 text-[11px] text-gray-700 px-3 gap-1 rounded-none shadow-none w-auto max-w-[120px]">
+                <SelectValue placeholder="All" />
+              </SelectTrigger>
+              <SelectContent className="rounded-sm border-gray-200 shadow-xl">
+                {SEARCH_CATEGORIES.map((cat) => (
+                  <SelectItem key={cat} value={cat} className="text-xs py-2 cursor-pointer">
+                    {cat}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
           <Input 
             placeholder="Search Z-Mart" 
-            className="flex-1 border-none focus-visible:ring-0 text-black placeholder:text-gray-500 h-full rounded-none"
+            className="flex-1 border-none focus-visible:ring-0 text-black placeholder:text-gray-500 h-full rounded-none px-4"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setIsSearchFocused(false)}
           />
-          <button type="submit" className="h-full bg-[#febd69] hover:bg-[#f3a847] px-3 transition-colors">
+          <button type="submit" className="h-full bg-[#febd69] hover:bg-[#f3a847] px-4 transition-colors shrink-0">
             <Search className="h-6 w-6 text-[#131921]" />
           </button>
         </form>
