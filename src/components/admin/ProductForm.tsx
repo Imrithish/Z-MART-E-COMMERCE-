@@ -20,7 +20,7 @@ import { aiProductImageGenerator } from "@/ai/flows/ai-product-image-generator";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useFirestore } from "@/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, addDoc, updateDoc, doc, serverTimestamp } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 
@@ -55,15 +55,15 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const [isGeneratingImg, setIsGeneratingImg] = useState(false);
   
-  const [formData, setFormData] = useState(initialData || {
-    name: '',
-    description: '',
-    price: '',
-    originalPrice: '',
-    category: '',
-    stock: '',
-    features: '',
-    imageUrl: '',
+  const [formData, setFormData] = useState({
+    name: initialData?.name || '',
+    description: initialData?.description || '',
+    price: initialData?.price?.toString() || '',
+    originalPrice: initialData?.originalPrice?.toString() || '',
+    category: initialData?.category || '',
+    stock: initialData?.stock?.toString() || '',
+    features: Array.isArray(initialData?.features) ? initialData.features.join(', ') : (initialData?.features || ''),
+    imageUrl: initialData?.imageUrl || '',
   });
 
   const generateDescription = async () => {
@@ -166,27 +166,50 @@ export function ProductForm({ initialData }: { initialData?: any }) {
       stock: parseInt(formData.stock),
       features: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
       imageUrl: formData.imageUrl || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000000)}/600/600`,
-      rating: 4.5,
-      reviews: Math.floor(Math.random() * 500),
-      isDeal: true,
-      createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     };
 
-    addDoc(collection(db, 'products'), productData)
-      .then(() => {
-        toast({ title: "Product Added", description: "Your item is now live in the store." });
-        router.push('/admin/products');
-      })
-      .catch(async (error) => {
-        const permissionError = new FirestorePermissionError({
-          path: 'products',
-          operation: 'create',
-          requestResourceData: productData,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-      })
-      .finally(() => setIsLoading(false));
+    if (initialData?.id) {
+      // Update existing product
+      updateDoc(doc(db, 'products', initialData.id), productData)
+        .then(() => {
+          toast({ title: "Product Updated", description: "Your changes have been saved." });
+          router.push('/admin/products');
+        })
+        .catch(async (error) => {
+          const permissionError = new FirestorePermissionError({
+            path: `products/${initialData.id}`,
+            operation: 'update',
+            requestResourceData: productData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      // Create new product
+      const newProductData = {
+        ...productData,
+        rating: 4.5,
+        reviews: Math.floor(Math.random() * 500),
+        isDeal: true,
+        createdAt: serverTimestamp(),
+      };
+
+      addDoc(collection(db, 'products'), newProductData)
+        .then(() => {
+          toast({ title: "Product Added", description: "Your item is now live in the store." });
+          router.push('/admin/products');
+        })
+        .catch(async (error) => {
+          const permissionError = new FirestorePermissionError({
+            path: 'products',
+            operation: 'create',
+            requestResourceData: newProductData,
+          });
+          errorEmitter.emit('permission-error', permissionError);
+        })
+        .finally(() => setIsLoading(false));
+    }
   };
 
   const fieldLabelClass = "text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 inline-block";
@@ -352,7 +375,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
         <Button variant="ghost" type="button" onClick={() => router.back()} className="text-slate-400 font-black uppercase tracking-widest hover:bg-slate-50 rounded-xl px-10 h-14 order-2 md:order-1">Cancel</Button>
         <Button type="submit" disabled={isLoading} className="gap-3 px-12 h-14 bg-slate-900 hover:bg-primary font-black uppercase tracking-widest rounded-2xl shadow-2xl shadow-slate-900/10 order-1 md:order-2 active:scale-95 transition-all">
           {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
-          Add Product
+          {initialData?.id ? "Update Product" : "Add Product"}
         </Button>
       </div>
     </form>

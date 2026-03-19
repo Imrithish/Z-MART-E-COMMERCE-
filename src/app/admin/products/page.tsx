@@ -1,4 +1,3 @@
-
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -48,6 +47,8 @@ export default function AdminProducts() {
   const handleDelete = (productId: string) => {
     if (!db) return;
     
+    if (!confirm("Are you sure you want to remove this item from the store?")) return;
+
     deleteDoc(doc(db, 'products', productId))
       .then(() => {
         toast({ title: "Product Deleted", description: "The item has been removed from the products list." });
@@ -78,14 +79,14 @@ export default function AdminProducts() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-4 mb-2">
-              <h1 className="text-4xl font-black tracking-tight text-slate-900">Products</h1>
+              <h1 className="text-4xl font-black tracking-tight text-slate-900">Inventory</h1>
               {!dataLoading && products && (
                 <Badge variant="outline" className="h-8 px-4 rounded-xl border-slate-200 text-slate-500 font-black text-[10px] uppercase tracking-widest bg-white">
-                  {products.length} Total
+                  {products.length} Total Items
                 </Badge>
               )}
             </div>
-            <p className="text-slate-500 text-lg font-medium">Manage your products, stock, and descriptions.</p>
+            <p className="text-slate-500 text-lg font-medium">Manage your products, stock levels, and store listings.</p>
           </div>
           <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest text-xs transition-all active:scale-95">
             <Link href="/admin/products/new" className="text-white flex items-center">
@@ -98,7 +99,7 @@ export default function AdminProducts() {
           <CardHeader className="flex flex-col md:flex-row items-center justify-between p-8 gap-4 border-b border-slate-50">
             <div className="relative flex-1 max-w-sm w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input placeholder="Search products..." className="pl-11 bg-slate-50 border-none rounded-xl h-12 font-bold" />
+              <Input placeholder="Search catalog..." className="pl-11 bg-slate-50 border-none rounded-xl h-12 font-bold" />
             </div>
             <Button variant="outline" className="gap-2 h-12 rounded-xl px-6 font-black uppercase tracking-widest text-[10px] border-slate-200">
               <Filter className="h-4 w-4" /> Filter Category
@@ -115,10 +116,10 @@ export default function AdminProducts() {
                 <TableHeader className="bg-slate-50/50">
                   <TableRow className="hover:bg-transparent border-none">
                     <TableHead className="w-[100px] px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Image</TableHead>
-                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Product</TableHead>
+                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Product Name</TableHead>
                     <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Category</TableHead>
                     <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right">Price</TableHead>
-                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Stock</TableHead>
+                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">In Stock</TableHead>
                     <TableHead className="text-right px-8 font-black text-slate-400 uppercase text-[10px] tracking-widest">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -141,13 +142,15 @@ export default function AdminProducts() {
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center">
                           <span className="font-black text-slate-900">{product.stock}</span>
-                          <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${product.stock > 10 ? 'text-green-500' : 'text-orange-500'}`}>Units Available</span>
+                          <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${product.stock > 10 ? 'text-green-500' : 'text-orange-500'}`}>Units</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-right px-8">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
-                            <Edit2 className="h-4 w-4" />
+                          <Button asChild variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
+                            <Link href={`/admin/products/${product.id}`}>
+                              <Edit2 className="h-4 w-4" />
+                            </Link>
                           </Button>
                           <Button 
                             variant="ghost" 
@@ -169,7 +172,7 @@ export default function AdminProducts() {
                    <Plus className="h-10 w-10 text-slate-200" />
                 </div>
                 <h3 className="font-black text-2xl text-slate-900 uppercase tracking-tight">No Products Found</h3>
-                <p className="text-slate-500 mb-10 font-medium">Start adding your first product to your store.</p>
+                <p className="text-slate-500 mb-10 font-medium">Your inventory is currently empty.</p>
                 <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest">
                   <Link href="/admin/products/new" className="text-white">Create First Listing</Link>
                 </Button>
