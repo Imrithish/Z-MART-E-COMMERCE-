@@ -205,7 +205,10 @@ export default function CartPage() {
         )}
       </main>
 
-      <footer className="mt-auto bg-white border-t border-slate-100 py-10 text-center">
+      <footer className="mt-auto bg-white border-t border-slate-100 py-10 text-center space-y-4">
+        <div className="flex justify-center gap-6">
+          <Link href="/admin/login" className="text-[10px] font-black text-slate-300 hover:text-primary uppercase tracking-widest transition-colors">Merchant Portal</Link>
+        </div>
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">© 2024 Z-MART.in • All Rights Reserved</p>
       </footer>
     </div>

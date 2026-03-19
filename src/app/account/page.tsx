@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
@@ -35,7 +36,6 @@ export default function UserDashboard() {
 
   const userOrdersQuery = useMemo(() => {
     if (!db || !user?.email) return null;
-    // Removed orderBy to avoid requiring a composite index
     return query(
       collection(db, 'orders'),
       where('customerEmail', '==', user.email)
@@ -44,7 +44,6 @@ export default function UserDashboard() {
 
   const { data: rawOrders, loading: ordersLoading } = useCollection(userOrdersQuery);
 
-  // Sort orders in-memory to avoid index requirement
   const orders = useMemo(() => {
     if (!rawOrders) return [];
     return [...rawOrders].sort((a: any, b: any) => {
@@ -81,7 +80,6 @@ export default function UserDashboard() {
           <p className="text-slate-500 font-medium">Manage your profile, orders, and preferences.</p>
         </header>
 
-        {/* Quick Links Grid */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {accountCards.map((card, idx) => (
             <Link key={idx} href={card.href}>
@@ -100,7 +98,6 @@ export default function UserDashboard() {
           ))}
         </section>
 
-        {/* Orders Section */}
         <section id="orders" className="space-y-6 pt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-black text-slate-900 uppercase tracking-widest">Recent Orders</h2>
@@ -171,11 +168,12 @@ export default function UserDashboard() {
         </section>
       </main>
 
-      <footer className="mt-auto bg-white border-t border-slate-200 py-10 text-center">
-        <div className="flex justify-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+      <footer className="mt-auto bg-white border-t border-slate-200 py-10 text-center space-y-4">
+        <div className="flex justify-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
           <Link href="#" className="hover:text-primary transition-colors">Conditions of Use</Link>
           <Link href="#" className="hover:text-primary transition-colors">Privacy Notice</Link>
           <Link href="#" className="hover:text-primary transition-colors">Help</Link>
+          <Link href="/admin/login" className="text-slate-200 hover:text-primary transition-colors">Merchant Portal</Link>
         </div>
         <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">© 2024 Z-MART.in • Your Premium Marketplace</p>
       </footer>

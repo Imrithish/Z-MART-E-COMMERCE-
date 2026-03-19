@@ -113,7 +113,7 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1 pb-24">
-        {/* Search Bar Section - Placed at the top of Home */}
+        {/* Search Bar Section */}
         <section className="bg-slate-900 py-10 px-4 md:px-8 border-b border-white/5">
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-2 mb-6">
@@ -287,6 +287,7 @@ export default function Home() {
               <li><Link href="#" className="hover:text-primary transition-colors">Privacy Protocol</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Terms of Usage</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Help Terminal</Link></li>
+              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Merchant Portal</Link></li>
             </ul>
           </div>
         </div>
