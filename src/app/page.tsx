@@ -95,27 +95,27 @@ export default function Home() {
           </div>
           
           {/* Hero Navigation buttons */}
-          <button className="absolute left-0 top-0 h-[250px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all">
+          <button className="absolute left-0 top-0 h-[300px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all z-20">
             <ChevronLeft className="h-12 w-12 text-black/50" />
           </button>
-          <button className="absolute right-0 top-0 h-[250px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all">
+          <button className="absolute right-0 top-0 h-[300px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all z-20">
             <ChevronRight className="h-12 w-12 text-black/50" />
           </button>
         </section>
 
         {/* Main Content Grid - Overlapping the Hero */}
-        <div className="max-w-[1500px] mx-auto px-4 -mt-[350px] relative z-10">
+        <div className="max-w-[1500px] mx-auto px-4 -mt-[320px] relative z-30 pb-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {amazonGridItems.map((gridItem, idx) => (
-              <div key={idx} className="amazon-card flex flex-col h-full">
-                <h2 className="text-xl font-bold mb-3">{gridItem.title}</h2>
+              <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px]">
+                <h2 className="text-xl font-bold mb-3 text-slate-900">{gridItem.title}</h2>
                 
                 <div className="flex-1">
                   {gridItem.type === 'quad' && (
                     <div className="grid grid-cols-2 gap-3">
                       {gridItem.items?.map((sub, i) => (
                         <div key={i} className="flex flex-col gap-1 group cursor-pointer">
-                          <div className="relative aspect-square bg-gray-50 overflow-hidden">
+                          <div className="relative aspect-square bg-slate-50 overflow-hidden">
                             <Image 
                               src={`https://picsum.photos/seed/${idx}-${i}/300/300`} 
                               alt={sub} 
@@ -123,7 +123,7 @@ export default function Home() {
                               className="object-cover transition-transform group-hover:scale-105" 
                             />
                           </div>
-                          <span className="text-xs font-medium text-gray-700">{sub}</span>
+                          <span className="text-xs font-medium text-slate-700">{sub}</span>
                         </div>
                       ))}
                     </div>
@@ -131,10 +131,10 @@ export default function Home() {
 
                   {gridItem.type === 'single' && gridItem.item && (
                     <div 
-                      className="group cursor-pointer" 
+                      className="group cursor-pointer h-full flex flex-col" 
                       onClick={() => handleProductClick(gridItem.item as Product)}
                     >
-                      <div className="relative aspect-[4/3] mb-3 bg-gray-50 overflow-hidden">
+                      <div className="relative aspect-[4/3] mb-3 bg-slate-50 overflow-hidden flex-1 max-h-[180px]">
                         <Image 
                           src={gridItem.item.imageUrl} 
                           alt={gridItem.item.name} 
@@ -143,13 +143,13 @@ export default function Home() {
                         />
                       </div>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-[#cc0c39] text-white text-xs font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
-                        <span className="text-[#cc0c39] text-xs font-bold">Deal</span>
+                        <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
+                        <span className="text-[#cc0c39] text-[10px] font-bold uppercase">Deal</span>
                       </div>
-                      <p className="text-sm font-medium line-clamp-2 h-10">{gridItem.item.name}</p>
+                      <p className="text-sm font-medium line-clamp-2 leading-snug mb-2">{gridItem.item.name}</p>
                       <button 
                         onClick={(e) => handleAddToCart(e, gridItem.item)}
-                        className="amazon-btn-primary w-full text-xs mt-3 h-8"
+                        className="amazon-btn-primary w-full text-xs h-9 mt-auto"
                       >
                         Add to Cart
                       </button>
@@ -157,129 +157,143 @@ export default function Home() {
                   )}
 
                   {gridItem.type === 'auth' && (
-                    <div className="flex flex-col gap-4">
-                      <p className="text-sm text-gray-600">Sign in for the best experience and personalized results.</p>
+                    <div className="flex flex-col gap-4 py-2">
+                      <p className="text-sm text-slate-600 leading-relaxed">Sign in for the best experience and personalized results.</p>
                       <Link href="/admin/login">
-                        <button className="amazon-btn-primary w-full text-sm">Sign in securely</button>
+                        <button className="amazon-btn-primary w-full text-sm h-10">Sign in securely</button>
                       </Link>
+                      <div className="bg-slate-50 p-4 rounded-sm mt-4">
+                        <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1">New customer?</p>
+                        <Link href="/admin/login" className="text-xs text-primary hover:underline">Start here.</Link>
+                      </div>
                     </div>
                   )}
                 </div>
 
-                <Link href="/products" className="text-xs font-medium text-[#007185] hover:text-[#c45500] hover:underline mt-4">
-                  Shop now
+                <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline mt-6 block">
+                  {gridItem.type === 'auth' ? 'See more' : 'Shop now'}
                 </Link>
               </div>
             ))}
           </div>
 
           {/* Horizontal Scroller Section (Today's Deals) */}
-          <section className="bg-white p-5 mt-5 shadow-sm">
-            <div className="flex items-center gap-4 mb-4">
-              <h2 className="text-xl font-bold">Today's Deals</h2>
-              <Link href="/products" className="text-sm font-medium text-[#007185] hover:text-[#c45500] hover:underline">
+          <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-4 mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Today's Deals</h2>
+              <Link href="/products" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
                 See all deals
               </Link>
             </div>
-            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6">
               {deals.map((deal) => (
                 <div 
                   key={deal.id} 
-                  className="min-w-[200px] flex flex-col gap-2 group cursor-pointer"
+                  className="min-w-[220px] flex flex-col gap-3 group cursor-pointer"
                   onClick={() => handleProductClick(deal)}
                 >
-                  <div className="relative aspect-square bg-gray-100 overflow-hidden rounded-sm cursor-pointer">
-                    <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" />
+                  <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm border border-slate-100">
+                    <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-6 group-hover:scale-105 transition-transform" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-[#cc0c39] text-white text-[11px] font-bold px-1.5 py-0.5 rounded-sm">
-                      {Math.round((1 - deal.price / (deal.originalPrice || deal.price)) * 100)}% off
-                    </span>
-                    <span className="text-[#cc0c39] text-xs font-bold uppercase">Limited time deal</span>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+                        {Math.round((1 - deal.price / (deal.originalPrice || deal.price)) * 100)}% off
+                      </span>
+                      <span className="text-[#cc0c39] text-[10px] font-bold uppercase tracking-tighter">Limited time deal</span>
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xl font-bold text-slate-900">{formatCurrency(deal.price)}</span>
+                      {deal.originalPrice && (
+                        <span className="text-xs text-slate-400 line-through font-medium">M.R.P: {formatCurrency(deal.originalPrice)}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-700 font-medium line-clamp-1 leading-relaxed">{deal.name}</p>
+                    <button 
+                      onClick={(e) => handleAddToCart(e, deal)}
+                      className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-2"
+                    >
+                      Add to Cart
+                    </button>
                   </div>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-lg font-medium">{formatCurrency(deal.price)}</span>
-                    {deal.originalPrice && (
-                      <span className="text-xs text-gray-500 line-through">List: {formatCurrency(deal.originalPrice)}</span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-700 line-clamp-1 h-4">{deal.name}</p>
-                  <button 
-                    onClick={(e) => handleAddToCart(e, deal)}
-                    className="amazon-btn-primary text-xs mt-1 h-7 rounded-md"
-                  >
-                    Add to Cart
-                  </button>
                 </div>
               ))}
             </div>
           </section>
         </div>
 
-        <ProductDetailsModal 
-          product={selectedProduct}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
+        {/* Back to top button */}
+        <button 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-sm font-bold py-4 transition-colors tracking-wide"
+        >
+          Back to top
+        </button>
+
+        {/* Amazon Style Footer */}
+        <footer className="bg-[#232f3e] text-white pt-12 pb-16">
+          <div className="max-w-[1000px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
+            <div className="space-y-4">
+              <h4 className="font-bold text-base">Get to Know Us</h4>
+              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
+                <li><Link href="#" className="hover:underline">Careers</Link></li>
+                <li><Link href="#" className="hover:underline">Blog</Link></li>
+                <li><Link href="#" className="hover:underline">About Z-Mart</Link></li>
+                <li><Link href="#" className="hover:underline">Sustainability</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h4 className="font-bold text-base">Make Money with Us</h4>
+              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
+                <li><Link href="/admin/login" className="hover:underline">Sell products on Z-Mart</Link></li>
+                <li><Link href="#" className="hover:underline">Sell on Z-Mart Business</Link></li>
+                <li><Link href="#" className="hover:underline">Become an Affiliate</Link></li>
+                <li><Link href="#" className="hover:underline">Advertise Your Products</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h4 className="font-bold text-base">Z-Mart Payment</h4>
+              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
+                <li><Link href="#" className="hover:underline">Z-Mart Business Card</Link></li>
+                <li><Link href="#" className="hover:underline">Shop with Points</Link></li>
+                <li><Link href="#" className="hover:underline">Reload Your Balance</Link></li>
+                <li><Link href="#" className="hover:underline">Currency Converter</Link></li>
+              </ul>
+            </div>
+            <div className="space-y-4">
+              <h4 className="font-bold text-base">Let Us Help You</h4>
+              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
+                <li><Link href="#" className="hover:underline">Your Account</Link></li>
+                <li><Link href="#" className="hover:underline">Your Orders</Link></li>
+                <li><Link href="#" className="hover:underline">Shipping Rates</Link></li>
+                <li><Link href="#" className="hover:underline">Returns & Replacements</Link></li>
+                <li><Link href="#" className="hover:underline">Help Center</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="max-w-[1000px] mx-auto px-6 mt-16 pt-10 border-t border-slate-700 flex flex-col items-center gap-8">
+            <div className="flex items-center gap-8">
+              <Link href="/" className="text-2xl font-black tracking-tighter hover:text-primary transition-colors">Z-MART</Link>
+              <div className="border border-slate-500 rounded-sm px-3 py-1.5 flex items-center gap-2 text-xs text-slate-300">
+                <span>English</span>
+              </div>
+            </div>
+            <div className="flex flex-wrap justify-center gap-6 text-[11px] text-slate-400 font-bold uppercase tracking-wider">
+              <Link href="#" className="hover:underline">Conditions of Use</Link>
+              <Link href="#" className="hover:underline">Privacy Notice</Link>
+              <Link href="#" className="hover:underline">Your Ads Privacy Choices</Link>
+            </div>
+            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em]">© 1996-2024, Z-Mart.in, Inc. or its affiliates</p>
+          </div>
+        </footer>
       </main>
 
-      {/* Back to top button */}
-      <button className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-sm py-4 mt-8 transition-colors">
-        Back to top
-      </button>
-
-      {/* Amazon Style Footer */}
-      <footer className="bg-[#232f3e] text-white pt-10 pb-16">
-        <div className="max-w-[1000px] mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-12">
-          <div className="space-y-3">
-            <h4 className="font-bold">Get to Know Us</h4>
-            <ul className="text-sm space-y-2 text-gray-300">
-              <li><Link href="#" className="hover:underline">Careers</Link></li>
-              <li><Link href="#" className="hover:underline">Blog</Link></li>
-              <li><Link href="#" className="hover:underline">About Z-Mart</Link></li>
-              <li><Link href="#" className="hover:underline">Sustainability</Link></li>
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h4 className="font-bold">Make Money with Us</h4>
-            <ul className="text-sm space-y-2 text-gray-300">
-              <li><Link href="/admin/login" className="hover:underline">Sell products on Z-Mart</Link></li>
-              <li><Link href="#" className="hover:underline">Sell on Z-Mart Business</Link></li>
-              <li><Link href="#" className="hover:underline">Become an Affiliate</Link></li>
-              <li><Link href="#" className="hover:underline">Advertise Your Products</Link></li>
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h4 className="font-bold">Z-Mart Payment Products</h4>
-            <ul className="text-sm space-y-2 text-gray-300">
-              <li><Link href="#" className="hover:underline">Z-Mart Business Card</Link></li>
-              <li><Link href="#" className="hover:underline">Shop with Points</Link></li>
-              <li><Link href="#" className="hover:underline">Reload Your Balance</Link></li>
-              <li><Link href="#" className="hover:underline">Currency Converter</Link></li>
-            </ul>
-          </div>
-          <div className="space-y-3">
-            <h4 className="font-bold">Let Us Help You</h4>
-            <ul className="text-sm space-y-2 text-gray-300">
-              <li><Link href="#" className="hover:underline">Your Account</Link></li>
-              <li><Link href="#" className="hover:underline">Your Orders</Link></li>
-              <li><Link href="#" className="hover:underline">Shipping Rates</Link></li>
-              <li><Link href="#" className="hover:underline">Returns & Replacements</Link></li>
-              <li><Link href="#" className="hover:underline">Help Center</Link></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="max-w-[1000px] mx-auto px-4 mt-16 pt-8 border-t border-gray-600 flex flex-col items-center gap-6">
-          <Link href="/" className="text-2xl font-bold tracking-tighter">Z-MART</Link>
-          <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-300">
-            <Link href="#" className="hover:underline">Conditions of Use</Link>
-            <Link href="#" className="hover:underline">Privacy Notice</Link>
-            <Link href="#" className="hover:underline">Your Ads Privacy Choices</Link>
-          </div>
-          <p className="text-xs text-gray-400">© 1996-2024, Z-Mart.in, Inc. or its affiliates</p>
-        </div>
-      </footer>
+      <ProductDetailsModal 
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
