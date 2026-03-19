@@ -2,76 +2,76 @@
 {
   "placeholderImages": [
     {
-      "id": "iphone-15-pro",
-      "description": "iPhone 15 Pro Blue Titanium",
-      "imageUrl": "https://picsum.photos/seed/iphone15pro/600/600",
-      "imageHint": "iphone 15"
+      "id": "headphones",
+      "description": "Premium Wireless Headphones",
+      "imageUrl": "https://picsum.photos/seed/headphones/600/600",
+      "imageHint": "headphones audiophile"
     },
     {
-      "id": "echo-dot-5",
-      "description": "Echo Dot 5th Gen Charcoal",
-      "imageUrl": "https://picsum.photos/seed/echo5/600/600",
-      "imageHint": "echo dot"
+      "id": "monitor",
+      "description": "Professional 4K Monitor",
+      "imageUrl": "https://picsum.photos/seed/monitor/600/600",
+      "imageHint": "monitor computer"
     },
     {
-      "id": "kindle-pw-11",
-      "description": "Kindle Paperwhite 11th Gen",
-      "imageUrl": "https://picsum.photos/seed/kindlepw11/600/600",
-      "imageHint": "kindle paperwhite"
+      "id": "watch",
+      "description": "Advanced Smartwatch",
+      "imageUrl": "https://picsum.photos/seed/watch/600/600",
+      "imageHint": "smartwatch fitness"
     },
     {
-      "id": "sony-xm5",
-      "description": "Sony WH-1000XM5 Silver",
-      "imageUrl": "https://picsum.photos/seed/sonyxm5/600/600",
-      "imageHint": "sony headphones"
+      "id": "drone",
+      "description": "4K Aerial Drone",
+      "imageUrl": "https://picsum.photos/seed/drone/600/600",
+      "imageHint": "drone camera"
     },
     {
-      "id": "macbook-air-m2",
-      "description": "MacBook Air M2 Midnight",
-      "imageUrl": "https://picsum.photos/seed/macm2/600/600",
-      "imageHint": "macbook air"
+      "id": "ebike",
+      "description": "Urban Electric Bike",
+      "imageUrl": "https://picsum.photos/seed/ebike/600/600",
+      "imageHint": "ebike bicycle"
     },
     {
-      "id": "pigeon-kettle",
-      "description": "Pigeon Electric Kettle",
-      "imageUrl": "https://picsum.photos/seed/kettle/600/600",
-      "imageHint": "electric kettle"
+      "id": "blender",
+      "description": "High-Power Kitchen Blender",
+      "imageUrl": "https://picsum.photos/seed/blender/600/600",
+      "imageHint": "blender kitchen"
     },
     {
-      "id": "adidas-runner",
-      "description": "Adidas Response Runner",
-      "imageUrl": "https://picsum.photos/seed/adidasrun/600/600",
-      "imageHint": "adidas shoes"
+      "id": "speaker",
+      "description": "Smart Home Speaker",
+      "imageUrl": "https://picsum.photos/seed/speaker/600/600",
+      "imageHint": "speaker smart"
     },
     {
-      "id": "atomic-habits",
-      "description": "Atomic Habits Book Cover",
-      "imageUrl": "https://picsum.photos/seed/atomichabits/600/600",
-      "imageHint": "atomic habits"
+      "id": "yoga",
+      "description": "Eco-Friendly Yoga Mat",
+      "imageUrl": "https://picsum.photos/seed/yoga/600/600",
+      "imageHint": "yoga fitness"
     },
     {
-      "id": "galaxy-s24",
-      "description": "Samsung Galaxy S24 Ultra",
-      "imageUrl": "https://picsum.photos/seed/s24ultra/600/600",
-      "imageHint": "samsung galaxy"
+      "id": "lamp",
+      "description": "Smart Ambient Lamp",
+      "imageUrl": "https://picsum.photos/seed/lamp/600/600",
+      "imageHint": "lamp smart"
     },
     {
-      "id": "noise-watch",
-      "description": "Noise ColorFit Smartwatch",
-      "imageUrl": "https://picsum.photos/seed/noisewatch/600/600",
-      "imageHint": "smartwatch"
+      "id": "vr",
+      "description": "VR Gaming Headset",
+      "imageUrl": "https://picsum.photos/seed/vr/600/600",
+      "imageHint": "vr gaming"
     },
     {
-      "id": "boat-airdopes",
-      "description": "boAt Airdopes 141",
-      "imageUrl": "https://picsum.photos/seed/boatair/600/600",
-      "imageHint": "wireless earbuds"
+      "id": "backpack",
+      "description": "Urban Travel Backpack",
+      "imageUrl": "https://picsum.photos/seed/backpack/600/600",
+      "imageHint": "backpack travel"
     },
     {
-      "id": "mamaearth-facewash",
-      "description": "Mamaearth Vitamin C Face Wash",
-      "imageUrl": "https://picsum.photos/seed/mamaface/600/600",
-      "imageHint": "face wash"
+      "id": "bottle",
+      "description": "Insulated Water Bottle",
+      "imageUrl": "https://picsum.photos/seed/bottle/600/600",
+      "imageHint": "bottle water"
     }
   ]
 }
