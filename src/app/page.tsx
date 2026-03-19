@@ -7,7 +7,7 @@ import { Loader2, ShoppingBag, Search, Zap, ArrowRight, Star, TrendingUp, Sparkl
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, limit, orderBy } from "firebase/firestore";
@@ -25,6 +25,75 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
+// Memoized Product Card for performance
+const ProductCard = memo(({ product, onProductClick, onAddToCart, onBuyNow }: { 
+  product: any, 
+  onProductClick: (p: any) => void,
+  onAddToCart: (p: any) => void,
+  onBuyNow: (e: React.MouseEvent, p: any) => void
+}) => (
+  <div 
+    className="group cursor-pointer flex flex-col h-full bg-white p-4 rounded-[1.5rem] shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100/50 hover:border-primary/20 relative"
+    onClick={() => onProductClick(product)}
+  >
+    <div className="flex flex-col h-full">
+      <div className="relative aspect-square w-full bg-slate-50/50 rounded-xl overflow-hidden p-4 mb-4 group-hover:bg-white transition-colors duration-500">
+        <Image 
+          src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
+          alt={product.name} 
+          fill 
+          sizes="(max-width: 768px) 50vw, 25vw"
+          className="object-contain transition-transform duration-700 ease-out group-hover:scale-105" 
+        />
+        {product.isDeal && (
+          <Badge className="absolute top-2 left-2 bg-red-600 text-white border-none text-[8px] font-black tracking-widest px-2 py-0.5 rounded-full">
+            DEAL
+          </Badge>
+        )}
+      </div>
+      
+      <div className="flex flex-col flex-1 min-w-0">
+        <div className="space-y-1.5">
+           <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{product.category}</p>
+           <h3 className="text-sm font-black text-slate-900 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors min-h-[2.5rem]">
+             {product.name}
+           </h3>
+           <div className="flex items-center gap-2">
+             <div className="flex items-center gap-1">
+               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+               <span className="text-[11px] font-black text-slate-900">{product.rating}</span>
+             </div>
+             <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">({(product.reviews || 0).toLocaleString()})</span>
+           </div>
+        </div>
+        
+        <div className="mt-auto pt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xl font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddToCart(product);
+              }}
+              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-white hover:bg-slate-900 hover:border-slate-900 transition-all duration-300"
+            >
+              <ShoppingBag className="h-4 w-4" />
+            </button>
+          </div>
+          <Button 
+            onClick={(e) => onBuyNow(e, product)}
+            className="w-full h-11 bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-xl transition-all duration-300 border-none"
+          >
+            <Zap className="h-4 w-4 mr-2 fill-current" /> Buy Now
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+));
+
+ProductCard.displayName = "ProductCard";
+
 export default function Home() {
   const { addItem } = useCart();
   const db = useFirestore();
@@ -35,7 +104,7 @@ export default function Home() {
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(100));
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(40));
   }, [db]);
 
   const { data: products, loading } = useCollection(productsQuery);
@@ -45,27 +114,35 @@ export default function Home() {
     
     return {
       newArrivals: products.slice(0, 4),
-      bestSellers: products.filter((p: any) => p.rating >= 4.8 || p.isBestSeller).slice(0, 4),
-      popular: products.filter((p: any) => p.reviews > 1000).slice(0, 4)
+      bestSellers: products.filter((p: any) => p.rating >= 4.8).slice(0, 4),
+      popular: products.filter((p: any) => p.reviews > 500).slice(0, 4)
     };
   }, [products]);
 
-  const productsByCategory = useMemo(() => {
-    if (!products) return {};
-    return products.reduce((acc: Record<string, any[]>, product: any) => {
+  const categoryEntries = useMemo(() => {
+    if (!products) return [];
+    const grouped = products.reduce((acc: Record<string, any[]>, product: any) => {
       const cat = product.category || 'Other';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(product);
       return acc;
     }, {});
+    return Object.entries(grouped).slice(0, 2);
   }, [products]);
-
-  const categoryEntries = useMemo(() => Object.entries(productsByCategory).slice(0, 4), [productsByCategory]);
 
   const handleProductClick = useCallback((product: any) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   }, []);
+
+  const handleAddToCart = useCallback((product: any) => {
+    addItem(product);
+  }, [addItem]);
+
+  const handleBuyNowClick = useCallback((e: React.MouseEvent, product: any) => {
+    e.stopPropagation();
+    handleProductClick(product);
+  }, [handleProductClick]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,81 +151,16 @@ export default function Home() {
     }
   };
 
-  const handleBuyNowClick = useCallback((e: React.MouseEvent, product: any) => {
-    e.stopPropagation();
-    handleProductClick(product);
-  }, [handleProductClick]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Loading Z-MART Marketplace...</p>
+          <p className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Syncing Z-MART...</p>
         </div>
       </div>
     );
   }
-
-  const ProductCard = ({ product }: { product: any }) => (
-    <div 
-      className="group cursor-pointer flex flex-col h-full bg-white p-4 rounded-[1.5rem] shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100/50 hover:border-primary/20 relative"
-      onClick={() => handleProductClick(product)}
-    >
-      <div className="flex flex-col h-full">
-        <div className="relative aspect-square w-full bg-slate-50/50 rounded-xl overflow-hidden p-4 mb-4 group-hover:bg-white transition-colors duration-500">
-          <Image 
-            src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
-            alt={product.name} 
-            fill 
-            className="object-contain transition-transform duration-700 ease-out group-hover:scale-105" 
-          />
-          {product.isDeal && (
-            <Badge className="absolute top-2 left-2 bg-red-600 text-white border-none text-[8px] font-black tracking-widest px-2 py-0.5 rounded-full">
-              DEAL
-            </Badge>
-          )}
-        </div>
-        
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="space-y-1.5">
-             <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{product.category}</p>
-             <h3 className="text-sm font-black text-slate-900 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors min-h-[2.5rem]">
-               {product.name}
-             </h3>
-             <div className="flex items-center gap-2">
-               <div className="flex items-center gap-1">
-                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                 <span className="text-[11px] font-black text-slate-900">{product.rating}</span>
-               </div>
-               <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">({(product.reviews || 0).toLocaleString()})</span>
-             </div>
-          </div>
-          
-          <div className="mt-auto pt-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xl font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  addItem(product);
-                }}
-                className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-white hover:bg-slate-900 hover:border-slate-900 transition-all duration-300"
-              >
-                <ShoppingBag className="h-4 w-4" />
-              </button>
-            </div>
-            <Button 
-              onClick={(e) => handleBuyNowClick(e, product)}
-              className="w-full h-11 bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-xl transition-all duration-300 border-none"
-            >
-              <Zap className="h-4 w-4 mr-2 fill-current" /> Buy Now
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-body">
@@ -164,7 +176,6 @@ export default function Home() {
               <p className="text-slate-400 font-black uppercase tracking-[0.4em] text-[9px] md:text-[10px] opacity-60">Global Curated Marketplace</p>
             </div>
             
-            {/* Redesigned Search Bar */}
             <form onSubmit={handleSearch} className="flex items-center w-full max-w-3xl mx-auto h-12 sm:h-14 md:h-16 rounded-xl sm:rounded-2xl md:rounded-[2rem] overflow-hidden bg-white shadow-2xl p-1 md:p-1.5 border border-white/10">
               <div className="flex-1 flex items-center px-4 md:px-6">
                 <Search className="h-4 w-4 md:h-5 md:w-5 text-slate-400 shrink-0" />
@@ -203,6 +214,7 @@ export default function Home() {
                       src={`https://picsum.photos/seed/${cat.seed}/600/400`}
                       alt={cat.title}
                       fill
+                      priority={idx < 4}
                       className="object-cover group-hover:scale-110 transition-transform duration-1000"
                       data-ai-hint={cat.hint}
                     />
@@ -227,40 +239,40 @@ export default function Home() {
                 </div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                {curatedSections.newArrivals.map((product) => <ProductCard key={product.id} product={product} />)}
-              </div>
-            </section>
-          )}
-
-          {categoryEntries[0] && (
-            <section className="space-y-6">
-              <div className="flex items-end justify-between border-b border-slate-200 pb-3">
-                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[0][0]}</h2>
-                <Link href={`/products?category=${categoryEntries[0][0]}`} className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
-                  View All <ArrowRight className="h-3 w-3" />
-                </Link>
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                {categoryEntries[0][1].slice(0, 4).map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {curatedSections.newArrivals.map((product) => (
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onProductClick={handleProductClick}
+                    onAddToCart={handleAddToCart}
+                    onBuyNow={handleBuyNowClick}
+                  />
                 ))}
               </div>
             </section>
           )}
 
-          {curatedSections.bestSellers.length > 0 && (
-            <section className="space-y-6">
+          {categoryEntries.map(([category, items]) => (
+            <section key={category} className="space-y-6">
               <div className="flex items-end justify-between border-b border-slate-200 pb-3">
-                <div className="flex items-center gap-3">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Best Sellers</h2>
-                </div>
+                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{category}</h2>
+                <Link href={`/products?category=${category}`} className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
+                  View All <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                {curatedSections.bestSellers.map((product) => <ProductCard key={product.id} product={product} />)}
+                {items.slice(0, 4).map((product) => (
+                  <ProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onProductClick={handleProductClick}
+                    onAddToCart={handleAddToCart}
+                    onBuyNow={handleBuyNowClick}
+                  />
+                ))}
               </div>
             </section>
-          )}
+          ))}
         </div>
       </main>
 

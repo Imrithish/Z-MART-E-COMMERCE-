@@ -1,6 +1,7 @@
+
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { initializeFirebase, FirebaseProvider } from '@/firebase';
 import { FirebaseApp } from 'firebase/app';
 import { Auth } from 'firebase/auth';
@@ -9,26 +10,24 @@ import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
-  const [firebaseData, setFirebaseData] = useState<{
-    app: FirebaseApp;
-    auth: Auth;
-    db: Firestore;
-  } | null>(null);
+  
+  // Memoize firebase initialization to prevent redundant calls
+  const firebaseData = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const { app, auth, db } = initializeFirebase();
+    return { app, auth, db };
+  }, []);
 
   useEffect(() => {
-    const { app, auth, db } = initializeFirebase();
-    setFirebaseData({ app, auth, db });
     setMounted(true);
   }, []);
 
-  // Standard fallback to match server render and initial client mount
-  // We use the most stable CSS classes to avoid hydration mismatches
+  // Standard lightweight fallback to match server render and initial client mount
   if (!mounted || !firebaseData) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-12 w-12 bg-slate-200 rounded-2xl" />
-          <div className="h-4 w-32 bg-slate-200 rounded-full" />
+      <div className="h-svh w-full flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin" />
         </div>
       </div>
     );
