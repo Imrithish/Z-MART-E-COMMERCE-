@@ -59,11 +59,11 @@ export default function AdminOrders() {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-8 lg:p-12 space-y-10 overflow-x-hidden">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-8 overflow-x-hidden">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight mb-2 uppercase text-slate-900">Orders</h1>
-            <p className="text-slate-500 text-sm md:text-lg font-medium">Monitor customer transactions and fulfillment status.</p>
+            <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-1 uppercase text-slate-900">Orders</h1>
+            <p className="text-slate-500 text-sm md:text-base font-medium">Monitor customer transactions and fulfillment status.</p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <Button variant="outline" className="w-full sm:w-auto h-11 font-black uppercase tracking-widest text-[10px] rounded-xl">Export CSV</Button>
@@ -93,10 +93,10 @@ export default function AdminOrders() {
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="hover:bg-transparent border-none">
                       <TableHead className="px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Ordered Item</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Customer</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Date</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Status</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Total</TableHead>
+                      <TableHead className="px-4 font-black text-slate-400 uppercase text-[10px] tracking-widest">Customer</TableHead>
+                      <TableHead className="px-4 font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Date</TableHead>
+                      <TableHead className="px-4 font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Status</TableHead>
+                      <TableHead className="px-4 font-black text-slate-400 uppercase text-[10px] tracking-widest text-right">Total</TableHead>
                       <TableHead className="text-right px-8 font-black text-slate-400 uppercase text-[10px] tracking-widest">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -140,14 +140,14 @@ export default function AdminOrders() {
                             </div>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="px-4">
                           <div className="font-black text-slate-900">{order.customerName}</div>
                           <div className="text-[10px] text-slate-400 font-bold uppercase">{order.customerEmail}</div>
                         </TableCell>
-                        <TableCell className="text-sm font-bold text-slate-600">
+                        <TableCell className="px-4 text-center text-sm font-bold text-slate-600">
                           {order.createdAt?.toDate ? format(order.createdAt.toDate(), 'MMM dd, yyyy') : 'Recently'}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="px-4 text-center">
                           <Badge 
                             className={`rounded-xl font-black px-4 py-1 text-[9px] uppercase tracking-widest border-none ${
                               order.status === 'Shipped' ? 'bg-green-100 text-green-700' : 
@@ -158,7 +158,7 @@ export default function AdminOrders() {
                             {order.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="font-black text-lg text-slate-900">
+                        <TableCell className="px-4 text-right font-black text-lg text-slate-900">
                           {formatCurrency(order.totalAmount)}
                         </TableCell>
                         <TableCell className="text-right px-8">
