@@ -66,7 +66,7 @@ export default function Home() {
   const amazonGridItems = [
     { title: "Gaming accessories", items: ["Headsets", "Keyboards", "Mice", "Chairs"], type: "quad" },
     { title: "Deal of the Day", item: MOCK_PRODUCTS[0], type: "single" },
-    { title: "Shop activity trackers", items: ["Smartwatches", "Bands"], type: "quad" },
+    { title: "Shop activity trackers", items: ["Smartwatches", "Bands", "Trackers", "Accessories"], type: "quad" },
     { title: "Sign in for the best experience", type: "auth" },
     { title: "Personal Care under ₹999", items: ["Grooming", "Oral Care", "Hair Care", "Skin Care"], type: "quad" },
     { title: "Laptops for every need", item: MOCK_PRODUCTS[1], type: "single" },
@@ -90,11 +90,9 @@ export default function Home() {
               priority
               data-ai-hint="electronics warehouse"
             />
-            {/* Amazon characteristic fade */}
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#eaeded] pointer-events-none" />
           </div>
           
-          {/* Hero Navigation buttons */}
           <button className="absolute left-0 top-0 h-[300px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all z-20">
             <ChevronLeft className="h-12 w-12 text-black/50" />
           </button>
@@ -105,25 +103,25 @@ export default function Home() {
 
         {/* Main Content Grid - Overlapping the Hero */}
         <div className="max-w-[1500px] mx-auto px-4 -mt-[320px] relative z-30 pb-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr">
             {amazonGridItems.map((gridItem, idx) => (
               <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px]">
-                <h2 className="text-xl font-bold mb-3 text-slate-900">{gridItem.title}</h2>
+                <h2 className="text-xl font-bold mb-4 text-slate-900 leading-tight h-[56px] flex items-center">{gridItem.title}</h2>
                 
-                <div className="flex-1">
+                <div className="flex-1 flex flex-col justify-start">
                   {gridItem.type === 'quad' && (
                     <div className="grid grid-cols-2 gap-3">
                       {gridItem.items?.map((sub, i) => (
                         <div key={i} className="flex flex-col gap-1 group cursor-pointer">
-                          <div className="relative aspect-square bg-slate-50 overflow-hidden">
+                          <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm">
                             <Image 
-                              src={`https://picsum.photos/seed/${idx}-${i}/300/300`} 
+                              src={`https://picsum.photos/seed/quad-${idx}-${i}/300/300`} 
                               alt={sub} 
                               fill 
                               className="object-cover transition-transform group-hover:scale-105" 
                             />
                           </div>
-                          <span className="text-xs font-medium text-slate-700">{sub}</span>
+                          <span className="text-[11px] font-medium text-slate-700 truncate">{sub}</span>
                         </div>
                       ))}
                     </div>
@@ -131,10 +129,10 @@ export default function Home() {
 
                   {gridItem.type === 'single' && gridItem.item && (
                     <div 
-                      className="group cursor-pointer h-full flex flex-col" 
+                      className="group cursor-pointer flex-1 flex flex-col" 
                       onClick={() => handleProductClick(gridItem.item as Product)}
                     >
-                      <div className="relative aspect-[4/3] mb-3 bg-slate-50 overflow-hidden flex-1 max-h-[180px]">
+                      <div className="relative aspect-[4/3] mb-4 bg-slate-50 overflow-hidden flex-1 max-h-[220px] rounded-sm">
                         <Image 
                           src={gridItem.item.imageUrl} 
                           alt={gridItem.item.name} 
@@ -146,7 +144,7 @@ export default function Home() {
                         <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
                         <span className="text-[#cc0c39] text-[10px] font-bold uppercase">Deal</span>
                       </div>
-                      <p className="text-sm font-medium line-clamp-2 leading-snug mb-2">{gridItem.item.name}</p>
+                      <p className="text-sm font-medium line-clamp-2 leading-snug mb-3">{gridItem.item.name}</p>
                       <button 
                         onClick={(e) => handleAddToCart(e, gridItem.item)}
                         className="amazon-btn-primary w-full text-xs h-9 mt-auto"
@@ -157,22 +155,24 @@ export default function Home() {
                   )}
 
                   {gridItem.type === 'auth' && (
-                    <div className="flex flex-col gap-4 py-2">
+                    <div className="flex flex-col gap-5 py-2 flex-1">
                       <p className="text-sm text-slate-600 leading-relaxed">Sign in for the best experience and personalized results.</p>
                       <Link href="/admin/login">
-                        <button className="amazon-btn-primary w-full text-sm h-10">Sign in securely</button>
+                        <button className="amazon-btn-primary w-full text-sm h-11">Sign in securely</button>
                       </Link>
-                      <div className="bg-slate-50 p-4 rounded-sm mt-4">
+                      <div className="bg-slate-50 p-4 rounded-xl mt-auto border border-slate-100">
                         <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1">New customer?</p>
-                        <Link href="/admin/login" className="text-xs text-primary hover:underline">Start here.</Link>
+                        <Link href="/admin/login" className="text-xs text-primary hover:underline font-bold">Start here.</Link>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline mt-6 block">
-                  {gridItem.type === 'auth' ? 'See more' : 'Shop now'}
-                </Link>
+                <div className="mt-auto pt-5">
+                   <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline block">
+                    {gridItem.type === 'auth' ? 'See more' : 'Shop now'}
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
@@ -195,7 +195,7 @@ export default function Home() {
                   <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm border border-slate-100">
                     <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-6 group-hover:scale-105 transition-transform" />
                   </div>
-                  <div className="space-y-1.5">
+                  <div className="space-y-1.5 flex-1 flex flex-col">
                     <div className="flex items-center gap-2">
                       <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
                         {Math.round((1 - deal.price / (deal.originalPrice || deal.price)) * 100)}% off
@@ -211,7 +211,7 @@ export default function Home() {
                     <p className="text-xs text-slate-700 font-medium line-clamp-1 leading-relaxed">{deal.name}</p>
                     <button 
                       onClick={(e) => handleAddToCart(e, deal)}
-                      className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-2"
+                      className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-auto"
                     >
                       Add to Cart
                     </button>
