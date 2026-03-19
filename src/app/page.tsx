@@ -167,10 +167,10 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Compact Hero Section */}
-        <section className="bg-slate-900 py-6 md:py-10 lg:py-14 px-4 md:px-8 relative overflow-hidden">
+        {/* Compact Hero Section - Reduced padding */}
+        <section className="bg-slate-900 py-6 md:py-8 lg:py-10 px-4 md:px-8 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50" />
-          <div className="max-w-4xl mx-auto space-y-6 md:space-y-10 relative z-10">
+          <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 relative z-10">
             <div className="text-center space-y-2">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9] text-balance">The Premium Standard</h1>
               <p className="text-slate-400 font-black uppercase tracking-[0.4em] text-[9px] md:text-[10px] opacity-60">Global Curated Marketplace</p>
@@ -198,7 +198,7 @@ export default function Home() {
         </section>
 
         {/* Categories Overlap */}
-        <section className="max-w-[1450px] mx-auto px-4 md:px-8 -mt-4 md:-mt-8 relative z-20">
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 -mt-4 md:-mt-6 relative z-20">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
               { title: "Digital Tech", hint: "laptop tech", href: "/products?category=Electronics", seed: "digital" },

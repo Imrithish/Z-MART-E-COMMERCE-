@@ -35,7 +35,7 @@ export function AdminSidebar() {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      <div className="p-8 flex items-center justify-between border-b border-white/5 min-h-[80px]">
+      <div className="p-6 flex items-center justify-between border-b border-white/5 min-h-[70px]">
         <div className="flex items-center gap-2 overflow-hidden">
           <ShieldCheck className="h-8 w-8 text-primary shrink-0" />
           <div className="flex flex-col">
@@ -55,7 +55,7 @@ export function AdminSidebar() {
         )}
       </div>
 
-      <nav className="flex-1 px-4 space-y-3 mt-10">
+      <nav className="flex-1 px-4 space-y-3 mt-8">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (
@@ -98,15 +98,15 @@ export function AdminSidebar() {
 
   if (isMobile) {
     return (
-      <div className="md:hidden fixed right-0 top-6 z-50">
+      <div className="md:hidden fixed right-0 top-4 z-50">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button 
               variant="default" 
               size="icon" 
-              className="h-12 w-10 rounded-r-none rounded-l-2xl bg-slate-900 hover:bg-slate-800 shadow-2xl border-none text-white transition-all hover:w-12 flex items-center justify-center pr-1"
+              className="h-10 w-9 rounded-r-none rounded-l-2xl bg-slate-900 hover:bg-slate-800 shadow-2xl border-none text-white transition-all flex items-center justify-center pr-1"
             >
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="p-0 w-80 bg-slate-900 border-none text-white">
@@ -123,7 +123,7 @@ export function AdminSidebar() {
       "h-screen sticky top-0 bg-slate-900 text-white transition-all duration-500 flex flex-col z-40 shadow-2xl border-r border-white/5 shrink-0",
       isCollapsed ? "w-24" : "w-80"
     )}>
-      <div className="p-8 flex items-center justify-between border-b border-white/5 min-h-[80px]">
+      <div className="p-6 flex items-center justify-between border-b border-white/5 min-h-[70px]">
         {!isCollapsed && (
           <div className="flex items-center gap-2 overflow-hidden">
             <ShieldCheck className="h-8 w-8 text-primary shrink-0" />
@@ -143,7 +143,7 @@ export function AdminSidebar() {
         </Button>
       </div>
 
-      <nav className="flex-1 px-4 space-y-3 mt-10">
+      <nav className="flex-1 px-4 space-y-3 mt-8">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (

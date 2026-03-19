@@ -72,7 +72,7 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <AdminSidebar />
-      <main className="flex-1 p-6 md:p-10 space-y-8 overflow-x-hidden">
+      <main className="flex-1 p-4 md:p-8 space-y-6 overflow-x-hidden">
         <header className="flex flex-col gap-1">
           <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
           <p className="text-slate-500 text-sm md:text-base font-medium">Monitoring your store performance.</p>
