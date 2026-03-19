@@ -264,16 +264,16 @@ export function Navbar() {
                   </ul>
                   <Separator />
                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-10 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/10">
-                    Exit Terminal
+                    Sign Out
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-6 text-center">
                   <Button asChild className="amazon-btn-primary w-full h-12 rounded-xl">
-                    <Link href="/login">Initialize Session</Link>
+                    <Link href="/login">Sign In</Link>
                   </Button>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    Unauthorized? <Link href="/signup" className="text-primary hover:underline">Register Key</Link>
+                    Register? <Link href="/signup" className="text-primary hover:underline">Create Account</Link>
                   </p>
                 </div>
               )}
