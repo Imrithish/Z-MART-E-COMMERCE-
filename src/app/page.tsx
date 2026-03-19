@@ -159,14 +159,14 @@ export default function Home() {
            </div>
         </section>
 
-        {/* Asymmetric Category Showcase */}
+        {/* Categories Showcase */}
         <section className="max-w-[1400px] mx-auto px-6 py-32 space-y-16">
           <div className="flex flex-col md:flex-row items-end justify-between gap-8">
             <div className="space-y-4">
-              <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px]">Lifestyle Tiers</span>
-              <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">The Archetypes</h2>
+              <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px]">Product Tiers</span>
+              <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">Shop by Category</h2>
             </div>
-            <p className="text-slate-500 font-medium max-w-sm">Every piece tells a story of craftsmanship and technological prowess.</p>
+            <p className="text-slate-500 font-medium max-w-sm">Explore our curated collections across technology, home, and fashion.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -196,7 +196,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Deals Section */}
+        {/* Flash Deals Section */}
         <section className="bg-slate-50 py-32">
           <div className="max-w-[1400px] mx-auto px-6 space-y-20">
             <div className="text-center space-y-6">
