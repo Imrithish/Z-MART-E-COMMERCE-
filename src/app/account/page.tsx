@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 import { format } from "date-fns";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -58,14 +58,24 @@ export default function UserDashboard() {
   // Fetch User Orders
   const ordersQuery = useMemo(() => {
     if (!db || !user?.email) return null;
+    // Removed orderBy to avoid requiring a composite index in Firestore for the prototype
     return query(
       collection(db, 'orders'),
-      where('customerEmail', '==', user.email),
-      orderBy('createdAt', 'desc')
+      where('customerEmail', '==', user.email)
     );
   }, [db, user?.email]);
 
-  const { data: orders, loading: ordersLoading } = useCollection(ordersQuery);
+  const { data: rawOrders, loading: ordersLoading } = useCollection(ordersQuery);
+
+  // Client-side sorting of orders by creation date
+  const orders = useMemo(() => {
+    if (!rawOrders) return null;
+    return [...rawOrders].sort((a: any, b: any) => {
+      const timeA = a.createdAt?.seconds || 0;
+      const timeB = b.createdAt?.seconds || 0;
+      return timeB - timeA;
+    });
+  }, [rawOrders]);
 
   useEffect(() => {
     if (!authLoading && !user) {
