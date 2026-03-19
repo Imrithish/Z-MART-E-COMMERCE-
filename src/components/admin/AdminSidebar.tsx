@@ -84,7 +84,7 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile Trigger */}
+      {/* Mobile Trigger - Kept at bottom-right per UI design */}
       <div className="lg:hidden fixed bottom-6 right-6 z-50">
         <Sheet>
           <SheetTrigger asChild>
