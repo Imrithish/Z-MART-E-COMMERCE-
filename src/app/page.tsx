@@ -200,7 +200,7 @@ export default function Home() {
         <section className="bg-slate-50 py-32">
           <div className="max-w-[1400px] mx-auto px-6 space-y-20">
             <div className="text-center space-y-6">
-              <h2 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter uppercase">Flash Genesis</h2>
+              <h2 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter uppercase">Flash Deals</h2>
               <p className="text-slate-500 font-medium text-lg">Limited production runs. Absolute price points.</p>
             </div>
 
