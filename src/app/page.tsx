@@ -3,7 +3,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
-import { CheckCircle2, Loader2, ShoppingBag, ArrowRight, Search } from "lucide-react";
+import { CheckCircle2, Loader2, ShoppingBag, ArrowRight, Search, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, useMemo, useCallback } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { ToastAction } from "@/components/ui/toast";
-import { useCollection, useFirestore } from "@/firebase";
+import { useCollection, useFirestore, useUser } from "@/firebase";
 import { collection, query, limit } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -32,6 +32,7 @@ export default function Home() {
   const { toast } = useToast();
   const db = useFirestore();
   const router = useRouter();
+  const { user } = useUser();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -68,7 +69,24 @@ export default function Home() {
   const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
     addItem(product);
-  }, [addItem]);
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your shopping bag.`,
+    });
+  }, [addItem, toast]);
+
+  const handleBuyNow = useCallback((e: React.MouseEvent, product: any) => {
+    e.stopPropagation();
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to use Buy Now.",
+      });
+      router.push('/login');
+      return;
+    }
+    router.push(`/checkout?productId=${product.id}`);
+  }, [user, router, toast]);
 
   if (loading) {
     return (
@@ -152,7 +170,7 @@ export default function Home() {
                 {deals.map((product: any) => (
                   <div 
                     key={product.id} 
-                    className="group cursor-pointer min-w-[220px] max-w-[220px] flex flex-col"
+                    className="group cursor-pointer min-w-[240px] max-w-[240px] flex flex-col"
                     onClick={() => handleProductClick(product)}
                   >
                     <div className="relative aspect-square bg-slate-50 rounded-xl overflow-hidden p-6 mb-4">
@@ -176,6 +194,14 @@ export default function Home() {
                       <h3 className="text-xs font-bold text-slate-700 line-clamp-2 leading-snug uppercase tracking-tight">
                         {product.name}
                       </h3>
+                      <div className="pt-2">
+                        <Button 
+                          onClick={(e) => handleBuyNow(e, product)}
+                          className="w-full h-8 bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest text-[9px] rounded-lg shadow-sm"
+                        >
+                          <Zap className="h-3 w-3 mr-1 fill-current" /> Buy Now
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -217,15 +243,23 @@ export default function Home() {
                       {product.name}
                     </h3>
                   </div>
-                  <div className="flex items-center justify-between mt-3">
-                    <span className="text-md font-black text-slate-900">{formatCurrency(product.price)}</span>
+                  <div className="flex flex-col gap-3 mt-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-md font-black text-slate-900">{formatCurrency(product.price)}</span>
+                      <Button 
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => handleAddToCart(e, product)}
+                        className="h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-primary transition-all"
+                      >
+                        <ShoppingBag className="h-4 w-4" />
+                      </Button>
+                    </div>
                     <Button 
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => handleAddToCart(e, product)}
-                      className="h-8 w-8 rounded-lg hover:bg-primary/10 hover:text-primary transition-all"
+                      onClick={(e) => handleBuyNow(e, product)}
+                      className="w-full h-9 bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest text-[9px] rounded-xl shadow-sm group-hover:shadow-primary/20 transition-all"
                     >
-                      <ShoppingBag className="h-4 w-4" />
+                      <Zap className="h-3 w-3 mr-1 fill-current" /> Buy Now
                     </Button>
                   </div>
                 </div>
