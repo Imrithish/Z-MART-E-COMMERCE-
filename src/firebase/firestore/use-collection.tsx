@@ -27,20 +27,24 @@ export function useCollection<T = DocumentData>(query: Query<T> | null) {
       query,
       (snapshot: QuerySnapshot<T>) => {
         const items = snapshot.docs.map((doc) => ({
-          ...doc.data(),
+          ...(doc.data() as any),
           id: doc.id,
         }));
         setData(items);
         setLoading(false);
       },
       async (serverError: any) => {
-        // Log the actual server error to the console for debugging index issues
+        // Log the actual server error to the console for internal debugging
         console.error("Firestore Error:", serverError);
         
+        // Extract the path from the query if possible, otherwise use a descriptive placeholder
+        const path = (query as any)._query?.path?.toString() || 'collection/query';
+        
         const permissionError = new FirestorePermissionError({
-          path: 'collection/query',
+          path: path,
           operation: 'list',
         });
+        
         errorEmitter.emit('permission-error', permissionError);
         setError(permissionError);
         setLoading(false);

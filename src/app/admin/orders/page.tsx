@@ -1,4 +1,3 @@
-
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -50,10 +49,11 @@ export default function AdminOrders() {
     }
   }, [user, authLoading, router]);
 
+  // Ensure query only runs when user is authenticated
   const ordersQuery = useMemo(() => {
-    if (!db || !user) return null;
+    if (!db || authLoading || !user) return null;
     return query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-  }, [db, user]);
+  }, [db, user, authLoading]);
 
   const { data: orders, loading } = useCollection(ordersQuery);
 
@@ -129,7 +129,7 @@ export default function AdminOrders() {
 
   if (authLoading) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
         <Loader2 className="h-10 w-10 animate-spin text-primary" />
       </div>
     );
@@ -138,9 +138,9 @@ export default function AdminOrders() {
   if (!user) return null;
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50 font-body">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-6 overflow-x-hidden">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-6 overflow-x-hidden pt-4">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-1 uppercase text-slate-900">Orders</h1>

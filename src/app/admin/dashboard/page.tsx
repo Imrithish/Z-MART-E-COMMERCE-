@@ -1,4 +1,3 @@
-
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -34,10 +33,11 @@ export default function AdminDashboard() {
     }
   }, [user, authLoading, router]);
 
+  // Ensure query only runs when user is authenticated
   const ordersQuery = useMemo(() => {
-    if (!db || !user) return null;
+    if (!db || authLoading || !user) return null;
     return query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(10));
-  }, [db, user]);
+  }, [db, user, authLoading]);
 
   const { data: recentOrders, loading: ordersLoading } = useCollection(ordersQuery);
 
@@ -51,10 +51,10 @@ export default function AdminDashboard() {
 
   if (authLoading) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="font-black text-slate-600 uppercase tracking-widest text-xs">Verifying Access...</p>
+          <p className="font-black text-slate-600 uppercase tracking-widest text-[10px]">Verifying Access...</p>
         </div>
       </div>
     );
@@ -70,9 +70,9 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 font-body">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-8 space-y-6 overflow-x-hidden">
+      <main className="flex-1 p-4 md:p-8 space-y-6 overflow-x-hidden pt-4">
         <header className="flex flex-col gap-1">
           <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
           <p className="text-slate-500 text-sm md:text-base font-medium">Monitoring your store performance.</p>
