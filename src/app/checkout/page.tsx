@@ -3,7 +3,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { useCart } from "@/context/CartContext";
-import { useUser, useFirestore, useDoc } from "@/firebase";
+import { useUser, useFirestore, useDoc, useCollection } from "@/firebase";
 import { collection, addDoc, serverTimestamp, doc } from "firebase/firestore";
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, ArrowRight, MapPin, Phone, CreditCard, ShoppingBag, Truck } from "lucide-react";
+import { Loader2, ArrowRight, MapPin, Phone, CreditCard, ShoppingBag, Truck, Home as HomeIcon, Briefcase } from "lucide-react";
 import Image from "next/image";
 import { OrderSuccessModal } from "@/components/storefront/OrderSuccessModal";
 
@@ -57,6 +57,14 @@ function CheckoutContent() {
   const productRef = useMemo(() => productId && db ? doc(db, 'products', productId) : null, [productId, db]);
   const { data: buyNowProduct, loading: productLoading } = useDoc(productRef);
 
+  // Fetch Saved Addresses
+  const addressesQuery = useMemo(() => {
+    if (!db || !user?.uid) return null;
+    return collection(db, 'users', user.uid, 'addresses');
+  }, [db, user?.uid]);
+
+  const { data: savedAddresses, loading: addressesLoading } = useCollection(addressesQuery);
+
   // Calculate Order Items and Totals
   const orderItems = useMemo(() => {
     if (productId && buyNowProduct) {
@@ -90,6 +98,21 @@ function CheckoutContent() {
       router.push('/login');
     }
   }, [user, userLoading, router]);
+
+  const selectSavedAddress = (addr: any) => {
+    setAddress({
+      houseNo: addr.houseNo,
+      street: addr.street,
+      city: addr.city,
+      state: addr.state,
+      pincode: addr.pincode,
+      landmark: addr.landmark || ''
+    });
+    toast({
+      title: "Address Selected",
+      description: `Shipping to your ${addr.label} location.`
+    });
+  };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,15 +184,44 @@ function CheckoutContent() {
             <p className="text-slate-500 font-medium">Complete your details to finish your order.</p>
           </header>
 
+          {/* Saved Addresses Quick Select */}
+          {savedAddresses && savedAddresses.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <MapPin className="h-3 w-3" /> Quick Select Delivery Spot
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {savedAddresses.map((addr: any) => (
+                  <button 
+                    key={addr.id}
+                    onClick={() => selectSavedAddress(addr)}
+                    className="flex flex-col items-start p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-primary transition-all text-left group"
+                  >
+                    <div className="flex items-center justify-between w-full mb-2">
+                      <div className="flex items-center gap-2">
+                        {addr.label === 'Home' ? <HomeIcon className="h-4 w-4 text-primary" /> : <Briefcase className="h-4 w-4 text-primary" />}
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">{addr.label}</span>
+                      </div>
+                      <div className="h-2 w-2 rounded-full bg-slate-100 group-hover:bg-primary transition-colors" />
+                    </div>
+                    <p className="text-[10px] font-medium text-slate-500 line-clamp-2">
+                      {addr.houseNo}, {addr.street}, {addr.city}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <form id="checkout-form" onSubmit={handlePlaceOrder} className="space-y-8">
-            {/* Shipping Address */}
+            {/* Shipping Address Form */}
             <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
               <CardHeader className="bg-white border-b border-slate-50 p-8">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-slate-100 rounded-xl text-slate-900">
                     <MapPin className="h-5 w-5" />
                   </div>
-                  <CardTitle className="text-lg font-black uppercase tracking-widest">Shipping Address</CardTitle>
+                  <CardTitle className="text-lg font-black uppercase tracking-widest">Delivery Address</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="p-8 space-y-6 bg-white">

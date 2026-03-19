@@ -35,10 +35,10 @@ import { Badge } from "@/components/ui/badge";
 import { ReceiptModal } from "@/components/storefront/ReceiptModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -213,7 +213,6 @@ export default function UserDashboard() {
 
           {activeTab === 'overview' && (
             <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              {/* Stats & Last Order Summary */}
               <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 <Card className="lg:col-span-2 bg-white border-none shadow-sm rounded-[2rem] overflow-hidden">
                   <CardHeader className="p-8 border-b border-slate-50 flex flex-row items-center justify-between">
@@ -288,7 +287,6 @@ export default function UserDashboard() {
                 </Card>
               </section>
 
-              {/* Navigation Cards */}
               <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                 {[
                   { title: "My Orders", desc: "Track and manage your purchases", icon: Package, tab: 'orders' },
@@ -426,21 +424,27 @@ export default function UserDashboard() {
                {showAddAddress && (
                  <Card className="bg-white border-none shadow-sm rounded-[2rem] p-8 animate-in slide-in-from-top-4 duration-500">
                     <form onSubmit={handleAddAddress} className="space-y-8">
+                       <div className="space-y-6">
+                          <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Location Type</Label>
+                          <RadioGroup 
+                            value={newAddress.label} 
+                            onValueChange={(val) => setNewAddress({...newAddress, label: val})}
+                            className="flex flex-wrap gap-4"
+                          >
+                            {['Home', 'Office', 'Work', 'Other'].map((label) => (
+                              <Label key={label} className={`flex items-center gap-2 px-6 py-3 rounded-xl border-2 cursor-pointer transition-all ${newAddress.label === label ? 'border-primary bg-primary/5 text-slate-900' : 'border-slate-100 hover:border-slate-200 text-slate-400'}`}>
+                                <RadioGroupItem value={label} className="sr-only" />
+                                {label === 'Home' && <HomeIcon className="h-4 w-4" />}
+                                {label === 'Office' && <Briefcase className="h-4 w-4" />}
+                                {label === 'Work' && <Briefcase className="h-4 w-4" />}
+                                {label === 'Other' && <MapPin className="h-4 w-4" />}
+                                <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+                              </Label>
+                            ))}
+                          </RadioGroup>
+                       </div>
+
                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Location Label</Label>
-                            <Select value={newAddress.label} onValueChange={(val) => setNewAddress({...newAddress, label: val})}>
-                              <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none font-bold">
-                                <SelectValue placeholder="Label" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="Home">Home</SelectItem>
-                                <SelectItem value="Office">Office</SelectItem>
-                                <SelectItem value="Work">Work</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </div>
                           <div className="space-y-2">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Flat / House No.</Label>
                             <Input required value={newAddress.houseNo} onChange={e => setNewAddress({...newAddress, houseNo: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
@@ -460,6 +464,10 @@ export default function UserDashboard() {
                           <div className="space-y-2">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Pincode</Label>
                             <Input required maxLength={6} value={newAddress.pincode} onChange={e => setNewAddress({...newAddress, pincode: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Landmark</Label>
+                            <Input value={newAddress.landmark} onChange={e => setNewAddress({...newAddress, landmark: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
                           </div>
                        </div>
                        <Button type="submit" disabled={isSavingAddress} className="h-14 px-10 bg-slate-900 text-white hover:bg-primary hover:text-slate-900 font-black uppercase tracking-widest rounded-2xl shadow-xl">
@@ -486,7 +494,7 @@ export default function UserDashboard() {
                               {address.label === 'Home' ? <HomeIcon className="h-5 w-5" /> : 
                                address.label === 'Office' ? <Briefcase className="h-5 w-5" /> : 
                                address.label === 'Work' ? <Briefcase className="h-5 w-5" /> :
-                               <Globe className="h-5 w-5" />}
+                               <MapPin className="h-5 w-5" />}
                            </div>
                            <div className="space-y-2">
                              <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight">{address.label}</h4>
