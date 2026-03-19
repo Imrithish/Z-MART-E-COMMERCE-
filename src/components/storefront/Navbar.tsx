@@ -2,7 +2,23 @@
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Search, Home, LogOut, ShieldCheck, ChevronDown, MapPin, Laptop, Shirt, Utensils, Sparkles, BookOpen, ArrowRight } from "lucide-react";
+import { 
+  ShoppingCart, 
+  User, 
+  Search, 
+  Home, 
+  LogOut, 
+  ShieldCheck, 
+  ChevronDown, 
+  MapPin, 
+  Laptop, 
+  Shirt, 
+  Utensils, 
+  Sparkles, 
+  ArrowRight,
+  Menu,
+  X
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
@@ -12,7 +28,15 @@ import { useUser, useAuth } from "@/firebase";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetHeader, 
+  SheetTitle, 
+  SheetTrigger 
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const CATEGORY_GROUPS = [
   {
@@ -60,7 +84,8 @@ const CATEGORY_GROUPS = [
 export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalItems } = useCart();
   const router = useRouter();
   const { user } = useUser();
@@ -76,7 +101,9 @@ export function Navbar() {
 
   const selectCategoryFromMenu = (category: string) => {
     setSelectedCategory(category);
-    setIsMenuOpen(false);
+    setIsMegaMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    router.push(`/products?category=${category}`);
   };
 
   const handleSignOut = async () => {
@@ -88,14 +115,71 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full flex flex-col shadow-xl">
       {/* Primary Header */}
-      <div className="amazon-header-bg text-white h-[65px] flex items-center px-4 md:px-6 gap-4 md:gap-8">
+      <div className="amazon-header-bg text-white h-[65px] flex items-center px-4 md:px-6 gap-3 md:gap-8">
+        
+        {/* Mobile Menu Trigger */}
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 border-none bg-slate-900 text-white w-[300px]">
+            <SheetHeader className="p-6 border-b border-white/5 bg-slate-950">
+              <SheetTitle className="text-white flex items-center gap-2">
+                <span className="text-xl font-black uppercase tracking-tighter">Z-MART</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Browse</span>
+              </SheetTitle>
+            </SheetHeader>
+            <ScrollArea className="h-[calc(100vh-80px)]">
+              <div className="p-6 space-y-8">
+                {CATEGORY_GROUPS.map((group) => (
+                  <div key={group.label} className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <group.icon className="h-4 w-4 text-primary" />
+                      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{group.label}</h4>
+                    </div>
+                    <ul className="space-y-3 pl-7">
+                      {group.items.map((item) => (
+                        <li key={item.name}>
+                          <button 
+                            onClick={() => selectCategoryFromMenu(item.name)}
+                            className="text-sm font-bold text-white/80 hover:text-primary transition-colors uppercase tracking-tight"
+                          >
+                            {item.name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                
+                <Separator className="bg-white/5" />
+                
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account</h4>
+                  <ul className="space-y-3 pl-7">
+                    <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Profile</Link></li>
+                    <li><Link href="/account#orders" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Orders</Link></li>
+                    {user && (
+                      <li>
+                        <button onClick={handleSignOut} className="text-sm font-bold text-red-400 uppercase tracking-tight">Sign Out</button>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
+
         {/* Logo */}
         <Link href="/" className="flex items-center group shrink-0">
-          <span className="text-2xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors uppercase">Z-MART</span>
-          <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-1" />
+          <span className="text-xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors uppercase">Z-MART</span>
+          <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-0.5" />
         </Link>
 
-        {/* Location */}
+        {/* Location (Desktop Only) */}
         <div className="hidden lg:flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm cursor-pointer transition-all">
           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Deliver to</span>
           <div className="flex items-center gap-1">
@@ -107,11 +191,11 @@ export function Navbar() {
         {/* Search Bar with Mega Menu Trigger */}
         <div className="flex flex-1 items-center h-10 rounded-md overflow-hidden bg-white group focus-within:ring-2 focus-within:ring-primary">
           <div className="h-full border-r border-slate-200 hidden md:block">
-            <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <Popover open={isMegaMenuOpen} onOpenChange={setIsMegaMenuOpen}>
               <PopoverTrigger asChild>
                 <button className="h-full bg-slate-50 hover:bg-slate-100 text-slate-600 px-4 gap-2 flex items-center text-[10px] font-black uppercase tracking-widest min-w-[140px] transition-colors">
                   <span className="truncate">{selectedCategory}</span>
-                  <ChevronDown className={cn("h-3 w-3 transition-transform", isMenuOpen && "rotate-180")} />
+                  <ChevronDown className={cn("h-3 w-3 transition-transform", isMegaMenuOpen && "rotate-180")} />
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-[800px] p-0 border-none shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-none overflow-hidden" align="start">
@@ -150,7 +234,7 @@ export function Navbar() {
                   <Link 
                     href="/products" 
                     className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-2"
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => setIsMegaMenuOpen(false)}
                   >
                     View all features <ArrowRight className="h-3 w-3" />
                   </Link>
@@ -161,26 +245,26 @@ export function Navbar() {
           
           <form onSubmit={handleSearch} className="flex-1 flex items-center h-full">
             <Input 
-              placeholder="Search Z-MART products..." 
-              className="flex-1 border-none focus-visible:ring-0 text-slate-900 placeholder:text-slate-400 h-full rounded-none px-4 font-bold text-sm"
+              placeholder="Search Z-MART..." 
+              className="flex-1 border-none focus-visible:ring-0 text-slate-900 placeholder:text-slate-400 h-full rounded-none px-3 font-bold text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-5 transition-all shrink-0">
+            <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-3 md:px-5 transition-all shrink-0">
               <Search className="h-5 w-5 text-slate-900" />
             </button>
           </form>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 md:gap-4">
-          <div className="group relative">
+        <div className="flex items-center gap-1 md:gap-4">
+          <div className="group relative hidden sm:block">
             <button className="flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm transition-all text-left">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                {user ? `Hello, ${user.displayName?.split(' ')[0]}` : 'Sign In'}
+                {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Sign In'}
               </span>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-black uppercase tracking-tight">Account & Lists</span>
+                <span className="text-xs font-black uppercase tracking-tight">Account</span>
                 <ChevronDown className="h-3 w-3 text-slate-400" />
               </div>
             </button>
@@ -218,8 +302,8 @@ export function Navbar() {
 
           <Link href="/cart" className="flex items-end gap-1 hover:ring-1 hover:ring-white p-2 rounded-sm transition-all group">
             <div className="relative">
-              <ShoppingCart className="h-7 w-7 text-white" />
-              <span className="absolute -top-1 left-1/2 -translate-x-1/2 h-5 w-5 text-primary text-[12px] font-black flex items-center justify-center">
+              <ShoppingCart className="h-6 w-6 md:h-7 md:w-7 text-white" />
+              <span className="absolute -top-1 left-1/2 -translate-x-1/2 h-4 w-4 md:h-5 md:w-5 text-primary text-[10px] md:text-[12px] font-black flex items-center justify-center">
                 {totalItems}
               </span>
             </div>
@@ -228,8 +312,8 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Amazon-Style Sub-navigation */}
-      <div className="amazon-subnav-bg text-white h-[40px] flex items-center px-4 md:px-6 gap-6 overflow-x-auto no-scrollbar text-[11px] font-black uppercase tracking-widest">
+      {/* Amazon-Style Sub-navigation (Hidden on very small mobile, Scrollable) */}
+      <div className="amazon-subnav-bg text-white h-[40px] flex items-center px-4 md:px-6 gap-3 md:gap-6 overflow-x-auto no-scrollbar text-[10px] md:text-[11px] font-black uppercase tracking-widest">
         <Link href="/" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all flex items-center gap-2 shrink-0">
           <Home className="h-3 w-3" /> Home
         </Link>
