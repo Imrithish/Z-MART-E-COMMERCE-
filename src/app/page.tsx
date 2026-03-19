@@ -8,7 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { ToastAction } from "@/components/ui/toast";
 import { useCollection, useFirestore } from "@/firebase";
@@ -36,15 +36,15 @@ export default function Home() {
 
   const { data: products, loading } = useCollection(productsQuery);
 
-  const deals = products?.filter((p: any) => p.isDeal) || [];
-  const electronics = products?.filter((p: any) => p.category === 'Electronics') || [];
+  const deals = useMemo(() => products?.filter((p: any) => p.isDeal) || [], [products]);
+  const electronics = useMemo(() => products?.filter((p: any) => p.category === 'Electronics') || [], [products]);
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleAddToCart = (e: React.MouseEvent, product: any) => {
+  const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
     addItem(product);
     toast({
@@ -72,9 +72,9 @@ export default function Home() {
         </ToastAction>
       ),
     });
-  };
+  }, [addItem, toast]);
   
-  const amazonGridItems = [
+  const amazonGridItems = useMemo(() => [
     { title: "Gaming accessories", items: ["Headsets", "Keyboards", "Mice", "Chairs"], type: "quad" },
     { title: "Deal of the Day", item: deals[0], type: "single" },
     { title: "Health & Personal Care", items: ["Skincare", "Oral Care", "Haircare", "Grooming"], type: "quad" },
@@ -87,7 +87,7 @@ export default function Home() {
     { title: "Home Decor Trends", item: products?.[11], type: "single" },
     { title: "Fashion for Everyone", items: ["Menswear", "Womenswear", "Kids", "Accessories"], type: "quad" },
     { title: "Fitness & Outdoors", item: products?.[10], type: "single" }
-  ];
+  ], [deals, electronics, products]);
 
   if (loading) {
     return (
@@ -103,7 +103,6 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1 relative">
-        {/* Hero Section */}
         <section className="relative w-full h-[600px] overflow-hidden">
           <div className="absolute inset-0">
             <Image 
@@ -125,7 +124,6 @@ export default function Home() {
           </button>
         </section>
 
-        {/* Main Content Grid - Overlapping the Hero */}
         <div className="max-w-[1500px] mx-auto px-4 -mt-[320px] relative z-30 pb-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr">
             {amazonGridItems.map((gridItem, idx) => (
@@ -205,7 +203,6 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Today's Deals Scroller */}
           {deals.length > 0 && (
             <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
               <div className="flex items-center gap-4 mb-6">
@@ -251,7 +248,6 @@ export default function Home() {
             </section>
           )}
 
-          {/* Secondary Carousel - Best Sellers */}
           {electronics.length > 0 && (
             <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
               <div className="flex items-center gap-4 mb-6">
@@ -284,7 +280,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* Back to top button */}
         <button 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-sm font-bold py-4 transition-colors tracking-wide mt-10"
@@ -292,7 +287,6 @@ export default function Home() {
           Back to top
         </button>
 
-        {/* Amazon Style Footer */}
         <footer className="bg-[#232f3e] text-white pt-12 pb-16">
           <div className="max-w-[1000px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
             <div className="space-y-4">

@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense, useMemo } from "react";
+import { useEffect, useState, Suspense, useMemo, useCallback } from "react";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
@@ -63,12 +63,12 @@ function ProductList() {
     return filtered;
   }, [allProducts, categoryFilter, searchQuery]);
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleAddToCart = (e: React.MouseEvent, product: any) => {
+  const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
     addItem(product);
     toast({
@@ -96,7 +96,7 @@ function ProductList() {
         </ToastAction>
       ),
     });
-  };
+  }, [addItem, toast]);
 
   if (loading) {
     return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>;
