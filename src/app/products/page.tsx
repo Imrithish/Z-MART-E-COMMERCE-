@@ -87,7 +87,7 @@ function ProductList() {
                 <div className="text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
                 <CardTitle className="text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[3rem]">
                   {product.name}
-                </Title>
+                </CardTitle>
                 <div className="flex items-center gap-1">
                    <div className="flex">
                     {[1,2,3,4,5].map(i => (
