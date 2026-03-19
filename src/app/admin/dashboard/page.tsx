@@ -1,15 +1,16 @@
+
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_ORDERS } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ShoppingCart, TrendingUp, Users, ArrowUpRight, Box, Loader2, IndianRupee } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@/firebase";
+import { useUser, useCollection, useFirestore } from "@/firebase";
+import { collection, query, orderBy, limit } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -20,16 +21,33 @@ const formatCurrency = (amount: number) => {
 };
 
 export default function AdminDashboard() {
-  const { user, loading } = useUser();
+  const { user, loading: authLoading } = useUser();
+  const db = useFirestore();
   const router = useRouter();
 
+  const ordersQuery = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(10));
+  }, [db]);
+
+  const { data: recentOrders, loading: ordersLoading } = useCollection(ordersQuery);
+
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push('/admin/login');
     }
-  }, [user, loading, router]);
+  }, [user, authLoading, router]);
 
-  if (loading) {
+  // Real Stats Calculation
+  const totalRevenue = useMemo(() => {
+    return recentOrders?.reduce((sum, order: any) => sum + (order.totalAmount || 0), 0) || 0;
+  }, [recentOrders]);
+
+  const activeOrdersCount = useMemo(() => {
+    return recentOrders?.filter((order: any) => order.status !== 'Delivered').length || 0;
+  }, [recentOrders]);
+
+  if (authLoading) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
@@ -43,9 +61,9 @@ export default function AdminDashboard() {
   if (!user) return null;
 
   const stats = [
-    { label: 'Total Revenue', value: formatCurrency(1284500), icon: IndianRupee, change: '+12.5%', color: 'text-green-700', bg: 'bg-green-100' },
-    { label: 'Active Orders', value: '45', icon: ShoppingCart, change: '+5', color: 'text-blue-700', bg: 'bg-blue-100' },
-    { label: 'New Customers', value: '1,240', icon: Users, change: '+18%', color: 'text-purple-700', bg: 'bg-purple-100' },
+    { label: 'Recent Revenue', value: formatCurrency(totalRevenue), icon: IndianRupee, change: '+12.5%', color: 'text-green-700', bg: 'bg-green-100' },
+    { label: 'Active Orders', value: activeOrdersCount.toString(), icon: ShoppingCart, change: '+5', color: 'text-blue-700', bg: 'bg-blue-100' },
+    { label: 'Total Customers', value: '1,240', icon: Users, change: '+18%', color: 'text-purple-700', bg: 'bg-purple-100' },
     { label: 'Conversion Rate', value: '3.2%', icon: TrendingUp, change: '+0.4%', color: 'text-orange-700', bg: 'bg-orange-100' },
   ];
 
@@ -83,43 +101,49 @@ export default function AdminDashboard() {
             <CardHeader className="p-8 border-b border-slate-100">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Recent Transactions</CardTitle>
-                <Badge variant="outline" className="rounded-xl px-4 py-1.5 font-black uppercase text-[10px] text-slate-700 border-slate-300">Real-time Updates</Badge>
+                <Badge variant="outline" className="rounded-xl px-4 py-1.5 font-black uppercase text-[10px] text-slate-700 border-slate-300">Live Updates</Badge>
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <Table>
-                <TableHeader className="bg-slate-100/50">
-                  <TableRow className="hover:bg-transparent border-none">
-                    <TableHead className="px-8 h-14 font-black text-slate-600 uppercase text-[10px] tracking-widest">ID</TableHead>
-                    <TableHead className="font-black text-slate-600 uppercase text-[10px] tracking-widest">Customer</TableHead>
-                    <TableHead className="font-black text-slate-600 uppercase text-[10px] tracking-widest">Status</TableHead>
-                    <TableHead className="font-black text-slate-600 uppercase text-[10px] tracking-widest text-right px-8">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {MOCK_ORDERS.map((order) => (
-                    <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/80 transition-colors border-slate-100">
-                      <TableCell className="px-8 font-mono text-[11px] font-bold text-slate-600 uppercase">{order.id}</TableCell>
-                      <TableCell className="py-5">
-                        <div className="font-black text-slate-900">{order.customerName}</div>
-                        <div className="text-[10px] text-slate-500 font-bold">{order.customerEmail}</div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge 
-                          className={`rounded-xl font-black px-4 py-1 text-[9px] uppercase tracking-widest ${
-                            order.status === 'Shipped' ? 'bg-green-100 text-green-800' : 'bg-slate-200 text-slate-800'
-                          }`}
-                        >
-                          {order.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right px-8 font-black text-slate-900 text-lg">
-                        {formatCurrency(order.totalAmount)}
-                      </TableCell>
+              {ordersLoading ? (
+                <div className="p-10 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" /></div>
+              ) : recentOrders && recentOrders.length > 0 ? (
+                <Table>
+                  <TableHeader className="bg-slate-100/50">
+                    <TableRow className="hover:bg-transparent border-none">
+                      <TableHead className="px-8 h-14 font-black text-slate-600 uppercase text-[10px] tracking-widest">ID</TableHead>
+                      <TableHead className="font-black text-slate-600 uppercase text-[10px] tracking-widest">Customer</TableHead>
+                      <TableHead className="font-black text-slate-600 uppercase text-[10px] tracking-widest">Status</TableHead>
+                      <TableHead className="font-black text-slate-600 uppercase text-[10px] tracking-widest text-right px-8">Amount</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {recentOrders.map((order: any) => (
+                      <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/80 transition-colors border-slate-100">
+                        <TableCell className="px-8 font-mono text-[11px] font-bold text-slate-600 uppercase">{order.id.slice(0, 8)}</TableCell>
+                        <TableCell className="py-5">
+                          <div className="font-black text-slate-900">{order.customerName}</div>
+                          <div className="text-[10px] text-slate-500 font-bold">{order.customerEmail}</div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            className={`rounded-xl font-black px-4 py-1 text-[9px] uppercase tracking-widest ${
+                              order.status === 'Shipped' ? 'bg-green-100 text-green-800' : 'bg-slate-200 text-slate-800'
+                            }`}
+                          >
+                            {order.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right px-8 font-black text-slate-900 text-lg">
+                          {formatCurrency(order.totalAmount)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="p-12 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">No transactions yet</div>
+              )}
             </CardContent>
           </Card>
 
@@ -144,20 +168,6 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
-
-            <Card className="bg-primary text-slate-900 border-none shadow-2xl rounded-3xl p-8 overflow-hidden relative">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <TrendingUp className="h-24 w-24" />
-              </div>
-              <CardHeader className="p-0 mb-4 relative z-10">
-                <CardTitle className="text-sm font-black uppercase tracking-[0.2em] text-slate-800">Insights</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 relative z-10 space-y-4">
-                <div className="text-2xl font-black leading-tight">Your sales are up 25% compared to yesterday!</div>
-                <p className="text-xs font-bold text-slate-800/80 leading-relaxed">Consider increasing your marketing spend for 'Electronics' as it's the trending category today.</p>
-                <Button className="w-full bg-slate-900 text-white hover:bg-slate-800 font-black rounded-xl h-12 mt-4 transition-all active:scale-95">View Report</Button>
               </CardContent>
             </Card>
           </div>

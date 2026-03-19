@@ -1,15 +1,18 @@
+
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
-import { MOCK_PRODUCTS, Product } from "@/lib/mock-data";
-import { Star, ChevronRight, ChevronLeft, CheckCircle2 } from "lucide-react";
+import { Product } from "@/lib/mock-data";
+import { Star, ChevronRight, ChevronLeft, CheckCircle2, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { ToastAction } from "@/components/ui/toast";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection, query, orderBy, limit } from "firebase/firestore";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -22,10 +25,19 @@ const formatCurrency = (amount: number) => {
 export default function Home() {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const db = useFirestore();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const deals = MOCK_PRODUCTS.filter(p => p.isDeal);
+  const productsQuery = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(20));
+  }, [db]);
+
+  const { data: products, loading } = useCollection(productsQuery);
+
+  const deals = products?.filter((p: any) => p.isDeal) || [];
+  const electronics = products?.filter((p: any) => p.category === 'Electronics') || [];
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -64,18 +76,27 @@ export default function Home() {
   
   const amazonGridItems = [
     { title: "Gaming accessories", items: ["Headsets", "Keyboards", "Mice", "Chairs"], type: "quad" },
-    { title: "Deal of the Day", item: MOCK_PRODUCTS[0], type: "single" },
+    { title: "Deal of the Day", item: deals[0], type: "single" },
     { title: "Health & Personal Care", items: ["Skincare", "Oral Care", "Haircare", "Grooming"], type: "quad" },
     { title: "Sign in for the best experience", type: "auth" },
-    { title: "Explore Best Sellers", item: MOCK_PRODUCTS[7], type: "single" },
-    { title: "Laptops for every need", item: MOCK_PRODUCTS[9], type: "single" },
+    { title: "Explore Best Sellers", item: products?.[7], type: "single" },
+    { title: "Laptops for every need", item: electronics?.[0], type: "single" },
     { title: "Refresh your space", items: ["Kitchen", "Dining", "Bedroom", "Living"], type: "quad" },
-    { title: "Latest Smartphone Deals", item: MOCK_PRODUCTS[2], type: "single" },
+    { title: "Latest Smartphone Deals", item: electronics?.[1], type: "single" },
     { title: "Beauty Picks", items: ["Makeup", "Facewash", "Moisturizer", "Fragrance"], type: "quad" },
-    { title: "Home Decor Trends", item: MOCK_PRODUCTS[11], type: "single" },
+    { title: "Home Decor Trends", item: products?.[11], type: "single" },
     { title: "Fashion for Everyone", items: ["Menswear", "Womenswear", "Kids", "Accessories"], type: "quad" },
-    { title: "Fitness & Outdoors", item: MOCK_PRODUCTS[10], type: "single" }
+    { title: "Fitness & Outdoors", item: products?.[10], type: "single" }
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#eaeded] flex flex-col items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="mt-4 font-bold text-slate-500 uppercase tracking-widest text-xs">Loading Marketplace...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#eaeded] flex flex-col font-body">
@@ -185,78 +206,82 @@ export default function Home() {
           </div>
 
           {/* Today's Deals Scroller */}
-          <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-4 mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Today's Deals</h2>
-              <Link href="/products" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
-                See all deals
-              </Link>
-            </div>
-            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6 items-stretch">
-              {deals.map((deal) => (
-                <div 
-                  key={deal.id} 
-                  className="min-w-[240px] flex flex-col gap-3 group cursor-pointer border border-transparent hover:border-slate-100 p-2 rounded-sm transition-all"
-                  onClick={() => handleProductClick(deal)}
-                >
-                  <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm border border-slate-100">
-                    <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-6 group-hover:scale-105 transition-transform" />
-                  </div>
-                  <div className="space-y-1.5 flex-1 flex flex-col">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-                        {Math.round((1 - deal.price / (deal.originalPrice || deal.price)) * 100)}% off
-                      </span>
-                      <span className="text-[#cc0c39] text-[10px] font-bold uppercase tracking-tighter">Limited time deal</span>
+          {deals.length > 0 && (
+            <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Today's Deals</h2>
+                <Link href="/products" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
+                  See all deals
+                </Link>
+              </div>
+              <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6 items-stretch">
+                {deals.map((deal) => (
+                  <div 
+                    key={deal.id} 
+                    className="min-w-[240px] flex flex-col gap-3 group cursor-pointer border border-transparent hover:border-slate-100 p-2 rounded-sm transition-all"
+                    onClick={() => handleProductClick(deal)}
+                  >
+                    <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm border border-slate-100">
+                      <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-6 group-hover:scale-105 transition-transform" />
                     </div>
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="text-xl font-bold text-slate-900">{formatCurrency(deal.price)}</span>
-                      {deal.originalPrice && (
-                        <span className="text-xs text-slate-400 line-through font-medium">M.R.P: {formatCurrency(deal.originalPrice)}</span>
-                      )}
+                    <div className="space-y-1.5 flex-1 flex flex-col">
+                      <div className="flex items-center gap-2">
+                        <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+                          {Math.round((1 - deal.price / (deal.originalPrice || deal.price * 1.2)) * 100)}% off
+                        </span>
+                        <span className="text-[#cc0c39] text-[10px] font-bold uppercase tracking-tighter">Limited time deal</span>
+                      </div>
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-xl font-bold text-slate-900">{formatCurrency(deal.price)}</span>
+                        {deal.originalPrice && (
+                          <span className="text-xs text-slate-400 line-through font-medium">M.R.P: {formatCurrency(deal.originalPrice)}</span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-700 font-medium line-clamp-2 leading-relaxed h-[32px]">{deal.name}</p>
+                      <button 
+                        onClick={(e) => handleAddToCart(e, deal)}
+                        className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-auto"
+                      >
+                        Add to Cart
+                      </button>
                     </div>
-                    <p className="text-xs text-slate-700 font-medium line-clamp-2 leading-relaxed h-[32px]">{deal.name}</p>
-                    <button 
-                      onClick={(e) => handleAddToCart(e, deal)}
-                      className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-auto"
-                    >
-                      Add to Cart
-                    </button>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Secondary Carousel - Best Sellers */}
-          <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-4 mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Best Sellers in Electronics</h2>
-              <Link href="/products?category=Electronics" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
-                See more
-              </Link>
-            </div>
-            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6">
-              {MOCK_PRODUCTS.filter(p => p.category === 'Electronics').map((product) => (
-                <div 
-                  key={product.id} 
-                  className="min-w-[180px] group cursor-pointer"
-                  onClick={() => handleProductClick(product)}
-                >
-                  <div className="relative aspect-square bg-white rounded-sm mb-3">
-                    <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-2 group-hover:scale-105 transition-transform" />
-                  </div>
-                  <div className="flex items-center gap-1 mb-1">
-                    <div className="flex">
-                      {[1,2,3,4,5].map(i => <Star key={i} className={`h-2.5 w-2.5 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-200'}`} />)}
+          {electronics.length > 0 && (
+            <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Best Sellers in Electronics</h2>
+                <Link href="/products?category=Electronics" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
+                  See more
+                </Link>
+              </div>
+              <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6">
+                {electronics.map((product) => (
+                  <div 
+                    key={product.id} 
+                    className="min-w-[180px] group cursor-pointer"
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <div className="relative aspect-square bg-white rounded-sm mb-3">
+                      <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-2 group-hover:scale-105 transition-transform" />
                     </div>
-                    <span className="text-[10px] text-[#007185]">{product.reviews.toLocaleString()}</span>
+                    <div className="flex items-center gap-1 mb-1">
+                      <div className="flex">
+                        {[1,2,3,4,5].map(i => <Star key={i} className={`h-2.5 w-2.5 ${i <= Math.floor(product.rating || 5) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-200'}`} />)}
+                      </div>
+                      <span className="text-[10px] text-[#007185]">{(product.reviews || 0).toLocaleString()}</span>
+                    </div>
+                    <p className="text-sm font-bold text-slate-900">{formatCurrency(product.price)}</p>
                   </div>
-                  <p className="text-sm font-bold text-slate-900">{formatCurrency(product.price)}</p>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
 
         {/* Back to top button */}

@@ -3,7 +3,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_PRODUCTS, Product } from "@/lib/mock-data";
+import { Product } from "@/lib/mock-data";
 import { Star, Filter, SlidersHorizontal, Loader2, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,8 +11,9 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
-import { useFirestore } from "@/firebase";
+import { useEffect, useState, Suspense, useMemo } from "react";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection, query, orderBy } from "firebase/firestore";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { ToastAction } from "@/components/ui/toast";
 
@@ -27,32 +28,40 @@ const formatCurrency = (amount: number) => {
 function ProductList() {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const db = useFirestore();
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get('category');
   const searchQuery = searchParams.get('q');
   
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [displayProducts, setDisplayProducts] = useState<any[]>(MOCK_PRODUCTS);
 
-  useEffect(() => {
-    let filtered = [...MOCK_PRODUCTS];
+  const productsQuery = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'));
+  }, [db]);
 
-    if (categoryFilter) {
-      filtered = filtered.filter(p => p.category.toLowerCase() === categoryFilter.toLowerCase());
+  const { data: allProducts, loading } = useCollection(productsQuery);
+
+  const displayProducts = useMemo(() => {
+    if (!allProducts) return [];
+    let filtered = [...allProducts];
+
+    if (categoryFilter && categoryFilter !== "All Categories") {
+      filtered = filtered.filter((p: any) => p.category?.toLowerCase() === categoryFilter.toLowerCase());
     }
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter(p => 
-        p.name.toLowerCase().includes(q) || 
-        p.description.toLowerCase().includes(q) || 
-        p.category.toLowerCase().includes(q)
+      filtered = filtered.filter((p: any) => 
+        p.name?.toLowerCase().includes(q) || 
+        p.description?.toLowerCase().includes(q) || 
+        p.category?.toLowerCase().includes(q)
       );
     }
 
-    setDisplayProducts(filtered);
-  }, [categoryFilter, searchQuery]);
+    return filtered;
+  }, [allProducts, categoryFilter, searchQuery]);
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -89,11 +98,15 @@ function ProductList() {
     });
   };
 
+  if (loading) {
+    return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>;
+  }
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {displayProducts.length > 0 ? (
-          displayProducts.map((product) => (
+          displayProducts.map((product: any) => (
             <Card 
               key={product.id} 
               className="group overflow-hidden border-none shadow-sm bg-white rounded-sm flex flex-col cursor-pointer hover:shadow-md transition-shadow"
@@ -115,10 +128,10 @@ function ProductList() {
                 <div className="flex items-center gap-1">
                    <div className="flex">
                     {[1,2,3,4,5].map(i => (
-                      <Star key={i} className={`h-3 w-3 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
+                      <Star key={i} className={`h-3 w-3 ${i <= Math.floor(product.rating || 5) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
                     ))}
                   </div>
-                  <span className="text-[11px] text-[#007185] ml-1">{product.reviews.toLocaleString()}</span>
+                  <span className="text-[11px] text-[#007185] ml-1">{(product.reviews || 0).toLocaleString()}</span>
                 </div>
               </CardHeader>
               <CardContent className="px-4 pb-4">
@@ -171,7 +184,7 @@ export default function StorefrontProducts() {
             <h1 className="text-2xl font-bold tracking-tight">
               {q ? `Results for "${q}"` : "Search Results"}
             </h1>
-            <p className="text-sm text-gray-500">Showing items from our premium collection.</p>
+            <p className="text-sm text-gray-500">Showing items from our live collection.</p>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="outline" className="gap-2 h-9 text-xs">

@@ -1,10 +1,10 @@
+
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { useCart } from "@/context/CartContext";
 import { 
   Trash2, 
-  ChevronDown, 
   CheckCircle2, 
   ShoppingBag, 
   ArrowRight, 
@@ -12,7 +12,8 @@ import {
   Truck,
   Heart,
   Tag,
-  Star
+  Star,
+  Loader2
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,14 +22,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_PRODUCTS } from "@/lib/mock-data";
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselNext, 
-  CarouselPrevious 
-} from "@/components/ui/carousel";
+import { useFirestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -39,19 +39,59 @@ const formatCurrency = (amount: number) => {
 };
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal, totalItems } = useCart();
+  const { items, removeItem, updateQuantity, subtotal, totalItems, clearCart } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const db = useFirestore();
+  const { toast } = useToast();
+  const router = useRouter();
   
-  // Free shipping logic
   const FREE_SHIPPING_THRESHOLD = 2000;
   const progressToFreeShipping = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
   const remainingForFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
+
+  const handleCheckout = async () => {
+    if (!db || items.length === 0) return;
+    
+    setIsCheckingOut(true);
+    const orderData = {
+      customerName: "Guest User", // In a real app, this would come from the auth profile
+      customerEmail: "guest@example.com",
+      items: items.map(item => ({
+        productId: item.product.id,
+        name: item.product.name,
+        quantity: item.quantity,
+        price: item.product.price
+      })),
+      totalAmount: subtotal + (progressToFreeShipping === 100 ? 0 : 99),
+      status: 'Pending',
+      createdAt: serverTimestamp(),
+    };
+
+    addDoc(collection(db, 'orders'), orderData)
+      .then(() => {
+        toast({
+          title: "Order Placed Successfully!",
+          description: "Thank you for shopping with Z-Mart. Your order is being processed.",
+        });
+        clearCart();
+        router.push('/');
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: 'orders',
+          operation: 'create',
+          requestResourceData: orderData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => setIsCheckingOut(false));
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-body">
       <Navbar />
 
       <main className="flex-1 max-w-[1400px] mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Cart Items (8 Cols) */}
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
             <div className="flex justify-between items-center mb-8">
@@ -60,7 +100,7 @@ export default function CartPage() {
                 <p className="text-slate-500 font-medium">You have {totalItems} items in your cart</p>
               </div>
               {items.length > 0 && (
-                 <button className="text-sm font-black text-red-500 hover:text-red-600 uppercase tracking-widest flex items-center gap-2">
+                 <button onClick={clearCart} className="text-sm font-black text-red-500 hover:text-red-600 uppercase tracking-widest flex items-center gap-2">
                     Clear Basket
                  </button>
               )}
@@ -77,9 +117,6 @@ export default function CartPage() {
                   <Button asChild className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs transition-all active:scale-95 text-white">
                     <Link href="/products">Browse Trending</Link>
                   </Button>
-                  <Button variant="outline" asChild className="h-14 px-8 rounded-2xl border-slate-200 font-black uppercase tracking-widest text-xs transition-all">
-                    <Link href="/">View Deals</Link>
-                  </Button>
                 </div>
               </div>
             ) : (
@@ -93,11 +130,6 @@ export default function CartPage() {
                         fill 
                         className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
                       />
-                      {item.product.isDeal && (
-                        <div className="absolute top-2 left-2">
-                           <Badge className="bg-red-500 text-white font-black uppercase text-[8px] tracking-widest border-none">Limited Deal</Badge>
-                        </div>
-                      )}
                     </div>
                     
                     <div className="flex-1 flex flex-col">
@@ -109,19 +141,14 @@ export default function CartPage() {
                           <span className="text-2xl font-black text-slate-900">
                             {formatCurrency(item.product.price)}
                           </span>
-                          {item.product.originalPrice && (
-                            <p className="text-xs text-slate-400 line-through font-bold">
-                              {formatCurrency(item.product.originalPrice)}
-                            </p>
-                          )}
                         </div>
                       </div>
                       
                       <div className="flex items-center gap-2 mb-4">
                         <div className="flex text-amber-400">
-                          {[1,2,3,4,5].map(i => <Star key={i} className={`h-3 w-3 fill-current ${i > Math.floor(item.product.rating) ? 'text-slate-200' : ''}`} />)}
+                          {[1,2,3,4,5].map(i => <Star key={i} className={`h-3 w-3 fill-current ${i > Math.floor(item.product.rating || 5) ? 'text-slate-200' : ''}`} />)}
                         </div>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.product.reviews} Verified Reviews</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{(item.product.reviews || 0)} Reviews</span>
                       </div>
 
                       <div className="flex flex-wrap items-center gap-6 mt-auto">
@@ -149,10 +176,6 @@ export default function CartPage() {
                           >
                             <Trash2 className="h-3 w-3" /> Remove
                           </button>
-                          
-                          <button className="text-[10px] font-black text-slate-400 hover:text-primary uppercase tracking-widest flex items-center gap-1.5 transition-colors">
-                            <Heart className="h-3 w-3" /> Move to Wishlist
-                          </button>
                         </div>
                       </div>
                     </div>
@@ -161,39 +184,10 @@ export default function CartPage() {
               </div>
             )}
           </div>
-
-          {/* Cross-sell Carousel */}
-          {items.length > 0 && (
-            <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest mb-8">Recommended For You</h3>
-              <Carousel opts={{ align: "start" }} className="w-full">
-                <CarouselContent className="-ml-4">
-                  {MOCK_PRODUCTS.filter(p => !items.some(i => i.product.id === p.id)).map((product) => (
-                    <CarouselItem key={product.id} className="pl-4 md:basis-1/3 lg:basis-1/4">
-                      <div className="group space-y-4 p-4 rounded-3xl border border-transparent hover:border-slate-100 hover:bg-slate-50/50 transition-all">
-                        <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50">
-                          <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" />
-                        </div>
-                        <div>
-                          <h4 className="font-black text-slate-900 text-sm line-clamp-1 mb-1">{product.name}</h4>
-                          <p className="text-lg font-black text-slate-900">{formatCurrency(product.price)}</p>
-                        </div>
-                        <Button variant="outline" className="w-full h-10 rounded-xl border-slate-200 font-black uppercase tracking-widest text-[9px]">Add</Button>
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="-left-4 bg-white" />
-                <CarouselNext className="-right-4 bg-white" />
-              </Carousel>
-            </div>
-          )}
         </div>
 
-        {/* Right Column: Order Summary (4 Cols) */}
         {items.length > 0 && (
           <div className="lg:col-span-4 space-y-6 sticky top-[100px]">
-            {/* Free Shipping Tracker */}
             <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 overflow-hidden relative">
               <div className="flex items-center gap-3 mb-4">
                 <div className={`p-2 rounded-xl ${progressToFreeShipping === 100 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>
@@ -209,18 +203,9 @@ export default function CartPage() {
                 </div>
               </div>
               <Progress value={progressToFreeShipping} className="h-2 mb-2 bg-slate-100" />
-              <div className="flex justify-between text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">
-                <span>Basket: {formatCurrency(subtotal)}</span>
-                <span>Goal: {formatCurrency(FREE_SHIPPING_THRESHOLD)}</span>
-              </div>
             </div>
 
-            {/* Price Summary */}
             <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
-                  <ShoppingBag className="h-32 w-32 rotate-12" />
-               </div>
-
                <div className="relative z-10 space-y-6">
                 <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white/50">Order Summary</h3>
                 
@@ -245,46 +230,17 @@ export default function CartPage() {
                 </div>
 
                 <div className="space-y-3 pt-4">
-                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-4 rounded-2xl cursor-pointer hover:bg-white/10 transition-colors">
-                     <Gift className="h-5 w-5 text-primary shrink-0" />
-                     <div className="flex-1">
-                        <p className="text-xs font-black uppercase tracking-widest">Add a gift note</p>
-                        <p className="text-[9px] text-white/50 font-medium">Free personalized card included</p>
-                     </div>
-                  </div>
-
-                  <Button className="w-full h-16 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all group">
-                    Proceed to Checkout
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <Button 
+                    onClick={handleCheckout}
+                    disabled={isCheckingOut}
+                    className="w-full h-16 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all group"
+                  >
+                    {isCheckingOut ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
+                    {isCheckingOut ? "Processing..." : "Place Your Order"}
+                    {!isCheckingOut && <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />}
                   </Button>
                 </div>
                </div>
-            </div>
-
-            {/* Promo Code */}
-            <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-               <div className="flex items-center gap-3 mb-4">
-                  <Tag className="h-5 w-5 text-slate-400" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Promo Code</span>
-               </div>
-               <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    placeholder="ENTER CODE" 
-                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 text-xs font-black uppercase tracking-widest focus:ring-1 focus:ring-primary outline-none h-12"
-                  />
-                  <Button variant="ghost" className="font-black uppercase text-[10px] tracking-widest h-12">Apply</Button>
-               </div>
-            </div>
-
-            <div className="px-6 space-y-2">
-               <div className="flex items-center gap-2 text-green-600">
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Secure 256-bit SSL Payment</span>
-               </div>
-               <p className="text-[9px] text-slate-400 font-medium leading-relaxed">
-                  By proceeding, you agree to Z-Mart's Terms of Use and Privacy Policy. Prices and availability are not guaranteed until checkout is complete.
-               </p>
             </div>
           </div>
         )}
