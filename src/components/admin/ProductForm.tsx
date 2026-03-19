@@ -1,10 +1,12 @@
+
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
 import { 
   Select, 
   SelectContent, 
@@ -14,7 +16,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon, AlertCircle } from "lucide-react";
+import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon, AlertCircle, X } from "lucide-react";
 import { aiProductDescriptionGenerator } from "@/ai/flows/ai-product-description-generator";
 import { aiProductImageGenerator } from "@/ai/flows/ai-product-image-generator";
 import { useToast } from "@/hooks/use-toast";
@@ -160,17 +162,16 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     const productData = {
       name: formData.name,
       description: formData.description || "No description provided.",
-      price: parseFloat(formData.price),
-      originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price) * 1.2,
+      price: parseFloat(formData.price) || 0,
+      originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : (parseFloat(formData.price) || 0) * 1.2,
       category: formData.category,
-      stock: parseInt(formData.stock),
+      stock: parseInt(formData.stock) || 0,
       features: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
       imageUrl: formData.imageUrl || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000000)}/600/600`,
       updatedAt: serverTimestamp(),
     };
 
     if (initialData?.id) {
-      // Update existing product
       updateDoc(doc(db, 'products', initialData.id), productData)
         .then(() => {
           toast({ title: "Product Updated", description: "Your changes have been saved." });
@@ -186,7 +187,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
         })
         .finally(() => setIsLoading(false));
     } else {
-      // Create new product
       const newProductData = {
         ...productData,
         rating: 4.5,
@@ -310,15 +310,41 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                   {isGeneratingImg ? "AI Painting..." : "AI Generate Image"}
                 </Button>
               </div>
-              <div className="relative">
+              <div className="relative group">
                 <Input 
                   id="imageUrl" 
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-                  placeholder="Paste an image URL or generate one" 
+                  placeholder="Paste an image URL (e.g., https://...)" 
                   className={inputClass}
                 />
+                {formData.imageUrl && (
+                  <button 
+                    type="button"
+                    onClick={() => setFormData({...formData, imageUrl: ''})}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
               </div>
+              
+              {/* Image Preview Area */}
+              {formData.imageUrl && (
+                <div className="mt-4 p-4 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+                  <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Image Preview</p>
+                  <div className="relative aspect-video w-full max-w-sm rounded-xl overflow-hidden bg-white border border-slate-100 flex items-center justify-center">
+                    <img 
+                      src={formData.imageUrl} 
+                      alt="Preview" 
+                      className="max-h-full max-w-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Invalid+Image+URL';
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
