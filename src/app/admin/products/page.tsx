@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -61,7 +62,11 @@ export default function AdminProducts() {
   };
 
   if (authLoading) {
-    return <div className="h-screen w-full flex items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
   }
 
   if (!user) return null;
@@ -76,13 +81,13 @@ export default function AdminProducts() {
             <p className="text-slate-500 text-lg font-medium">Manage your catalog, stock, and descriptions.</p>
           </div>
           <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest text-xs transition-all active:scale-95">
-            <Link href="/admin/products/new">
+            <Link href="/admin/products/new" className="text-white flex items-center">
               <Plus className="h-5 w-5 mr-2" /> Add New Product
             </Link>
           </Button>
         </header>
 
-        <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
+        <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
           <CardHeader className="flex flex-col md:flex-row items-center justify-between p-8 gap-4 border-b border-slate-50">
             <div className="relative flex-1 max-w-sm w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -159,7 +164,7 @@ export default function AdminProducts() {
                 <h3 className="font-black text-2xl text-slate-900 uppercase tracking-tight">No Products Found</h3>
                 <p className="text-slate-500 mb-10 font-medium">Start building your catalog by adding your first product.</p>
                 <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest">
-                  <Link href="/admin/products/new">Create First Listing</Link>
+                  <Link href="/admin/products/new" className="text-white">Create First Listing</Link>
                 </Button>
               </div>
             )}

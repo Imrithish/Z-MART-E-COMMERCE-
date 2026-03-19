@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Button } from "@/components/ui/button";
@@ -7,8 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Store, Loader2, Info, ArrowRight, AlertCircle, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useAuth } from "@/firebase";
+import { useState, useEffect } from "react";
+import { useAuth, useUser } from "@/firebase";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -16,12 +17,20 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export default function AdminLoginPage() {
   const router = useRouter();
   const auth = useAuth();
+  const { user, loading: authLoading } = useUser();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [email, setEmail] = useState("m.rithish1882007@gmail.com");
   const [password, setPassword] = useState("Rithish.m@2");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.push('/admin/dashboard');
+    }
+  }, [user, authLoading, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,13 +49,12 @@ export default function AdminLoginPage() {
       console.error("Login Error:", error.code, error.message);
       let message = "Invalid credentials. Please check your password and try again.";
       
-      // Specifically handle invalid API keys
       if (error.code === 'auth/invalid-api-key' || error.message?.includes('api-key-not-valid')) {
-        message = "Critical Error: Your Firebase API Key is missing or invalid. Please update 'src/firebase/config.ts' with your real credentials from the Firebase Console.";
+        message = "Critical Error: Your Firebase API Key is missing or invalid. Please check 'src/firebase/config.ts'.";
       } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        message = "Account not found or incorrect credentials. Ensure this user exists in your Firebase Console under 'Authentication > Users'.";
+        message = "Account not found or incorrect credentials. Ensure this user exists in your Firebase Console.";
       } else if (error.code === 'auth/operation-not-allowed') {
-        message = "Sign-in provider is not enabled. Go to 'Authentication > Sign-in method' in your Firebase Console to enable Email/Password and Google.";
+        message = "Sign-in provider is not enabled. Enable Email/Password in your Firebase Console.";
       }
 
       setErrorMessage(message);
@@ -74,12 +82,12 @@ export default function AdminLoginPage() {
       router.push('/admin/dashboard');
     } catch (error: any) {
       console.error("Google Login Error:", error.code, error.message);
-      let message = error.message || "An error occurred during Google sign-in.";
+      let message = "An error occurred during Google sign-in. Ensure Google provider is enabled in Firebase.";
       
-      if (error.code === 'auth/invalid-api-key' || error.message?.includes('api-key-not-valid')) {
-        message = "Critical Error: Your Firebase API Key is missing or invalid. Check 'src/firebase/config.ts'.";
-      } else if (error.code === 'auth/operation-not-allowed') {
+      if (error.code === 'auth/operation-not-allowed') {
         message = "Google Sign-in is not enabled in your Firebase Console.";
+      } else if (error.code === 'auth/popup-blocked') {
+        message = "Popup was blocked by your browser. Please allow popups for this site.";
       }
       
       setErrorMessage(message);
@@ -92,6 +100,14 @@ export default function AdminLoginPage() {
       setIsGoogleLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-100">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4 font-body text-slate-900">
@@ -196,16 +212,6 @@ export default function AdminLoginPage() {
             </Button>
           </CardContent>
         </Card>
-        
-        <div className="bg-primary/10 border border-primary/20 p-6 rounded-3xl flex gap-4 backdrop-blur-sm">
-          <div className="bg-white h-10 w-10 rounded-xl flex items-center justify-center shadow-sm shrink-0 border border-primary/20">
-            <Info className="h-5 w-5 text-primary" />
-          </div>
-          <div className="space-y-1">
-            <p className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Setup Guide</p>
-            <p className="text-xs font-medium text-slate-700 leading-relaxed">Ensure Authentication is enabled in your console and the admin user is created.</p>
-          </div>
-        </div>
       </div>
     </div>
   );
