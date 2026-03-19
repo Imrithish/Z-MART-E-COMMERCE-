@@ -2,6 +2,7 @@
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
+import { Footer } from "@/components/storefront/Footer";
 import { useUser, useCollection, useFirestore } from "@/firebase";
 import { collection, query, where } from "firebase/firestore";
 import { useMemo, useEffect } from "react";
@@ -74,7 +75,7 @@ export default function UserDashboard() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-body">
       <Navbar />
 
-      <main className="flex-1 max-w-[1200px] mx-auto w-full p-6 md:p-10 space-y-10">
+      <main className="flex-1 max-w-[1200px] mx-auto w-full p-6 md:p-10 space-y-10 mb-24">
         <header className="space-y-2">
           <h1 className="text-3xl font-black tracking-tight text-slate-900">Your Account</h1>
           <p className="text-slate-500 font-medium">Manage your profile, orders, and preferences.</p>
@@ -168,15 +169,7 @@ export default function UserDashboard() {
         </section>
       </main>
 
-      <footer className="mt-auto bg-white border-t border-slate-200 py-10 text-center space-y-4">
-        <div className="flex justify-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-          <Link href="#" className="hover:text-primary transition-colors">Conditions of Use</Link>
-          <Link href="#" className="hover:text-primary transition-colors">Privacy Notice</Link>
-          <Link href="#" className="hover:text-primary transition-colors">Help</Link>
-          <Link href="/admin/login" className="text-slate-200 hover:text-primary transition-colors">Merchant Portal</Link>
-        </div>
-        <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">© 2024 Z-MART.in • Your Premium Marketplace</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -2,16 +2,17 @@
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
+import { Footer } from "@/components/storefront/Footer";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Product } from "@/lib/mock-data";
-import { Star, Filter, SlidersHorizontal, Loader2, CheckCircle2 } from "lucide-react";
+import { Star, Loader2, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense, useMemo, useCallback } from "react";
+import { useState, Suspense, useMemo, useCallback } from "react";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
@@ -172,17 +173,15 @@ function ProductList() {
 }
 
 export default function StorefrontProducts() {
-  const searchParams = useSearchParams();
-  const q = searchParams.get('q');
-
   return (
-    <div className="min-h-screen bg-[#eaeded]">
+    <div className="min-h-screen bg-[#eaeded] flex flex-col">
       <Navbar />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 flex-1">
         <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>}>
           <ProductList />
         </Suspense>
       </main>
+      <Footer />
     </div>
   );
 }
