@@ -27,6 +27,7 @@ import { collection, query, where } from "firebase/firestore";
 import { format } from "date-fns";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { ReceiptModal } from "@/components/storefront/ReceiptModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -41,6 +42,8 @@ export default function UserDashboard() {
   const db = useFirestore();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'security' | 'addresses'>('overview');
+  const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   // Handle Hash navigation from sidebar
   useEffect(() => {
@@ -58,7 +61,6 @@ export default function UserDashboard() {
   // Fetch User Orders
   const ordersQuery = useMemo(() => {
     if (!db || !user?.email) return null;
-    // Removed orderBy to avoid requiring a composite index in Firestore for the prototype
     return query(
       collection(db, 'orders'),
       where('customerEmail', '==', user.email)
@@ -82,6 +84,11 @@ export default function UserDashboard() {
       router.push('/login');
     }
   }, [user, authLoading, router]);
+
+  const handleViewReceipt = (order: any) => {
+    setSelectedReceipt(order);
+    setIsReceiptOpen(true);
+  };
 
   if (authLoading) {
     return (
@@ -160,6 +167,9 @@ export default function UserDashboard() {
                              <div className="h-4 w-px bg-slate-200" />
                              <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{lastOrder.items?.length} Items</div>
                           </div>
+                          <Button onClick={() => handleViewReceipt(lastOrder)} variant="ghost" className="rounded-xl h-10 px-6 font-black uppercase tracking-widest text-[9px] text-primary hover:bg-primary/5">
+                            View Details <ExternalLink className="h-3.5 w-3.5 ml-2" />
+                          </Button>
                         </div>
                       </div>
                     ) : (
@@ -295,7 +305,7 @@ export default function UserDashboard() {
                             <Button className="flex-1 md:flex-none h-12 px-8 rounded-xl bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[9px] transition-all">
                               Track Pack
                             </Button>
-                            <Button variant="outline" className="flex-1 md:flex-none h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-slate-100">
+                            <Button onClick={() => handleViewReceipt(order)} variant="outline" className="flex-1 md:flex-none h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-slate-100">
                               View Receipt
                             </Button>
                           </div>
@@ -350,6 +360,12 @@ export default function UserDashboard() {
         </main>
 
         <Footer />
+        
+        <ReceiptModal 
+          isOpen={isReceiptOpen} 
+          order={selectedReceipt} 
+          onClose={() => setIsReceiptOpen(false)} 
+        />
       </div>
     </div>
   );
