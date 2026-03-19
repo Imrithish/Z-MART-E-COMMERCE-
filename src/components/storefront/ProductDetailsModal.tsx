@@ -1,13 +1,16 @@
+
 "use client"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info } from "lucide-react";
+import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { Product } from "@/lib/mock-data";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface ProductDetailsModalProps {
   product: Product | null;
@@ -32,8 +35,29 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
   const handleAddToCart = () => {
     addItem(product);
     toast({
-      title: "Added to Cart",
-      description: `${product.name} has been added to your shopping cart.`,
+      title: (
+        <div className="flex items-center gap-2 text-green-600 font-black uppercase tracking-widest text-[10px]">
+          <CheckCircle2 className="h-4 w-4" /> Added to Cart
+        </div>
+      ) as any,
+      description: (
+        <div className="flex items-center gap-3 mt-2">
+          <div className="relative h-12 w-12 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
+            <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-1" />
+          </div>
+          <div className="flex flex-col gap-0.5">
+            <p className="text-xs font-black text-slate-900 line-clamp-1">{product.name}</p>
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ready for checkout</p>
+          </div>
+        </div>
+      ) as any,
+      action: (
+        <ToastAction altText="View Cart" asChild>
+          <Link href="/cart" className="bg-primary hover:bg-primary/90 text-black font-black text-[10px] px-4 py-2 rounded-xl uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20">
+            View Cart
+          </Link>
+        </ToastAction>
+      ),
     });
     onClose();
   };
