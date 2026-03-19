@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight } from "lucide-react";
+import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight, Home } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
@@ -192,6 +192,11 @@ export function Navbar() {
             </ScrollArea>
           </SheetContent>
         </Sheet>
+        
+        {/* Explicit Home Button */}
+        <Link href="/" className="px-2 py-1 border border-transparent hover:border-white rounded-sm flex items-center gap-1.5">
+          <Home className="h-4 w-4" /> Home
+        </Link>
         
         <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Today's Deals</Link>
         <Link href="/products?category=Electronics" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Electronics</Link>
