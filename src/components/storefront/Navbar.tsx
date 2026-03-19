@@ -1,4 +1,3 @@
-
 "use client"
 
 import Link from "next/link";
@@ -179,16 +178,7 @@ export function Navbar() {
           <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-0.5" />
         </Link>
 
-        {/* Location (Desktop Only) */}
-        <div className="hidden lg:flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm cursor-pointer transition-all">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Deliver to</span>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            <span className="text-xs font-black uppercase tracking-tight">Select Location</span>
-          </div>
-        </div>
-
-        {/* Search Bar with Mega Menu Trigger */}
+        {/* Search Bar with Mega Menu Trigger - Now after Logo */}
         <div className="flex flex-1 items-center h-10 rounded-md overflow-hidden bg-white group focus-within:ring-2 focus-within:ring-primary">
           <div className="h-full border-r border-slate-200 hidden md:block">
             <Popover open={isMegaMenuOpen} onOpenChange={setIsMegaMenuOpen}>
@@ -254,6 +244,15 @@ export function Navbar() {
               <Search className="h-5 w-5 text-slate-900" />
             </button>
           </form>
+        </div>
+
+        {/* Location (Desktop Only) - Now after Search Bar */}
+        <div className="hidden lg:flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm cursor-pointer transition-all">
+          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Deliver to</span>
+          <div className="flex items-center gap-1">
+            <MapPin className="h-4 w-4" />
+            <span className="text-xs font-black uppercase tracking-tight">Select Location</span>
+          </div>
         </div>
 
         {/* Actions */}
