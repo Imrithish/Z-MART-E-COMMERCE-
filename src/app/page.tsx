@@ -108,9 +108,9 @@ export default function Home() {
               <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px]">
                 <h2 className="text-xl font-bold mb-4 text-slate-900 leading-tight h-[56px] flex items-center">{gridItem.title}</h2>
                 
-                <div className="flex-1 flex flex-col justify-start">
+                <div className="flex-1 flex flex-col">
                   {gridItem.type === 'quad' && (
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-3 flex-1">
                       {gridItem.items?.map((sub, i) => (
                         <div key={i} className="flex flex-col gap-1 group cursor-pointer">
                           <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm">
@@ -168,7 +168,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="mt-auto pt-5">
+                <div className="mt-4">
                    <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline block">
                     {gridItem.type === 'auth' ? 'See more' : 'Shop now'}
                   </Link>
@@ -185,11 +185,11 @@ export default function Home() {
                 See all deals
               </Link>
             </div>
-            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6">
+            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6 items-stretch">
               {deals.map((deal) => (
                 <div 
                   key={deal.id} 
-                  className="min-w-[220px] flex flex-col gap-3 group cursor-pointer"
+                  className="min-w-[240px] flex flex-col gap-3 group cursor-pointer border border-transparent hover:border-slate-100 p-2 rounded-sm transition-all"
                   onClick={() => handleProductClick(deal)}
                 >
                   <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm border border-slate-100">
@@ -208,7 +208,7 @@ export default function Home() {
                         <span className="text-xs text-slate-400 line-through font-medium">M.R.P: {formatCurrency(deal.originalPrice)}</span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-700 font-medium line-clamp-1 leading-relaxed">{deal.name}</p>
+                    <p className="text-xs text-slate-700 font-medium line-clamp-2 leading-relaxed h-[32px]">{deal.name}</p>
                     <button 
                       onClick={(e) => handleAddToCart(e, deal)}
                       className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-auto"
@@ -225,7 +225,7 @@ export default function Home() {
         {/* Back to top button */}
         <button 
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-sm font-bold py-4 transition-colors tracking-wide"
+          className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-sm font-bold py-4 transition-colors tracking-wide mt-10"
         >
           Back to top
         </button>
