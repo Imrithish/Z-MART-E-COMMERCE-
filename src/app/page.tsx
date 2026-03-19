@@ -70,7 +70,11 @@ export default function Home() {
     { title: "Explore Best Sellers", item: MOCK_PRODUCTS[7], type: "single" },
     { title: "Laptops for every need", item: MOCK_PRODUCTS[9], type: "single" },
     { title: "Refresh your space", items: ["Kitchen", "Dining", "Bedroom", "Living"], type: "quad" },
-    { title: "Latest Smartphone Deals", item: MOCK_PRODUCTS[2], type: "single" }
+    { title: "Latest Smartphone Deals", item: MOCK_PRODUCTS[2], type: "single" },
+    { title: "Beauty Picks", items: ["Makeup", "Facewash", "Moisturizer", "Fragrance"], type: "quad" },
+    { title: "Home Decor Trends", item: MOCK_PRODUCTS[11], type: "single" },
+    { title: "Fashion for Everyone", items: ["Menswear", "Womenswear", "Kids", "Accessories"], type: "quad" },
+    { title: "Fitness & Outdoors", item: MOCK_PRODUCTS[10], type: "single" }
   ];
 
   return (
@@ -104,20 +108,20 @@ export default function Home() {
         <div className="max-w-[1500px] mx-auto px-4 -mt-[320px] relative z-30 pb-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr">
             {amazonGridItems.map((gridItem, idx) => (
-              <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px] relative">
+              <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px] relative group overflow-hidden">
                 <h2 className="text-xl font-bold mb-4 text-slate-900 leading-tight h-[56px] flex items-center">{gridItem.title}</h2>
                 
-                <div className="flex-1 flex flex-col mb-10">
+                <div className="flex-1 flex flex-col mb-12">
                   {gridItem.type === 'quad' && (
                     <div className="grid grid-cols-2 gap-3 flex-1">
                       {gridItem.items?.map((sub, i) => (
-                        <div key={i} className="flex flex-col gap-1 group cursor-pointer">
+                        <div key={i} className="flex flex-col gap-1 group/item cursor-pointer">
                           <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm">
                             <Image 
                               src={`https://picsum.photos/seed/quad-${idx}-${i}/300/300`} 
                               alt={sub} 
                               fill 
-                              className="object-cover transition-transform group-hover:scale-105" 
+                              className="object-cover transition-transform group-hover/item:scale-105" 
                             />
                           </div>
                           <span className="text-[11px] font-medium text-slate-700 truncate">{sub}</span>
@@ -128,7 +132,7 @@ export default function Home() {
 
                   {gridItem.type === 'single' && gridItem.item && (
                     <div 
-                      className="group cursor-pointer flex-1 flex flex-col" 
+                      className="group/item cursor-pointer flex-1 flex flex-col" 
                       onClick={() => handleProductClick(gridItem.item as Product)}
                     >
                       <div className="relative aspect-[4/3] mb-4 bg-slate-50 overflow-hidden flex-1 max-h-[220px] rounded-sm">
@@ -136,7 +140,7 @@ export default function Home() {
                           src={gridItem.item.imageUrl} 
                           alt={gridItem.item.name} 
                           fill 
-                          className="object-contain p-4 transition-transform group-hover:scale-105" 
+                          className="object-contain p-4 transition-transform group-hover/item:scale-105" 
                         />
                       </div>
                       <div className="flex items-center gap-2 mb-2">
@@ -144,12 +148,6 @@ export default function Home() {
                         <span className="text-[#cc0c39] text-[10px] font-bold uppercase">Deal</span>
                       </div>
                       <p className="text-sm font-medium line-clamp-2 leading-snug mb-3">{gridItem.item.name}</p>
-                      <button 
-                        onClick={(e) => handleAddToCart(e, gridItem.item)}
-                        className="amazon-btn-primary w-full text-xs h-9 mt-auto"
-                      >
-                        Add to Cart
-                      </button>
                     </div>
                   )}
 
@@ -167,11 +165,21 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="absolute bottom-5 left-5">
-                   <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline block">
-                    {gridItem.type === 'auth' ? 'See more' : 'Shop now'}
-                  </Link>
-                </div>
+                {gridItem.type !== 'auth' && (
+                  <div className="absolute bottom-5 left-5 right-5">
+                    <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline block mb-2">
+                      Shop now
+                    </Link>
+                    {gridItem.type === 'single' && gridItem.item && (
+                      <button 
+                        onClick={(e) => handleAddToCart(e, gridItem.item)}
+                        className="amazon-btn-primary w-full text-[11px] h-8 rounded-md"
+                      >
+                        Add to Cart
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
