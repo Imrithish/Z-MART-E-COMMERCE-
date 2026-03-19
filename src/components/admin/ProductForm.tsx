@@ -6,23 +6,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, Loader2, Save, ShoppingBag, ListPlus } from "lucide-react";
+import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon } from "lucide-react";
 import { aiProductDescriptionGenerator } from "@/ai/flows/ai-product-description-generator";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useFirestore } from "@/firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 export function ProductForm({ initialData }: { initialData?: any }) {
   const { toast } = useToast();
   const router = useRouter();
+  const db = useFirestore();
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [formData, setFormData] = useState(initialData || {
     name: '',
     description: '',
     price: '',
+    originalPrice: '',
     category: '',
     stock: '',
     features: '',
+    imageUrl: 'https://picsum.photos/seed/' + Math.random() + '/600/600',
   });
 
   const generateDescription = async () => {
@@ -39,7 +46,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     try {
       const result = await aiProductDescriptionGenerator({
         productName: formData.name,
-        keyFeatures: formData.features.split(',').map(f => f.trim()).filter(Boolean),
+        keyFeatures: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
         additionalNotes: "Professional, persuasive, and SEO-friendly.",
       });
       setFormData({ ...formData, description: result.description });
@@ -60,12 +67,40 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!db) return;
+
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({ title: "Product Catalog Updated", description: "Changes have been successfully synchronized with the marketplace." });
-      router.push('/admin/products');
-    }, 1000);
+    
+    const productData = {
+      name: formData.name,
+      description: formData.description,
+      price: parseFloat(formData.price),
+      originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price) * 1.2,
+      category: formData.category,
+      stock: parseInt(formData.stock),
+      features: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
+      imageUrl: formData.imageUrl,
+      rating: 5.0,
+      reviews: 0,
+      isDeal: true,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    addDoc(collection(db, 'products'), productData)
+      .then(() => {
+        toast({ title: "Product Catalog Updated", description: "Changes have been successfully synchronized with the marketplace." });
+        router.push('/admin/products');
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: 'products',
+          operation: 'create',
+          requestResourceData: productData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const fieldLabelClass = "text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 inline-block";
@@ -74,7 +109,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-12 max-w-5xl mx-auto py-8">
       <div className="grid lg:grid-cols-12 gap-12">
-        {/* Left Column: Basic Info */}
         <div className="lg:col-span-7 space-y-10">
           <div className="space-y-6">
             <div className="flex items-center gap-3 mb-8">
@@ -92,6 +126,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 placeholder="e.g. Ultra-X Wireless Gaming Mouse" 
                 className={inputClass}
+                required
               />
             </div>
 
@@ -108,6 +143,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                     onChange={(e) => setFormData({...formData, price: e.target.value})}
                     placeholder="0.00" 
                     className={`${inputClass} pl-10`}
+                    required
                   />
                 </div>
               </div>
@@ -120,6 +156,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                   onChange={(e) => setFormData({...formData, stock: e.target.value})}
                   placeholder="0" 
                   className={inputClass}
+                  required
                 />
               </div>
             </div>
@@ -129,22 +166,36 @@ export function ProductForm({ initialData }: { initialData?: any }) {
               <Select 
                 value={formData.category} 
                 onValueChange={(val) => setFormData({...formData, category: val})}
+                required
               >
                 <SelectTrigger className={inputClass}>
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                  <SelectItem value="electronics" className="font-bold py-3">Electronics & Computing</SelectItem>
-                  <SelectItem value="furniture" className="font-bold py-3">Premium Furniture</SelectItem>
-                  <SelectItem value="clothing" className="font-bold py-3">Fashion & Apparel</SelectItem>
-                  <SelectItem value="home" className="font-bold py-3">Home & Essentials</SelectItem>
+                  <SelectItem value="Electronics" className="font-bold py-3">Electronics & Computing</SelectItem>
+                  <SelectItem value="Furniture" className="font-bold py-3">Premium Furniture</SelectItem>
+                  <SelectItem value="Fashion" className="font-bold py-3">Fashion & Apparel</SelectItem>
+                  <SelectItem value="Home" className="font-bold py-3">Home & Essentials</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="imageUrl" className={fieldLabelClass}>Product Image URL</Label>
+              <div className="relative">
+                <ImageIcon className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input 
+                  id="imageUrl" 
+                  value={formData.imageUrl}
+                  onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
+                  placeholder="https://..." 
+                  className={`${inputClass} pl-12`}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Right Column: AI & Features */}
         <div className="lg:col-span-5 space-y-10">
           <div className="space-y-6">
             <div className="flex items-center gap-3 mb-8">

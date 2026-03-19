@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A commercial item listed on the Z-MART marketplace.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Commercial name of the product" },
+        "description": { "type": "string", "description": "Marketing description" },
+        "price": { "type": "number", "description": "Current listing price" },
+        "originalPrice": { "type": "number", "description": "Price before discount" },
+        "category": { "type": "string", "description": "Marketplace category" },
+        "stock": { "type": "number", "description": "Inventory units available" },
+        "imageUrl": { "type": "string", "format": "uri", "description": "Product image URL" },
+        "rating": { "type": "number", "description": "Average customer rating" },
+        "reviews": { "type": "number", "description": "Total review count" },
+        "isDeal": { "type": "boolean", "description": "Whether the product is a featured deal" },
+        "features": { "type": "array", "items": { "type": "string" }, "description": "Key selling points" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price", "category", "stock"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer transaction record.",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string", "format": "email" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["Pending", "Processing", "Shipped", "Delivered"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "totalAmount", "status"]
+    }
+  },
+  "auth": {
+    "providers": ["google.com", "password"]
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of marketplace products."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of customer orders."
+    }
+  }
+}
