@@ -104,7 +104,7 @@ export function AdminSidebar() {
             <Button 
               variant="default" 
               size="icon" 
-              className="h-12 w-10 rounded-r-none rounded-l-2xl bg-blue-600 hover:bg-blue-700 shadow-2xl border-none text-white transition-all hover:w-12 flex items-center justify-center pr-1"
+              className="h-12 w-10 rounded-r-none rounded-l-2xl bg-slate-900 hover:bg-slate-800 shadow-2xl border-none text-white transition-all hover:w-12 flex items-center justify-center pr-1"
             >
               <Menu className="h-6 w-6" />
             </Button>
