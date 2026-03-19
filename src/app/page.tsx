@@ -3,14 +3,14 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
-import { Loader2, ShoppingBag, Search, Zap, ArrowRight } from "lucide-react";
+import { Loader2, ShoppingBag, Search, Zap, ArrowRight, Star, TrendingUp, Sparkles, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useState, useMemo, useCallback } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, limit } from "firebase/firestore";
+import { collection, query, limit, orderBy } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,10 +35,20 @@ export default function Home() {
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), limit(48));
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(100));
   }, [db]);
 
   const { data: products, loading } = useCollection(productsQuery);
+
+  const curatedSections = useMemo(() => {
+    if (!products) return { newArrivals: [], bestSellers: [], popular: [] };
+    
+    return {
+      newArrivals: products.slice(0, 6),
+      bestSellers: products.filter((p: any) => p.rating >= 4.8 || p.isBestSeller).slice(0, 6),
+      popular: products.filter((p: any) => p.reviews > 1000).slice(0, 6)
+    };
+  }, [products]);
 
   const productsByCategory = useMemo(() => {
     if (!products) return {};
@@ -77,6 +87,66 @@ export default function Home() {
       </div>
     );
   }
+
+  const ProductCard = ({ product }: { product: any }) => (
+    <div 
+      className="group cursor-pointer flex flex-col h-full bg-white p-5 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-slate-100"
+      onClick={() => handleProductClick(product)}
+    >
+      <div className="relative aspect-square bg-slate-50 rounded-[2rem] overflow-hidden p-6 mb-6">
+        <Image 
+          src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
+          alt={product.name} 
+          fill 
+          className="object-contain transition-transform duration-700 group-hover:scale-110 p-2" 
+        />
+        {product.isDeal && (
+          <Badge className="absolute top-4 left-4 bg-red-600 text-white border-none text-[8px] font-black tracking-widest px-2 py-0.5 rounded-lg shadow-lg">
+            DEAL
+          </Badge>
+        )}
+      </div>
+      
+      <div className="flex flex-col flex-1 space-y-4">
+        <div className="space-y-1">
+           <p className="text-[9px] font-black text-primary uppercase tracking-widest">{product.category}</p>
+           <h3 className="text-[13px] font-black text-slate-800 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors h-8">
+             {product.name}
+           </h3>
+           <div className="flex items-center gap-1 mt-1">
+             <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+             <span className="text-[10px] font-bold text-slate-500">{product.rating}</span>
+           </div>
+        </div>
+        
+        <div className="mt-auto space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-slate-900">{formatCurrency(product.price)}</span>
+              {product.originalPrice && (
+                <span className="text-[9px] text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
+              )}
+            </div>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                addItem(product);
+              }}
+              className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all shadow-sm"
+            >
+              <ShoppingBag className="h-4 w-4" />
+            </button>
+          </div>
+          <Button 
+            onClick={(e) => handleBuyNowClick(e, product)}
+            className="w-full h-11 bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-xl transition-all shadow-lg active:scale-95"
+          >
+            <Zap className="h-3 w-3 mr-2 fill-current" /> Buy Now
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-body">
@@ -136,8 +206,63 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Categories Grouped Sections */}
-        <div className="max-w-[1450px] mx-auto px-4 md:px-8 py-12 space-y-24">
+        <div className="max-w-[1450px] mx-auto px-4 md:px-8 py-20 space-y-32">
+          
+          {/* New Arrivals Section */}
+          {curatedSections.newArrivals.length > 0 && (
+            <section className="space-y-10">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-6">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-6 w-6 text-primary" />
+                    <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">New Arrivals</h2>
+                  </div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Freshly stocked this week</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {curatedSections.newArrivals.map((product) => <ProductCard key={product.id} product={product} />)}
+              </div>
+            </section>
+          )}
+
+          {/* Best Sellers Section */}
+          {curatedSections.bestSellers.length > 0 && (
+            <section className="space-y-10">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-6">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                    <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Best Sellers</h2>
+                  </div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Most loved by our community</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {curatedSections.bestSellers.map((product) => <ProductCard key={product.id} product={product} />)}
+              </div>
+            </section>
+          )}
+
+          {/* Popular Now Section */}
+          {curatedSections.popular.length > 0 && (
+            <section className="space-y-10">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-6">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <TrendingUp className="h-6 w-6 text-primary" />
+                    <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">Popular Now</h2>
+                  </div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Trending globally on Z-MART</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {curatedSections.popular.map((product) => <ProductCard key={product.id} product={product} />)}
+              </div>
+            </section>
+          )}
+
+          {/* Main Category Sections (Showing exactly 4) */}
           {Object.entries(productsByCategory).slice(0, 4).map(([category, catProducts]: [string, any[]]) => (
             <section key={category} className="space-y-10">
               <div className="flex items-end justify-between border-b border-slate-200 pb-6">
@@ -150,62 +275,9 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 md:gap-8">
-                {catProducts.map((product) => (
-                  <div 
-                    key={product.id} 
-                    className="group cursor-pointer flex flex-col h-full bg-white p-5 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-slate-100"
-                    onClick={() => handleProductClick(product)}
-                  >
-                    <div className="relative aspect-square bg-slate-50 rounded-[2rem] overflow-hidden p-6 mb-6">
-                      <Image 
-                        src={product.imageUrl || 'https://placehold.co/400x400?text=No+Image'} 
-                        alt={product.name} 
-                        fill 
-                        className="object-contain transition-transform duration-700 group-hover:scale-110 p-2" 
-                      />
-                      {product.isDeal && (
-                        <Badge className="absolute top-4 left-4 bg-red-600 text-white border-none text-[8px] font-black tracking-widest px-2 py-0.5 rounded-lg shadow-lg">
-                          DEAL
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <div className="flex flex-col flex-1 space-y-4">
-                      <div className="space-y-1 min-h-[4rem]">
-                         <p className="text-[9px] font-black text-primary uppercase tracking-widest">{product.category}</p>
-                         <h3 className="text-[13px] font-black text-slate-800 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors">
-                           {product.name}
-                         </h3>
-                      </div>
-                      
-                      <div className="mt-auto space-y-4 pt-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-col">
-                            <span className="text-xl font-black text-slate-900">{formatCurrency(product.price)}</span>
-                            {product.originalPrice && (
-                              <span className="text-[9px] text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
-                            )}
-                          </div>
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              addItem(product);
-                            }}
-                            className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-100 text-slate-400 hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all shadow-sm"
-                          >
-                            <ShoppingBag className="h-4 w-4" />
-                          </button>
-                        </div>
-                        <Button 
-                          onClick={(e) => handleBuyNowClick(e, product)}
-                          className="w-full h-11 bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[10px] rounded-xl transition-all shadow-lg active:scale-95"
-                        >
-                          <Zap className="h-3 w-3 mr-2 fill-current" /> Buy Now
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {catProducts.slice(0, 12).map((product) => (
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </div>
             </section>
