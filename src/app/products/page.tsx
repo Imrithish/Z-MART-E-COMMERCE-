@@ -84,12 +84,11 @@ function ProductList() {
           displayProducts.map((product: any) => (
             <Card 
               key={product.id} 
-              className="group overflow-hidden border-none shadow-sm bg-white rounded-xl md:rounded-sm flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+              className="group overflow-hidden border-none shadow-sm bg-white rounded-xl md:rounded-sm flex flex-col cursor-pointer hover:shadow-md transition-shadow h-full"
               onClick={() => handleProductClick(product)}
             >
-              {/* Mobile List UI vs Desktop Grid UI wrapper */}
               <div className="flex flex-row sm:flex-col h-full">
-                <div className="relative w-32 h-32 sm:w-full sm:aspect-square overflow-hidden bg-gray-50 p-2 sm:p-4 shrink-0">
+                <div className="relative w-32 h-32 sm:w-full sm:aspect-square overflow-hidden bg-gray-50/50 p-2 sm:p-4 shrink-0">
                   <Image 
                     src={product.imageUrl}
                     alt={product.name}
@@ -101,7 +100,7 @@ function ProductList() {
                 <div className="flex flex-col flex-1 p-3 sm:p-0">
                   <CardHeader className="pt-0 sm:pt-4 pb-1 sm:pb-2 px-0 sm:px-4 space-y-0.5 sm:space-y-1">
                     <div className="text-[9px] sm:text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
-                    <CardTitle className="text-xs sm:text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-0 sm:min-h-[3rem]">
+                    <CardTitle className="text-xs sm:text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem]">
                       {product.name}
                     </CardTitle>
                     <div className="flex items-center gap-1">

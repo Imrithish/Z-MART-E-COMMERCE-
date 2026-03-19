@@ -92,13 +92,13 @@ export default function Home() {
 
   const ProductCard = ({ product }: { product: any }) => (
     <div 
-      className="group cursor-pointer flex flex-col sm:flex-col lg:flex-col h-full bg-white p-3 md:p-4 rounded-2xl md:rounded-[2rem] shadow-[0_4px_12px_-6px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 ease-out border border-slate-100/50 hover:border-primary/20 hover:-translate-y-2 relative overflow-hidden"
+      className="group cursor-pointer flex flex-col h-full bg-white p-3 md:p-5 rounded-2xl md:rounded-[2rem] shadow-[0_4px_12px_-6px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 ease-out border border-slate-100/50 hover:border-primary/20 hover:-translate-y-2 relative overflow-hidden"
       onClick={() => handleProductClick(product)}
     >
       {/* Container that handles mobile list vs desktop grid */}
-      <div className="flex flex-row sm:flex-col gap-4 sm:gap-0 h-full">
+      <div className="flex flex-row sm:flex-col gap-4 sm:gap-2 h-full">
         {/* Image Section */}
-        <div className="relative w-32 h-32 sm:w-full sm:aspect-[4/3] bg-slate-50/50 rounded-xl md:rounded-2xl overflow-hidden p-2 sm:p-4 mb-0 sm:mb-4 group-hover:bg-white transition-colors duration-500 shrink-0">
+        <div className="relative w-32 h-32 sm:w-full sm:aspect-[4/3] bg-slate-50/50 rounded-xl md:rounded-2xl overflow-hidden p-2 sm:p-4 mb-0 group-hover:bg-white transition-colors duration-500 shrink-0">
           <Image 
             src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
             alt={product.name} 
@@ -113,10 +113,10 @@ export default function Home() {
         </div>
         
         {/* Details Section */}
-        <div className="flex flex-col flex-1 min-w-0 space-y-2 md:space-y-3">
-          <div className="space-y-0.5 md:space-y-1">
+        <div className="flex flex-col flex-1 min-w-0 space-y-2">
+          <div className="space-y-1">
              <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em]">{product.category}</p>
-             <h3 className="text-xs md:text-sm font-black text-slate-900 line-clamp-2 sm:line-clamp-1 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors">
+             <h3 className="text-xs md:text-sm font-black text-slate-900 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors min-h-[2.5rem]">
                {product.name}
              </h3>
              <div className="flex items-center gap-2">
@@ -128,11 +128,9 @@ export default function Home() {
              </div>
           </div>
           
-          <div className="mt-auto pt-1 md:pt-2 space-y-2 md:space-y-4">
+          <div className="mt-auto pt-2 space-y-3">
             <div className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="text-base md:text-lg font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
-              </div>
+              <span className="text-base md:text-xl font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
@@ -219,11 +217,9 @@ export default function Home() {
           {curatedSections.newArrivals.length > 0 && (
             <section className="space-y-6 md:space-y-8">
               <div className="flex items-end justify-between border-b border-slate-200 pb-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                    <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">New Arrivals</h2>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">New Arrivals</h2>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
@@ -235,9 +231,7 @@ export default function Home() {
           {categoryEntries[0] && (
             <section className="space-y-6 md:space-y-8">
               <div className="flex items-end justify-between border-b border-slate-200 pb-4">
-                <div className="space-y-1">
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[0][0]}</h2>
-                </div>
+                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[0][0]}</h2>
                 <Link href={`/products?category=${categoryEntries[0][0]}`} className="text-[9px] md:text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
@@ -253,11 +247,9 @@ export default function Home() {
           {curatedSections.bestSellers.length > 0 && (
             <section className="space-y-6 md:space-y-8">
               <div className="flex items-end justify-between border-b border-slate-200 pb-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                    <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Best Sellers</h2>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Best Sellers</h2>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
@@ -269,9 +261,7 @@ export default function Home() {
           {categoryEntries[1] && (
             <section className="space-y-6 md:space-y-8">
               <div className="flex items-end justify-between border-b border-slate-200 pb-4">
-                <div className="space-y-1">
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[1][0]}</h2>
-                </div>
+                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[1][0]}</h2>
                 <Link href={`/products?category=${categoryEntries[1][0]}`} className="text-[9px] md:text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
@@ -287,11 +277,9 @@ export default function Home() {
           {curatedSections.popular.length > 0 && (
             <section className="space-y-6 md:space-y-8">
               <div className="flex items-end justify-between border-b border-slate-200 pb-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-primary" />
-                    <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Popular Now</h2>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Popular Now</h2>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
@@ -303,9 +291,7 @@ export default function Home() {
           {categoryEntries.slice(2, 4).map(([category, catProducts]) => (
             <section key={category} className="space-y-6 md:space-y-8">
               <div className="flex items-end justify-between border-b border-slate-200 pb-4">
-                <div className="space-y-1">
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{category}</h2>
-                </div>
+                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{category}</h2>
                 <Link href={`/products?category=${category}`} className="text-[9px] md:text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
