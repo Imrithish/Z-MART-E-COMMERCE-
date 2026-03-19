@@ -22,7 +22,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   
-  // Initialize with a static placeholder to avoid hydration mismatch
   const [formData, setFormData] = useState(initialData || {
     name: '',
     description: '',
@@ -31,19 +30,8 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     category: '',
     stock: '',
     features: '',
-    imageUrl: 'https://picsum.photos/seed/placeholder/600/600',
+    imageUrl: '',
   });
-
-  // Generate random seed only on the client after mounting
-  useEffect(() => {
-    if (!initialData && formData.imageUrl === 'https://picsum.photos/seed/placeholder/600/600') {
-      const seed = Math.floor(Math.random() * 1000000);
-      setFormData(prev => ({
-        ...prev,
-        imageUrl: `https://picsum.photos/seed/${seed}/600/600`
-      }));
-    }
-  }, [initialData, formData.imageUrl]);
 
   const generateDescription = async () => {
     if (!formData.name) {
@@ -84,17 +72,20 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
     setIsLoading(true);
     
+    // Ensure we have a valid image URL
+    const finalImageUrl = formData.imageUrl.trim() || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000000)}/600/600`;
+    
     const productData = {
       name: formData.name,
-      description: formData.description,
+      description: formData.description || "No description provided.",
       price: parseFloat(formData.price),
       originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : parseFloat(formData.price) * 1.2,
       category: formData.category,
       stock: parseInt(formData.stock),
       features: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
-      imageUrl: formData.imageUrl,
-      rating: 5.0,
-      reviews: 0,
+      imageUrl: finalImageUrl,
+      rating: 4.5,
+      reviews: Math.floor(Math.random() * 500),
       isDeal: true,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
@@ -186,9 +177,10 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
                   <SelectItem value="Electronics" className="font-bold py-3">Electronics & Computing</SelectItem>
-                  <SelectItem value="Furniture" className="font-bold py-3">Premium Furniture</SelectItem>
+                  <SelectItem value="Home & Kitchen" className="font-bold py-3">Home & Kitchen</SelectItem>
                   <SelectItem value="Fashion" className="font-bold py-3">Fashion & Apparel</SelectItem>
-                  <SelectItem value="Home" className="font-bold py-3">Home & Essentials</SelectItem>
+                  <SelectItem value="Beauty" className="font-bold py-3">Beauty & Personal Care</SelectItem>
+                  <SelectItem value="Books" className="font-bold py-3">Books & Media</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -201,10 +193,13 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                   id="imageUrl" 
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-                  placeholder="https://..." 
+                  placeholder="Paste an image URL (Unsplash, Pexels, etc.)" 
                   className={`${inputClass} pl-12`}
                 />
               </div>
+              <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1 ml-1">
+                Tip: Leave blank to auto-generate a high-quality placeholder.
+              </p>
             </div>
           </div>
         </div>

@@ -1,8 +1,7 @@
-
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
-import { Star, CheckCircle2, Loader2, ShieldCheck, Truck, RotateCcw, ShoppingBag, ArrowRight } from "lucide-react";
+import { Star, CheckCircle2, Loader2, ShoppingBag, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -11,7 +10,7 @@ import { useState, useMemo, useCallback } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { ToastAction } from "@/components/ui/toast";
 import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, orderBy, limit } from "firebase/firestore";
+import { collection, query, limit } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,13 +32,21 @@ export default function Home() {
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(24));
+    // Removed orderBy to avoid requiring index for simple dev cycles
+    return query(collection(db, 'products'), limit(24));
   }, [db]);
 
   const { data: products, loading } = useCollection(productsQuery);
 
   const deals = useMemo(() => products?.filter((p: any) => p.isDeal) || [], [products]);
-  const newArrivals = useMemo(() => products || [], [products]);
+  const newArrivals = useMemo(() => {
+    if (!products) return [];
+    return [...products].sort((a: any, b: any) => {
+      const dateA = a.createdAt?.toDate?.() || 0;
+      const dateB = b.createdAt?.toDate?.() || 0;
+      return dateB - dateA;
+    });
+  }, [products]);
 
   const handleProductClick = useCallback((product: any) => {
     setSelectedProduct(product);
@@ -58,7 +65,12 @@ export default function Home() {
       description: (
         <div className="flex items-center gap-3 mt-2">
           <div className="relative h-12 w-12 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
-            <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-1" />
+            <Image 
+              src={product.imageUrl || 'https://placehold.co/100x100?text=No+Image'} 
+              alt={product.name} 
+              fill 
+              className="object-contain p-1" 
+            />
           </div>
           <div className="flex flex-col gap-0.5">
             <p className="text-xs font-black text-slate-900 line-clamp-1">{product.name}</p>
@@ -90,7 +102,6 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1 pb-24">
-        {/* Amazon-Style Hero Section (No BG Image) */}
         <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden bg-slate-900 flex items-center justify-center text-center p-8">
           <div className="space-y-4 max-w-2xl relative z-10">
             <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase">Premium Marketplace</h1>
@@ -99,21 +110,20 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-100/100" />
         </section>
 
-        {/* Overlapping Category Grid */}
         <section className="max-w-[1450px] mx-auto px-4 md:px-8 relative -mt-[100px] md:-mt-[150px] z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
-              { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", desc: "Latest gadgets & computing" },
-              { title: "Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", desc: "Premium living essentials" },
-              { title: "Fashion", hint: "model pose", href: "/products?category=Fashion", desc: "Trendsetting collections" },
-              { title: "New Arrivals", hint: "unboxing package", href: "/products", desc: "Freshly dropped inventory" }
+              { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", seed: "tech" },
+              { title: "Home & Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", seed: "kitchen" },
+              { title: "Fashion", hint: "model pose", href: "/products?category=Fashion", seed: "style" },
+              { title: "Latest Collection", hint: "new drop", href: "/products", seed: "new" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
                 <Card className="bg-white p-6 rounded-none shadow-sm flex flex-col h-full group cursor-pointer hover:shadow-2xl transition-all duration-500 border-none">
                   <h3 className="text-xl font-black text-slate-900 mb-4 uppercase tracking-tight">{cat.title}</h3>
                   <div className="relative aspect-square w-full bg-slate-50 rounded-lg overflow-hidden mb-6">
                     <Image 
-                      src={`https://picsum.photos/seed/cat-amazon-${idx}/600/600`}
+                      src={`https://picsum.photos/seed/${cat.seed}/600/600`}
                       alt={cat.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
@@ -121,7 +131,7 @@ export default function Home() {
                     />
                   </div>
                   <span className="text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto flex items-center gap-2">
-                    Explore <ArrowRight className="h-3 w-3" />
+                    Shop Now <ArrowRight className="h-3 w-3" />
                   </span>
                 </Card>
               </Link>
@@ -129,7 +139,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Flash Deals Section */}
         {deals.length > 0 && (
           <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-12">
             <Card className="bg-white rounded-none border-none shadow-sm p-8">
@@ -151,7 +160,7 @@ export default function Home() {
                   >
                     <div className="relative aspect-square bg-slate-50 rounded-xl overflow-hidden p-6 mb-4">
                       <Image 
-                        src={product.imageUrl} 
+                        src={product.imageUrl || 'https://placehold.co/400x400?text=No+Image'} 
                         alt={product.name} 
                         fill 
                         className="object-contain transition-transform duration-500 group-hover:scale-110" 
@@ -178,7 +187,6 @@ export default function Home() {
           </section>
         )}
 
-        {/* Just Dropped Grid */}
         <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-12">
           <Card className="bg-white rounded-none border-none shadow-sm p-8">
             <div className="flex items-center justify-between mb-8">
@@ -200,7 +208,7 @@ export default function Home() {
                 >
                   <div className="relative aspect-square bg-slate-50 rounded-lg overflow-hidden p-6 mb-4 group-hover:shadow-md transition-all">
                     <Image 
-                      src={product.imageUrl} 
+                      src={product.imageUrl || 'https://placehold.co/400x400?text=No+Image'} 
                       alt={product.name} 
                       fill 
                       className="object-contain transition-transform duration-500 group-hover:scale-105" 
@@ -237,7 +245,6 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Global Footer */}
       <footer className="bg-slate-900 text-white py-20 border-t border-white/5">
         <div className="max-w-[1450px] mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2 space-y-6">
