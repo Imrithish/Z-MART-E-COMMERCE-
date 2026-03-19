@@ -24,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { OrderSuccessModal } from "@/components/storefront/OrderSuccessModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -36,6 +37,9 @@ const formatCurrency = (amount: number) => {
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, totalItems, clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [lastOrderTotal, setLastOrderTotal] = useState(0);
+  
   const db = useFirestore();
   const { user } = useUser();
   const { toast } = useToast();
@@ -44,6 +48,8 @@ export default function CartPage() {
   const FREE_SHIPPING_THRESHOLD = 2000;
   const progressToFreeShipping = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100);
   const remainingForFreeShipping = Math.max(FREE_SHIPPING_THRESHOLD - subtotal, 0);
+  const shippingFee = progressToFreeShipping === 100 ? 0 : 99;
+  const grandTotal = subtotal + shippingFee;
 
   const handleCheckout = async () => {
     if (!db || items.length === 0) return;
@@ -67,19 +73,16 @@ export default function CartPage() {
         quantity: item.quantity,
         price: item.product.price
       })),
-      totalAmount: subtotal + (progressToFreeShipping === 100 ? 0 : 99),
+      totalAmount: grandTotal,
       status: 'Pending',
       createdAt: serverTimestamp(),
     };
 
     addDoc(collection(db, 'orders'), orderData)
       .then(() => {
-        toast({
-          title: "Order Placed Successfully!",
-          description: "Thank you for shopping with Z-Mart.",
-        });
+        setLastOrderTotal(grandTotal);
+        setShowSuccessModal(true);
         clearCart();
-        router.push('/');
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
@@ -159,19 +162,7 @@ export default function CartPage() {
                       <div className="flex flex-wrap items-center gap-6 mt-auto">
                         <div className="flex items-center gap-3 bg-white border border-slate-100 rounded-xl px-3 py-1.5 shadow-sm">
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Qty:</span>
-                          <Select 
-                            value={item.quantity.toString()} 
-                            onValueChange={(val) => updateQuantity(item.product.id, parseInt(val))}
-                          >
-                            <SelectTrigger className="border-none bg-transparent h-6 p-0 focus:ring-0 text-sm font-black w-10 shadow-none">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl">
-                              {[1,2,3,4,5,6,7,8,9,10].map(n => (
-                                <SelectItem key={n} value={n.toString()} className="font-bold">{n}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <span className="text-sm font-black">{item.quantity}</span>
                         </div>
                         
                         <div className="flex gap-4">
@@ -229,7 +220,7 @@ export default function CartPage() {
                   <div className="flex justify-between items-end">
                     <div>
                       <span className="text-xs font-black uppercase tracking-widest text-white/50">Grand Total</span>
-                      <p className="text-3xl font-black text-white">{formatCurrency(subtotal + (progressToFreeShipping === 100 ? 0 : 99))}</p>
+                      <p className="text-3xl font-black text-white">{formatCurrency(grandTotal)}</p>
                     </div>
                   </div>
                 </div>
@@ -260,6 +251,12 @@ export default function CartPage() {
       <footer className="mt-auto bg-white border-t border-slate-100 py-10 text-center">
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">© 2024 Z-MART.in • All Rights Reserved</p>
       </footer>
+
+      <OrderSuccessModal 
+        isOpen={showSuccessModal} 
+        onClose={() => setShowSuccessModal(false)} 
+        orderTotal={lastOrderTotal}
+      />
     </div>
   );
 }
