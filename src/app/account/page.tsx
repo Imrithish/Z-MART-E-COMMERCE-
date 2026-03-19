@@ -19,15 +19,26 @@ import {
   ChevronRight,
   ExternalLink,
   CreditCard,
-  User as UserIcon
+  User as UserIcon,
+  Plus,
+  Trash2,
+  Home as HomeIcon,
+  Briefcase,
+  Globe
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { collection, query, where } from "firebase/firestore";
+import { collection, query, where, addDoc, serverTimestamp, deleteDoc, doc } from "firebase/firestore";
 import { format } from "date-fns";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { ReceiptModal } from "@/components/storefront/ReceiptModal";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -41,9 +52,23 @@ export default function UserDashboard() {
   const { user, loading: authLoading } = useUser();
   const db = useFirestore();
   const router = useRouter();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'security' | 'addresses'>('overview');
   const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  const [showAddAddress, setShowAddAddress] = useState(false);
+  const [isSavingAddress, setIsSavingAddress] = useState(false);
+
+  // Address Form State
+  const [newAddress, setNewAddress] = useState({
+    label: 'Home',
+    houseNo: '',
+    street: '',
+    city: '',
+    state: '',
+    pincode: '',
+    landmark: ''
+  });
 
   // Handle Hash navigation from sidebar
   useEffect(() => {
@@ -69,6 +94,14 @@ export default function UserDashboard() {
 
   const { data: rawOrders, loading: ordersLoading } = useCollection(ordersQuery);
 
+  // Fetch User Addresses
+  const addressesQuery = useMemo(() => {
+    if (!db || !user?.uid) return null;
+    return collection(db, 'users', user.uid, 'addresses');
+  }, [db, user?.uid]);
+
+  const { data: addresses, loading: addressesLoading } = useCollection(addressesQuery);
+
   // Client-side sorting of orders by creation date
   const orders = useMemo(() => {
     if (!rawOrders) return null;
@@ -88,6 +121,56 @@ export default function UserDashboard() {
   const handleViewReceipt = (order: any) => {
     setSelectedReceipt(order);
     setIsReceiptOpen(true);
+  };
+
+  const handleAddAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!db || !user) return;
+
+    setIsSavingAddress(true);
+    const addressData = {
+      ...newAddress,
+      createdAt: serverTimestamp(),
+    };
+
+    addDoc(collection(db, 'users', user.uid, 'addresses'), addressData)
+      .then(() => {
+        toast({ title: "Address Saved", description: "Successfully added to your profile." });
+        setShowAddAddress(false);
+        setNewAddress({
+          label: 'Home',
+          houseNo: '',
+          street: '',
+          city: '',
+          state: '',
+          pincode: '',
+          landmark: ''
+        });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: `users/${user.uid}/addresses`,
+          operation: 'create',
+          requestResourceData: addressData,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      })
+      .finally(() => setIsSavingAddress(false));
+  };
+
+  const handleDeleteAddress = (addressId: string) => {
+    if (!db || !user) return;
+    deleteDoc(doc(db, 'users', user.uid, 'addresses', addressId))
+      .then(() => {
+        toast({ title: "Address Removed", description: "Location deleted from your profile." });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: `users/${user.uid}/addresses/${addressId}`,
+          operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
 
   if (authLoading) {
@@ -116,7 +199,7 @@ export default function UserDashboard() {
           <header className="space-y-2 md:space-y-4">
             <div className="flex items-center gap-3 md:gap-4">
                <h1 className="text-2xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
-                {activeTab === 'overview' ? 'Dashboard' : activeTab === 'orders' ? 'My Orders' : 'Account Settings'}
+                {activeTab === 'overview' ? 'Dashboard' : activeTab === 'orders' ? 'My Orders' : activeTab === 'addresses' ? 'Saved Addresses' : 'Security'}
                </h1>
                <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4" />
             </div>
@@ -328,14 +411,114 @@ export default function UserDashboard() {
             </div>
           )}
 
-          {(activeTab === 'security' || activeTab === 'addresses') && (
+          {activeTab === 'addresses' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+               <div className="flex items-center justify-between mb-4">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">{addresses?.length || 0} Saved Locations</p>
+                  <Button 
+                    onClick={() => setShowAddAddress(!showAddAddress)} 
+                    className="h-12 px-6 rounded-xl bg-primary text-slate-900 font-black uppercase tracking-widest text-[10px]"
+                  >
+                    {showAddAddress ? 'Cancel' : 'Add New Address'}
+                  </Button>
+               </div>
+
+               {showAddAddress && (
+                 <Card className="bg-white border-none shadow-sm rounded-[2rem] p-8 animate-in slide-in-from-top-4 duration-500">
+                    <form onSubmit={handleAddAddress} className="space-y-8">
+                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Location Label</Label>
+                            <Select value={newAddress.label} onValueChange={(val) => setNewAddress({...newAddress, label: val})}>
+                              <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none font-bold">
+                                <SelectValue placeholder="Label" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Home">Home</SelectItem>
+                                <SelectItem value="Office">Office</SelectItem>
+                                <SelectItem value="Work">Work</SelectItem>
+                                <SelectItem value="Other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Flat / House No.</Label>
+                            <Input required value={newAddress.houseNo} onChange={e => setNewAddress({...newAddress, houseNo: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Street / Area</Label>
+                            <Input required value={newAddress.street} onChange={e => setNewAddress({...newAddress, street: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">City</Label>
+                            <Input required value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">State</Label>
+                            <Input required value={newAddress.state} onChange={e => setNewAddress({...newAddress, state: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Pincode</Label>
+                            <Input required maxLength={6} value={newAddress.pincode} onChange={e => setNewAddress({...newAddress, pincode: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                          </div>
+                       </div>
+                       <Button type="submit" disabled={isSavingAddress} className="h-14 px-10 bg-slate-900 text-white hover:bg-primary hover:text-slate-900 font-black uppercase tracking-widest rounded-2xl shadow-xl">
+                          {isSavingAddress ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Plus className="h-5 w-5 mr-2" />}
+                          Save Delivery Location
+                       </Button>
+                    </form>
+                 </Card>
+               )}
+
+               {addressesLoading ? (
+                 <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>
+               ) : addresses && addresses.length > 0 ? (
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {addresses.map((address: any) => (
+                      <Card key={address.id} className="bg-white border-none shadow-sm rounded-[2rem] p-8 group relative overflow-hidden transition-all hover:shadow-lg">
+                        <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <button onClick={() => handleDeleteAddress(address.id)} className="p-2 text-slate-300 hover:text-red-500 transition-colors">
+                             <Trash2 className="h-4 w-4" />
+                           </button>
+                        </div>
+                        <div className="flex flex-col gap-6">
+                           <div className="h-12 w-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-slate-900 transition-colors">
+                              {address.label === 'Home' ? <HomeIcon className="h-5 w-5" /> : 
+                               address.label === 'Office' ? <Briefcase className="h-5 w-5" /> : 
+                               address.label === 'Work' ? <Briefcase className="h-5 w-5" /> :
+                               <Globe className="h-5 w-5" />}
+                           </div>
+                           <div className="space-y-2">
+                             <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight">{address.label}</h4>
+                             <p className="text-xs font-medium text-slate-500 leading-relaxed">
+                                {address.houseNo}, {address.street}<br/>
+                                {address.city}, {address.state} - {address.pincode}
+                             </p>
+                           </div>
+                        </div>
+                      </Card>
+                    ))}
+                 </div>
+               ) : (
+                 <div className="py-20 flex flex-col items-center text-center">
+                    <div className="bg-white h-32 w-32 rounded-[3rem] flex items-center justify-center mb-8 shadow-xl">
+                      <MapPin className="h-12 w-12 text-slate-200" />
+                    </div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">No Saved Locations</h2>
+                    <p className="text-slate-500 max-w-xs mb-8 font-medium">Add your preferred delivery addresses for a faster checkout experience.</p>
+                 </div>
+               )}
+            </div>
+          )}
+
+          {activeTab === 'security' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <Card className="bg-white border-none shadow-sm rounded-[3rem] p-12 text-center max-w-2xl mx-auto">
                  <div className="bg-slate-50 h-24 w-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
-                    {activeTab === 'security' ? <ShieldCheck className="h-10 w-10 text-slate-200" /> : <MapPin className="h-10 w-10 text-slate-200" />}
+                    <ShieldCheck className="h-10 w-10 text-slate-200" />
                  </div>
-                 <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">{activeTab} Terminal</h2>
-                 <p className="text-slate-500 font-medium mb-10">This section is currently being encrypted for your security. Please check back shortly.</p>
+                 <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">Security Terminal</h2>
+                 <p className="text-slate-500 font-medium mb-10">This section is currently being encrypted for your security. Please check back shortly to manage your login credentials.</p>
                  <Button onClick={() => setActiveTab('overview')} variant="outline" className="rounded-xl h-12 px-8 font-black uppercase tracking-widest text-[10px]">
                    Return to Dashboard
                  </Button>

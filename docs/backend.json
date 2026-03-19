@@ -60,6 +60,22 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["customerName", "customerEmail", "totalAmount", "status", "phoneNumber", "paymentMethod"]
+    },
+    "Address": {
+      "title": "Address",
+      "description": "A saved delivery location for a user.",
+      "type": "object",
+      "properties": {
+        "label": { "type": "string", "enum": ["Home", "Office", "Work", "Other"] },
+        "houseNo": { "type": "string" },
+        "street": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "pincode": { "type": "string" },
+        "landmark": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["label", "houseNo", "street", "city", "state", "pincode"]
     }
   },
   "auth": {
@@ -73,6 +89,10 @@
     "/orders/{orderId}": {
       "schema": "Order",
       "description": "Collection of customer orders."
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": "Address",
+      "description": "User saved delivery addresses."
     }
   }
 }
