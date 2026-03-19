@@ -19,7 +19,8 @@ import {
   Menu,
   Package,
   Shield,
-  UserCircle
+  UserCircle,
+  ShoppingBag
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -163,11 +164,25 @@ export function Navbar() {
                     <div className="space-y-4">
                       <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Your Account</h4>
                       <ul className="space-y-3 pl-7">
-                        <li><Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}><Package className="h-4 w-4" /> Your Orders</Link></li>
-                        <li><Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}><Shield className="h-4 w-4" /> Login & Security</Link></li>
-                        <li><Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}><MapPin className="h-4 w-4" /> Your Addresses</Link></li>
                         <li>
-                          <button onClick={handleSignOut} className="flex items-center gap-2 text-sm font-bold text-red-400 uppercase tracking-tight"><LogOut className="h-4 w-4" /> Sign Out</button>
+                          <Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+                            <Package className="h-4 w-4 text-primary" /> Your Orders
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+                            <ShieldCheck className="h-4 w-4 text-primary" /> Login & Security
+                          </Link>
+                        </li>
+                        <li>
+                          <Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>
+                            <MapPin className="h-4 w-4 text-primary" /> Your Addresses
+                          </Link>
+                        </li>
+                        <li>
+                          <button onClick={handleSignOut} className="flex items-center gap-2 text-sm font-bold text-red-400 uppercase tracking-tight">
+                            <LogOut className="h-4 w-4" /> Sign Out
+                          </button>
                         </li>
                       </ul>
                     </div>
@@ -248,9 +263,9 @@ export function Navbar() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-1 md:gap-4">
           <div className="group relative">
-            <button className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-xl transition-all text-left">
+            <button className="flex items-center gap-1 hover:bg-white/10 p-2 rounded-xl transition-all text-left">
               <UserCircle className="h-6 w-6 md:h-7 md:w-7 text-white" />
               <div className="hidden sm:flex flex-col items-start leading-tight">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -276,17 +291,17 @@ export function Navbar() {
                     <ul className="space-y-1">
                       <li>
                         <Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-[11px] font-black uppercase tracking-widest transition-all">
-                          <Package className="h-4 w-4 text-slate-400" /> Your Orders
+                          <Package className="h-4 w-4 text-primary" /> Your Orders
                         </Link>
                       </li>
                       <li>
                         <Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-[11px] font-black uppercase tracking-widest transition-all">
-                          <Shield className="h-4 w-4 text-slate-400" /> Login & Security
+                          <ShieldCheck className="h-4 w-4 text-primary" /> Login & Security
                         </Link>
                       </li>
                       <li>
                         <Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-[11px] font-black uppercase tracking-widest transition-all">
-                          <MapPin className="h-4 w-4 text-slate-400" /> Your Addresses
+                          <MapPin className="h-4 w-4 text-primary" /> Your Addresses
                         </Link>
                       </li>
                     </ul>
@@ -309,7 +324,7 @@ export function Navbar() {
             </div>
           </div>
 
-          <Link href="/cart" className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-xl transition-all group relative">
+          <Link href="/cart" className="flex items-center gap-1 hover:bg-white/10 p-2 rounded-xl transition-all group relative">
             <div className="relative">
               <ShoppingCart className="h-6 w-6 md:h-7 md:w-7 text-white" />
               <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-slate-900 text-[10px] font-black flex items-center justify-center rounded-full border-2 border-slate-900">
