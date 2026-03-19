@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
@@ -75,7 +74,7 @@ export default function CartPage() {
                 <h2 className="text-2xl font-black text-slate-900 mb-3">Your basket is waiting to be filled</h2>
                 <p className="text-slate-500 max-w-sm mb-10 font-medium">Items stay in your cart for a limited time, but they might sell out before you check out.</p>
                 <div className="flex gap-4">
-                  <Button asChild className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs transition-all active:scale-95">
+                  <Button asChild className="h-14 px-8 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs transition-all active:scale-95 text-white">
                     <Link href="/products">Browse Trending</Link>
                   </Button>
                   <Button variant="outline" asChild className="h-14 px-8 rounded-2xl border-slate-200 font-black uppercase tracking-widest text-xs transition-all">
