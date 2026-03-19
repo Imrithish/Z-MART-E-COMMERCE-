@@ -71,15 +71,15 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 flex-col lg:flex-row">
       <AdminSidebar />
-      <main className="flex-1 p-6 md:p-10 lg:p-14 space-y-12 overflow-hidden">
+      <main className="flex-1 p-4 md:p-8 lg:p-14 space-y-8 md:space-y-12 overflow-x-hidden">
         <header className="flex flex-col gap-2">
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
-          <p className="text-slate-500 text-lg font-medium">Monitoring your store performance.</p>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
+          <p className="text-slate-500 text-base md:text-lg font-medium">Monitoring your store performance.</p>
         </header>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
           {stats.map((stat) => (
             <Card key={stat.label} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-[2rem] overflow-hidden group bg-white">
               <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-black text-slate-900 mb-2">{stat.value}</div>
+                <div className="text-2xl md:text-3xl font-black text-slate-900 mb-2">{stat.value}</div>
                 <div className={`text-[10px] flex items-center gap-1 font-black ${stat.color} uppercase tracking-widest`}>
                   {stat.change} <ArrowUpRight className="h-3 w-3" />
                   <span className="text-slate-400 ml-1">vs last month</span>
@@ -99,31 +99,31 @@ export default function AdminDashboard() {
           ))}
         </section>
 
-        <section className="grid lg:grid-cols-3 gap-10">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
           <Card className="lg:col-span-2 border-none shadow-sm rounded-[2rem] overflow-hidden bg-white">
-            <CardHeader className="p-10 border-b border-slate-50">
+            <CardHeader className="p-6 md:p-10 border-b border-slate-50">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Recent Transactions</CardTitle>
+                <CardTitle className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-widest">Recent Transactions</CardTitle>
                 <Badge className="rounded-xl px-4 py-1.5 font-black uppercase text-[9px] bg-slate-900 text-white border-none tracking-widest">Live</Badge>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto no-scrollbar">
               {ordersLoading ? (
                 <div className="p-20 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" /></div>
               ) : recentOrders && recentOrders.length > 0 ? (
                 <Table>
                   <TableHeader className="bg-slate-50/50">
                     <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest">Items</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Customer</TableHead>
+                      <TableHead className="px-6 md:px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest min-w-[200px]">Items</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest min-w-[150px]">Customer</TableHead>
                       <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Status</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-10">Amount</TableHead>
+                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-6 md:px-10">Amount</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {recentOrders.map((order: any) => (
                       <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50">
-                        <TableCell className="px-10 py-6">
+                        <TableCell className="px-6 md:px-10 py-6">
                            {order.items && order.items.length > 0 && (
                             <div 
                               className="flex items-center gap-4 cursor-pointer group"
@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                             {order.status}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-right px-10 font-black text-slate-900 text-lg">
+                        <TableCell className="text-right px-6 md:px-10 font-black text-slate-900 text-base md:text-lg">
                           {formatCurrency(order.totalAmount)}
                         </TableCell>
                       </TableRow>
@@ -186,18 +186,18 @@ export default function AdminDashboard() {
           </Card>
 
           <div className="space-y-8">
-            <Card className="border-none shadow-sm rounded-[2rem] p-10 bg-white">
-              <CardHeader className="p-0 mb-10">
-                <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Alerts</CardTitle>
+            <Card className="border-none shadow-sm rounded-[2rem] p-6 md:p-10 bg-white">
+              <CardHeader className="p-0 mb-8 md:mb-10">
+                <CardTitle className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-widest">Alerts</CardTitle>
               </CardHeader>
-              <CardContent className="p-0 space-y-10">
+              <CardContent className="p-0 space-y-8 md:space-y-10">
                 {[
                   { title: "Smart Hub Pro", desc: "Low Stock: 5 Units", status: "Critical", color: "bg-red-50 text-red-600" },
                   { title: "Ergo Chair Ultra", desc: "Out of Stock", status: "Restock Now", color: "bg-slate-100 text-slate-900" }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-6 group">
-                    <div className={`h-16 w-16 rounded-2xl ${item.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
-                      <Box className="h-7 w-7" />
+                  <div key={idx} className="flex items-center gap-4 md:gap-6 group">
+                    <div className={`h-14 w-14 md:h-16 md:w-16 rounded-2xl ${item.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
+                      <Box className="h-6 w-6 md:h-7 md:w-7" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-black text-slate-900 uppercase tracking-tight mb-1 truncate">{item.title}</div>

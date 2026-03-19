@@ -156,22 +156,22 @@ export default function Home() {
 
       <main className="flex-1 pb-24">
         {/* Hero Search Section */}
-        <section className="bg-slate-900 py-10 md:py-24 px-4 md:px-8 border-b border-white/5 relative overflow-hidden">
+        <section className="bg-slate-900 py-16 md:py-32 px-4 md:px-8 border-b border-white/5 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50" />
-          <div className="max-w-4xl mx-auto space-y-10 relative z-10">
-            <div className="text-center space-y-4">
-              <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter uppercase leading-none">The Premium Standard</h1>
+          <div className="max-w-4xl mx-auto space-y-12 relative z-10">
+            <div className="text-center space-y-6">
+              <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-white tracking-tighter uppercase leading-[0.9] text-balance">The Premium Standard</h1>
               <p className="text-slate-400 font-black uppercase tracking-[0.4em] text-[10px] md:text-xs opacity-60">Global Curated Marketplace</p>
             </div>
-            <form onSubmit={handleSearch} className="flex items-center h-16 md:h-20 rounded-2xl md:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl focus-within:ring-8 focus-within:ring-primary/20 transition-all p-2">
+            <form onSubmit={handleSearch} className="flex items-center h-16 md:h-24 rounded-2xl md:rounded-[3rem] overflow-hidden bg-white shadow-2xl focus-within:ring-8 focus-within:ring-primary/20 transition-all p-2">
               <Input 
                 placeholder="Search premium essentials..." 
-                className="flex-1 border-none focus-visible:ring-0 text-slate-900 h-full px-6 md:px-12 text-lg font-bold placeholder:text-slate-400"
+                className="flex-1 border-none focus-visible:ring-0 text-slate-900 h-full px-6 md:px-12 text-base md:text-xl font-bold placeholder:text-slate-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-8 md:px-14 rounded-xl md:rounded-[2rem] transition-colors flex items-center justify-center gap-3 group">
-                <Search className="h-6 w-6 text-slate-900 group-hover:scale-110 transition-transform" />
+              <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-6 md:px-14 rounded-xl md:rounded-[2.5rem] transition-colors flex items-center justify-center gap-3 group">
+                <Search className="h-5 w-5 md:h-7 md:w-7 text-slate-900 group-hover:scale-110 transition-transform" />
                 <span className="hidden md:block font-black uppercase tracking-widest text-slate-900 text-sm">Search</span>
               </button>
             </form>
