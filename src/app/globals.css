@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 95%; /* Amazon light grey background */
-    --foreground: 221 70% 10%;
+    --background: 0 0% 98%; /* Slightly lighter for better contrast */
+    --foreground: 221 70% 5%; /* Darker foreground for sharper text */
     --card: 0 0% 100%;
-    --card-foreground: 221 70% 10%;
+    --card-foreground: 221 70% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 221 70% 10%;
+    --popover-foreground: 221 70% 5%;
     --primary: 38 100% 50%; /* Amazon Orange #ff9900 */
-    --primary-foreground: 221 70% 10%;
+    --primary-foreground: 221 70% 5%;
     --secondary: 195 100% 40%; /* Amazon Link Blue */
     --secondary-foreground: 0 0% 100%;
     --muted: 210 10% 90%;
-    --muted-foreground: 221 20% 40%;
+    --muted-foreground: 221 20% 30%; /* Darker muted text */
     --accent: 215 90% 95%;
-    --accent-foreground: 215 90% 35%;
+    --accent-foreground: 215 90% 30%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 223 9% 88%;
-    --input: 223 9% 88%;
+    --border: 223 9% 85%; /* Slightly darker borders */
+    --input: 223 9% 85%;
     --ring: 38 100% 50%;
-    --radius: 0.25rem; /* Amazon uses smaller radiuses */
+    --radius: 0.5rem;
   }
 }
 
@@ -32,7 +32,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body antialiased;
   }
 }
 
@@ -45,7 +45,7 @@
 }
 
 .amazon-card {
-  @apply bg-white p-5 shadow-sm;
+  @apply bg-white p-5 shadow-sm border border-slate-100 rounded-sm;
 }
 
 .amazon-btn-primary {

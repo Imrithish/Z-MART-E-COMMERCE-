@@ -30,7 +30,7 @@ export function AdminSidebar() {
 
   return (
     <aside className={cn(
-      "h-screen sticky top-0 bg-slate-900 text-white transition-all duration-300 flex flex-col z-40",
+      "h-screen sticky top-0 bg-slate-900 text-white transition-all duration-300 flex flex-col z-40 shadow-2xl",
       isCollapsed ? "w-20" : "w-72"
     )}>
       <div className="p-8 flex items-center justify-between">
@@ -55,8 +55,8 @@ export function AdminSidebar() {
               className={cn(
                 "flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group",
                 isActive 
-                  ? "bg-primary text-white shadow-2xl shadow-primary/20" 
-                  : "hover:bg-white/5 text-slate-400 hover:text-white"
+                  ? "bg-primary text-slate-900 shadow-lg shadow-primary/20" 
+                  : "hover:bg-white/5 text-slate-300 hover:text-white"
               )}
             >
               <item.icon className={cn("h-6 w-6 shrink-0 transition-transform group-hover:scale-110", isActive && "scale-110")} />
@@ -70,7 +70,7 @@ export function AdminSidebar() {
         <Link 
           href="/"
           className={cn(
-            "flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/5 transition-all text-slate-400 hover:text-white group",
+            "flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/5 transition-all text-slate-300 hover:text-white group",
           )}
         >
           <Store className="h-6 w-6 shrink-0 group-hover:scale-110" />
