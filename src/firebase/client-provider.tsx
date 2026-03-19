@@ -16,17 +16,17 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
-    setMounted(true);
     const { app, auth, db } = initializeFirebase();
     setFirebaseData({ app, auth, db });
+    setMounted(true);
   }, []);
 
   // Standard fallback to match server render and initial client mount
   const LoadingFallback = () => (
-    <div className="h-screen w-full flex items-center justify-center bg-slate-50">
-      <div className="animate-pulse flex flex-col items-center gap-4">
-        <div className="h-12 w-12 bg-slate-200 rounded-2xl" />
-        <div className="h-4 w-32 bg-slate-200 rounded-full" />
+    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="flex flex-col items-center gap-4">
+        <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <p className="font-black text-slate-400 uppercase tracking-widest text-xs">Initializing Z-MART...</p>
       </div>
     </div>
   );

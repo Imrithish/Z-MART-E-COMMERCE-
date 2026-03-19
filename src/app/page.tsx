@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
@@ -178,7 +177,7 @@ export default function Home() {
                       </Link>
                       <div className="bg-slate-50 p-4 rounded-xl mt-auto border border-slate-100">
                         <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1">New customer?</p>
-                        <Link href="/admin/login" className="text-xs text-primary hover:underline font-bold">Start here.</Link>
+                        <Link href="/signup" className="text-xs text-primary hover:underline font-bold">Start here.</Link>
                       </div>
                     </div>
                   )}
@@ -247,37 +246,6 @@ export default function Home() {
               </div>
             </section>
           )}
-
-          {electronics.length > 0 && (
-            <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
-              <div className="flex items-center gap-4 mb-6">
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Best Sellers in Electronics</h2>
-                <Link href="/products?category=Electronics" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
-                  See more
-                </Link>
-              </div>
-              <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6">
-                {electronics.map((product) => (
-                  <div 
-                    key={product.id} 
-                    className="min-w-[180px] group cursor-pointer"
-                    onClick={() => handleProductClick(product)}
-                  >
-                    <div className="relative aspect-square bg-white rounded-sm mb-3">
-                      <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-2 group-hover:scale-105 transition-transform" />
-                    </div>
-                    <div className="flex items-center gap-1 mb-1">
-                      <div className="flex">
-                        {[1,2,3,4,5].map(i => <Star key={i} className={`h-2.5 w-2.5 ${i <= Math.floor(product.rating || 5) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-200'}`} />)}
-                      </div>
-                      <span className="text-[10px] text-[#007185]">{(product.reviews || 0).toLocaleString()}</span>
-                    </div>
-                    <p className="text-sm font-bold text-slate-900">{formatCurrency(product.price)}</p>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
 
         <button 
@@ -293,53 +261,18 @@ export default function Home() {
               <h4 className="font-bold text-base">Get to Know Us</h4>
               <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
                 <li><Link href="#" className="hover:underline">Careers</Link></li>
-                <li><Link href="#" className="hover:underline">Blog</Link></li>
                 <li><Link href="#" className="hover:underline">About Z-Mart</Link></li>
-                <li><Link href="#" className="hover:underline">Sustainability</Link></li>
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="font-bold text-base">Make Money with Us</h4>
               <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
                 <li><Link href="/admin/login" className="hover:underline">Sell products on Z-Mart</Link></li>
-                <li><Link href="#" className="hover:underline">Sell on Z-Mart Business</Link></li>
-                <li><Link href="#" className="hover:underline">Become an Affiliate</Link></li>
-                <li><Link href="#" className="hover:underline">Advertise Your Products</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-bold text-base">Z-Mart Payment</h4>
-              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
-                <li><Link href="#" className="hover:underline">Z-Mart Business Card</Link></li>
-                <li><Link href="#" className="hover:underline">Shop with Points</Link></li>
-                <li><Link href="#" className="hover:underline">Reload Your Balance</Link></li>
-                <li><Link href="#" className="hover:underline">Currency Converter</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-bold text-base">Let Us Help You</h4>
-              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
-                <li><Link href="#" className="hover:underline">Your Account</Link></li>
-                <li><Link href="#" className="hover:underline">Your Orders</Link></li>
-                <li><Link href="#" className="hover:underline">Shipping Rates</Link></li>
-                <li><Link href="#" className="hover:underline">Returns & Replacements</Link></li>
-                <li><Link href="#" className="hover:underline">Help Center</Link></li>
               </ul>
             </div>
           </div>
-
           <div className="max-w-[1000px] mx-auto px-6 mt-16 pt-10 border-t border-slate-700 flex flex-col items-center gap-8">
-            <div className="flex items-center gap-8">
-              <Link href="/" className="text-2xl font-black tracking-tighter hover:text-primary transition-colors">Z-MART</Link>
-              <div className="border border-slate-500 rounded-sm px-3 py-1.5 flex items-center gap-2 text-xs text-slate-300">
-                <span>English</span>
-              </div>
-            </div>
-            <div className="flex flex-wrap justify-center gap-6 text-[11px] text-slate-400 font-bold uppercase tracking-wider">
-              <Link href="#" className="hover:underline">Conditions of Use</Link>
-              <Link href="#" className="hover:underline">Privacy Notice</Link>
-              <Link href="#" className="hover:underline">Your Ads Privacy Choices</Link>
-            </div>
+            <Link href="/" className="text-2xl font-black tracking-tighter hover:text-primary transition-colors">Z-MART</Link>
             <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em]">© 1996-2024, Z-Mart.in, Inc. or its affiliates</p>
           </div>
         </footer>
