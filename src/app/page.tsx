@@ -89,7 +89,7 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Hero Section: Cinematic & Layered */}
+        {/* Hero Section */}
         <section className="relative w-full h-[700px] md:h-[850px] overflow-hidden bg-slate-950">
           <Image 
             src="https://picsum.photos/seed/zmart-hero-luxury/1920/1080"
