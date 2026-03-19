@@ -72,25 +72,25 @@ export default function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-8 lg:p-14 space-y-8 md:space-y-12 overflow-x-hidden">
-        <header className="flex flex-col gap-2">
-          <h1 className="text-2xl md:text-4xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
-          <p className="text-slate-500 text-sm md:text-lg font-medium">Monitoring your store performance.</p>
+      <main className="flex-1 p-6 md:p-10 space-y-8 overflow-x-hidden">
+        <header className="flex flex-col gap-1">
+          <h1 className="text-2xl md:text-3xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
+          <p className="text-slate-500 text-sm md:text-base font-medium">Monitoring your store performance.</p>
         </header>
 
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat) => (
-            <Card key={stat.label} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl md:rounded-[2rem] overflow-hidden group bg-white">
-              <CardHeader className="flex flex-row items-center justify-between pb-3 md:pb-4">
-                <CardTitle className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</CardTitle>
-                <div className={`p-2 md:p-3 rounded-xl md:rounded-2xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
-                  <stat.icon className="h-4 w-4 md:h-5 md:w-5" />
+            <Card key={stat.label} className="border-none shadow-sm hover:shadow-lg transition-all rounded-2xl overflow-hidden group bg-white">
+              <CardHeader className="flex flex-row items-center justify-between pb-3">
+                <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</CardTitle>
+                <div className={`p-2 rounded-xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
+                  <stat.icon className="h-4 w-4" />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-xl md:text-3xl font-black text-slate-900 mb-1 md:mb-2">{stat.value}</div>
-                <div className={`text-[8px] md:text-[10px] flex items-center gap-1 font-black ${stat.color} uppercase tracking-widest`}>
-                  {stat.change} <ArrowUpRight className="h-2 md:h-3 w-2 md:w-3" />
+                <div className="text-xl md:text-2xl font-black text-slate-900 mb-1">{stat.value}</div>
+                <div className={`text-[9px] flex items-center gap-1 font-black ${stat.color} uppercase tracking-widest`}>
+                  {stat.change} <ArrowUpRight className="h-3 w-3" />
                   <span className="text-slate-400 ml-1">vs last month</span>
                 </div>
               </CardContent>
@@ -98,12 +98,12 @@ export default function AdminDashboard() {
           ))}
         </section>
 
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
-          <Card className="lg:col-span-2 border-none shadow-sm rounded-2xl md:rounded-[2rem] overflow-hidden bg-white">
-            <CardHeader className="p-4 md:p-10 border-b border-slate-50">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <Card className="lg:col-span-2 border-none shadow-sm rounded-3xl overflow-hidden bg-white">
+            <CardHeader className="p-6 md:p-8 border-b border-slate-50">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm md:text-xl font-black text-slate-900 uppercase tracking-widest">Recent Transactions</CardTitle>
-                <Badge className="rounded-lg md:rounded-xl px-3 md:px-4 py-1 md:py-1.5 font-black uppercase text-[8px] md:text-[9px] bg-slate-900 text-white border-none tracking-widest">Live</Badge>
+                <CardTitle className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-widest">Recent Transactions</CardTitle>
+                <Badge className="rounded-full px-4 py-1 font-black uppercase text-[8px] bg-slate-900 text-white border-none tracking-widest">Live</Badge>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -114,16 +114,16 @@ export default function AdminDashboard() {
                   <Table className="min-w-[800px]">
                     <TableHeader className="bg-slate-50/50">
                       <TableRow className="hover:bg-transparent border-none">
-                        <TableHead className="px-6 md:px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest">Items</TableHead>
+                        <TableHead className="px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Items</TableHead>
                         <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Customer</TableHead>
                         <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Status</TableHead>
-                        <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-6 md:px-10">Amount</TableHead>
+                        <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-8">Amount</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {recentOrders.map((order: any) => (
                         <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50">
-                          <TableCell className="px-6 md:px-10 py-6">
+                          <TableCell className="px-8 py-4">
                             {order.items && order.items.length > 0 && (
                               <div 
                                 className="flex items-center gap-4 cursor-pointer group"
@@ -149,21 +149,19 @@ export default function AdminDashboard() {
                                     className="object-contain p-1 group-hover:scale-110 transition-transform duration-500" 
                                   />
                                 </div>
-                                <div className="flex flex-col min-w-0">
-                                  <span className="text-[11px] font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
-                                    {order.items[0].name}
-                                  </span>
-                                </div>
+                                <span className="text-[11px] font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
+                                  {order.items[0].name}
+                                </span>
                               </div>
                             )}
                           </TableCell>
-                          <TableCell className="py-6">
+                          <TableCell className="py-4">
                             <div className="font-black text-slate-900 text-sm">{order.customerName}</div>
                             <div className="text-[9px] text-slate-400 font-bold uppercase">{order.customerEmail}</div>
                           </TableCell>
                           <TableCell className="text-center">
                             <Badge 
-                              className={`rounded-lg font-black px-3 py-1 text-[8px] uppercase tracking-widest border-none ${
+                              className={`rounded-full font-black px-3 py-1 text-[8px] uppercase tracking-widest border-none ${
                                 order.status === 'Shipped' ? 'bg-green-100 text-green-700' : 
                                 order.status === 'Pending' ? 'bg-orange-100 text-orange-700' : 
                                 'bg-slate-100 text-slate-600'
@@ -172,7 +170,7 @@ export default function AdminDashboard() {
                               {order.status}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-right px-6 md:px-10 font-black text-slate-900 text-sm md:text-lg">
+                          <TableCell className="text-right px-8 font-black text-slate-900 text-base">
                             {formatCurrency(order.totalAmount)}
                           </TableCell>
                         </TableRow>
@@ -181,29 +179,29 @@ export default function AdminDashboard() {
                   </Table>
                 </div>
               ) : (
-                <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest text-xs">No active transactions</div>
+                <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest text-[10px]">No active transactions</div>
               )}
             </CardContent>
           </Card>
 
-          <div className="space-y-6 md:space-y-8">
-            <Card className="border-none shadow-sm rounded-2xl md:rounded-[2rem] p-4 md:p-10 bg-white">
-              <CardHeader className="p-0 mb-6 md:mb-10">
-                <CardTitle className="text-sm md:text-xl font-black text-slate-900 uppercase tracking-widest">Alerts</CardTitle>
+          <div className="space-y-8">
+            <Card className="border-none shadow-sm rounded-3xl p-8 bg-white">
+              <CardHeader className="p-0 mb-8">
+                <CardTitle className="text-sm md:text-lg font-black text-slate-900 uppercase tracking-widest">Alerts</CardTitle>
               </CardHeader>
-              <CardContent className="p-0 space-y-6 md:space-y-10">
+              <CardContent className="p-0 space-y-8">
                 {[
                   { title: "Smart Hub Pro", desc: "Low Stock: 5 Units", status: "Critical", color: "bg-red-50 text-red-600" },
                   { title: "Ergo Chair Ultra", desc: "Out of Stock", status: "Restock Now", color: "bg-slate-100 text-slate-900" }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-4 md:gap-6 group">
-                    <div className={`h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl ${item.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
-                      <Box className="h-5 w-5 md:h-7 md:w-7" />
+                  <div key={idx} className="flex items-center gap-4 group">
+                    <div className={`h-12 w-12 rounded-xl ${item.color} flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-transform`}>
+                      <Box className="h-6 w-6" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[11px] md:text-sm font-black text-slate-900 uppercase tracking-tight mb-0.5 truncate">{item.title}</div>
-                      <div className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1 md:mb-2">{item.desc}</div>
-                      <Badge className={`rounded-md text-[7px] md:text-[8px] font-black uppercase tracking-tighter ${item.color} border-none`}>{item.status}</Badge>
+                      <div className="text-[11px] font-black text-slate-900 uppercase tracking-tight truncate">{item.title}</div>
+                      <div className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">{item.desc}</div>
+                      <Badge className={`rounded-md text-[7px] font-black uppercase tracking-tighter ${item.color} border-none`}>{item.status}</Badge>
                     </div>
                   </div>
                 ))}
@@ -221,4 +219,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
