@@ -5,17 +5,18 @@ import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Product } from "@/lib/mock-data";
-import { Star, Loader2, ShoppingBag, Zap, Search, ChevronLeft, Filter, ArrowUpDown } from "lucide-react";
+import { Star, Loader2, Zap, ChevronLeft, Filter, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, Suspense, useMemo, useCallback } from "react";
+import { useState, Suspense, useMemo, useCallback, useEffect } from "react";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -37,14 +38,6 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-const PRICE_RANGES = [
-  { label: "All Prices", min: 0, max: Infinity },
-  { label: "Under ₹5,000", min: 0, max: 5000 },
-  { label: "₹5,000 - ₹20,000", min: 5000, max: 20000 },
-  { label: "₹20,000 - ₹50,000", min: 20000, max: 50000 },
-  { label: "Over ₹50,000", min: 50000, max: Infinity },
-];
-
 function ProductList() {
   const { addItem } = useCart();
   const db = useFirestore();
@@ -56,7 +49,7 @@ function ProductList() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortBy, setSortBy] = useState("newest");
-  const [priceRange, setPriceRange] = useState("All Prices");
+  const [maxPriceFilter, setMaxPriceFilter] = useState<number | null>(null);
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
@@ -64,6 +57,17 @@ function ProductList() {
   }, [db]);
 
   const { data: allProducts, loading } = useCollection(productsQuery);
+
+  const absoluteMaxPrice = useMemo(() => {
+    if (!allProducts || allProducts.length === 0) return 100000;
+    return Math.max(...allProducts.map((p: any) => p.price));
+  }, [allProducts]);
+
+  useEffect(() => {
+    if (allProducts && allProducts.length > 0 && maxPriceFilter === null) {
+      setMaxPriceFilter(absoluteMaxPrice);
+    }
+  }, [allProducts, absoluteMaxPrice, maxPriceFilter]);
 
   const displayProducts = useMemo(() => {
     if (!allProducts) return [];
@@ -84,10 +88,9 @@ function ProductList() {
       );
     }
 
-    // Price Range Filter
-    const activeRange = PRICE_RANGES.find(r => r.label === priceRange);
-    if (activeRange) {
-      filtered = filtered.filter((p: any) => p.price >= activeRange.min && p.price <= activeRange.max);
+    // Price Range Filter (Slider)
+    if (maxPriceFilter !== null) {
+      filtered = filtered.filter((p: any) => p.price <= maxPriceFilter);
     }
 
     // Sorting
@@ -104,7 +107,7 @@ function ProductList() {
     });
 
     return filtered;
-  }, [allProducts, categoryFilter, searchQuery, sortBy, priceRange]);
+  }, [allProducts, categoryFilter, searchQuery, sortBy, maxPriceFilter]);
 
   const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
@@ -137,55 +140,57 @@ function ProductList() {
             Back to Home
           </Link>
           
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
                 {categoryFilter === "All Categories" ? (searchQuery ? `Results for: ${searchQuery}` : "All Products") : categoryFilter}
               </h1>
-              <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4 shrink-0" />
-              <Badge variant="outline" className="hidden sm:flex h-6 rounded-full border-slate-200 text-slate-400 font-black text-[8px] uppercase tracking-widest mt-2 md:mt-4">
+              <div className="h-2 w-2 bg-primary rounded-full shrink-0" />
+              <Badge variant="outline" className="hidden sm:flex h-6 rounded-full border-slate-200 text-slate-400 font-black text-[8px] uppercase tracking-widest">
                 {displayProducts.length} Items
               </Badge>
             </div>
 
-            <div className="flex items-center gap-3">
-              {/* Filter Popover */}
+            <div className="flex items-center gap-2 md:gap-3 shrink-0">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
                     <Filter className="h-4 w-4 md:h-5 md:w-5 text-slate-600 group-hover:text-primary" />
-                    {priceRange !== "All Prices" && (
+                    {maxPriceFilter !== null && maxPriceFilter < absoluteMaxPrice && (
                       <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Price Range</label>
-                      <Select value={priceRange} onValueChange={setPriceRange}>
-                        <SelectTrigger className="h-11 border-none bg-slate-50 rounded-xl font-bold text-xs focus:ring-0">
-                          <SelectValue placeholder="Price Range" />
-                        </SelectTrigger>
-                        <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                          {PRICE_RANGES.map((range) => (
-                            <SelectItem key={range.label} value={range.label} className="text-[10px] font-black uppercase tracking-widest py-3">{range.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                <PopoverContent className="w-72 p-6 rounded-[2rem] shadow-2xl border-none bg-white" align="end" sideOffset={10}>
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-end">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Max Price</label>
+                        <span className="text-xs font-black text-slate-900">{formatCurrency(maxPriceFilter || absoluteMaxPrice)}</span>
+                      </div>
+                      <Slider 
+                        defaultValue={[maxPriceFilter || absoluteMaxPrice]}
+                        max={absoluteMaxPrice}
+                        step={100}
+                        onValueChange={(vals) => setMaxPriceFilter(vals[0])}
+                        className="py-4"
+                      />
+                      <div className="flex justify-between text-[8px] font-black text-slate-300 uppercase tracking-widest">
+                        <span>₹0</span>
+                        <span>{formatCurrency(absoluteMaxPrice)}</span>
+                      </div>
                     </div>
                     <Button 
                       variant="ghost" 
-                      onClick={() => setPriceRange("All Prices")}
-                      className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-8"
+                      onClick={() => setMaxPriceFilter(absoluteMaxPrice)}
+                      className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-10 rounded-xl"
                     >
-                      Clear Filter
+                      Reset Price
                     </Button>
                   </div>
                 </PopoverContent>
               </Popover>
 
-              {/* Sort Popover */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
@@ -195,14 +200,14 @@ function ProductList() {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
+                <PopoverContent className="w-64 p-4 rounded-[2rem] shadow-2xl border-none bg-white" align="end" sideOffset={10}>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Sort By</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Sort By</label>
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="h-11 border-none bg-slate-900 text-white rounded-xl font-bold text-xs focus:ring-0">
+                      <SelectTrigger className="h-12 border-none bg-slate-900 text-white rounded-2xl font-bold text-xs focus:ring-0">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
+                      <SelectContent className="rounded-2xl border-none shadow-2xl bg-white">
                         <SelectItem value="newest" className="text-[10px] font-black uppercase tracking-widest py-3">Newest Arrivals</SelectItem>
                         <SelectItem value="price-asc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: Low to High</SelectItem>
                         <SelectItem value="price-desc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: High to Low</SelectItem>
@@ -285,7 +290,7 @@ function ProductList() {
         ) : (
           <div className="col-span-full py-20 md:py-32 text-center bg-white rounded-[3rem] shadow-sm border border-slate-100 flex flex-col items-center justify-center">
              <div className="bg-slate-50 h-20 w-20 md:h-28 md:w-28 rounded-[2rem] flex items-center justify-center mb-8 rotate-6">
-                <Search className="h-10 w-10 md:h-14 md:w-14 text-slate-200" />
+                <Loader2 className="h-10 w-10 md:h-14 md:w-14 text-slate-200" />
              </div>
             <h3 className="text-xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter">No items found</h3>
             <p className="text-xs md:text-base text-slate-400 mt-3 font-medium max-w-sm mx-auto">
@@ -294,7 +299,7 @@ function ProductList() {
             <Button 
               variant="outline" 
               onClick={() => {
-                setPriceRange("All Prices");
+                setMaxPriceFilter(absoluteMaxPrice);
                 setSortBy("newest");
                 router.push('/products');
               }}
