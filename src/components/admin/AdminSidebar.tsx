@@ -98,13 +98,13 @@ export function AdminSidebar() {
 
   if (isMobile) {
     return (
-      <div className="md:hidden fixed left-0 top-32 z-50">
+      <div className="md:hidden fixed right-0 top-24 z-50">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button 
               variant="default" 
               size="icon" 
-              className="h-12 w-10 rounded-l-none rounded-r-2xl bg-blue-600 hover:bg-blue-700 shadow-2xl border-none text-white transition-all hover:w-12 flex items-center justify-center pl-1"
+              className="h-12 w-10 rounded-r-none rounded-l-2xl bg-blue-600 hover:bg-blue-700 shadow-2xl border-none text-white transition-all hover:w-12 flex items-center justify-center pr-1"
             >
               <Menu className="h-6 w-6" />
             </Button>
