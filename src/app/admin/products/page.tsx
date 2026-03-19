@@ -16,6 +16,14 @@ import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { useRouter } from "next/navigation";
 
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
 export default function AdminProducts() {
   const db = useFirestore();
   const { toast } = useToast();
@@ -116,7 +124,7 @@ export default function AdminProducts() {
                       <TableCell>
                         <Badge className="bg-slate-100 text-slate-600 hover:bg-slate-200 border-none rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-widest">{product.category}</Badge>
                       </TableCell>
-                      <TableCell className="text-right font-black text-slate-900 text-lg">${product.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-right font-black text-slate-900 text-lg">{formatCurrency(product.price)}</TableCell>
                       <TableCell className="text-center">
                         <div className="flex flex-col items-center">
                           <span className="font-black text-slate-900">{product.stock}</span>

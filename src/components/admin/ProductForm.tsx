@@ -132,16 +132,16 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
             <div className="grid grid-cols-2 gap-8">
               <div className="space-y-2">
-                <Label htmlFor="price" className={fieldLabelClass}>Listing Price ($)</Label>
+                <Label htmlFor="price" className={fieldLabelClass}>Listing Price (₹)</Label>
                 <div className="relative">
-                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                  <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                   <Input 
                     id="price" 
                     type="number" 
-                    step="0.01" 
+                    step="1" 
                     value={formData.price}
                     onChange={(e) => setFormData({...formData, price: e.target.value})}
-                    placeholder="0.00" 
+                    placeholder="0" 
                     className={`${inputClass} pl-10`}
                     required
                   />

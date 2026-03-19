@@ -12,6 +12,14 @@ import { collection, query, orderBy } from "firebase/firestore";
 import { useMemo } from "react";
 import { format } from "date-fns";
 
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
 export default function AdminOrders() {
   const db = useFirestore();
 
@@ -88,7 +96,7 @@ export default function AdminOrders() {
                         </Badge>
                       </TableCell>
                       <TableCell className="font-bold text-lg">
-                        ${order.totalAmount?.toFixed(2)}
+                        {formatCurrency(order.totalAmount)}
                       </TableCell>
                       <TableCell className="text-right">
                          <Button variant="ghost" size="icon">

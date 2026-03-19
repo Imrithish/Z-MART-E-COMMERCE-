@@ -5,11 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MOCK_ORDERS } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingCart, TrendingUp, Users, DollarSign, ArrowUpRight, Box, Loader2 } from "lucide-react";
+import { ShoppingCart, TrendingUp, Users, ArrowUpRight, Box, Loader2, IndianRupee } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
 
 export default function AdminDashboard() {
   const { user, loading } = useUser();
@@ -35,7 +43,7 @@ export default function AdminDashboard() {
   if (!user) return null;
 
   const stats = [
-    { label: 'Total Revenue', value: '$12,845.00', icon: DollarSign, change: '+12.5%', color: 'text-green-600', bg: 'bg-green-50' },
+    { label: 'Total Revenue', value: formatCurrency(1284500), icon: IndianRupee, change: '+12.5%', color: 'text-green-600', bg: 'bg-green-50' },
     { label: 'Active Orders', value: '45', icon: ShoppingCart, change: '+5', color: 'text-blue-600', bg: 'bg-blue-50' },
     { label: 'New Customers', value: '1,240', icon: Users, change: '+18%', color: 'text-purple-600', bg: 'bg-purple-50' },
     { label: 'Conversion Rate', value: '3.2%', icon: TrendingUp, change: '+0.4%', color: 'text-orange-600', bg: 'bg-orange-50' },
@@ -60,7 +68,7 @@ export default function AdminDashboard() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-black text-slate-900 mb-2">{stat.value}</div>
+                <div className="text-2xl font-black text-slate-900 mb-2">{stat.value}</div>
                 <div className={`text-xs flex items-center gap-1 font-black ${stat.color}`}>
                   {stat.change} <ArrowUpRight className="h-3 w-3" />
                   <span className="text-slate-400 font-bold ml-1 uppercase tracking-tighter tracking-widest">vs Last Month</span>
@@ -106,7 +114,7 @@ export default function AdminDashboard() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right px-8 font-black text-slate-900 text-lg">
-                        ${order.totalAmount.toFixed(2)}
+                        {formatCurrency(order.totalAmount)}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -1,10 +1,16 @@
 import { Navbar } from "@/components/storefront/Navbar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
 import { Star, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
 
 export default function Home() {
   const deals = MOCK_PRODUCTS.filter(p => p.isDeal);
@@ -14,7 +20,7 @@ export default function Home() {
     { title: "Deal of the Day", item: MOCK_PRODUCTS[0], type: "single" },
     { title: "Shop activity trackers", items: ["Smartwatches", "Bands"], type: "quad" },
     { title: "Sign in for the best experience", type: "auth" },
-    { title: "Personal Care under $25", items: ["Grooming", "Oral Care", "Hair Care", "Skin Care"], type: "quad" },
+    { title: "Personal Care under ₹999", items: ["Grooming", "Oral Care", "Hair Care", "Skin Care"], type: "quad" },
     { title: "Laptops for every need", item: MOCK_PRODUCTS[1], type: "single" },
     { title: "Refresh your space", items: ["Kitchen", "Dining", "Bedroom", "Living"], type: "quad" },
     { title: "Deals on top brands", item: MOCK_PRODUCTS[3], type: "single" }
@@ -131,8 +137,10 @@ export default function Home() {
                     <span className="text-[#cc0c39] text-xs font-bold uppercase">Limited time deal</span>
                   </div>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-lg font-medium">${deal.price.toFixed(2)}</span>
-                    <span className="text-xs text-gray-500 line-through">List: ${deal.originalPrice?.toFixed(2)}</span>
+                    <span className="text-lg font-medium">{formatCurrency(deal.price)}</span>
+                    {deal.originalPrice && (
+                      <span className="text-xs text-gray-500 line-through">List: {formatCurrency(deal.originalPrice)}</span>
+                    )}
                   </div>
                   <p className="text-xs text-gray-700 line-clamp-1">{deal.name}</p>
                 </div>
@@ -158,7 +166,7 @@ export default function Home() {
                     </div>
                     <span className="text-xs text-gray-500">{product.reviews.toLocaleString()}</span>
                   </div>
-                  <span className="text-sm font-bold">${product.price.toFixed(2)}</span>
+                  <span className="text-sm font-bold">{formatCurrency(product.price)}</span>
                 </Link>
               ))}
             </div>

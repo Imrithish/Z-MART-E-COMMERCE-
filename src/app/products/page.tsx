@@ -5,6 +5,14 @@ import { Star, Filter, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
 export default function StorefrontProducts() {
   return (
     <div className="min-h-screen bg-background">
@@ -47,15 +55,15 @@ export default function StorefrontProducts() {
                   <Star className="h-4 w-4 fill-current" />
                   <Star className="h-4 w-4 fill-current" />
                   <Star className="h-4 w-4 fill-current" />
-                  <span className="text-xs text-muted-foreground ml-1">(120 reviews)</span>
+                  <span className="text-xs text-muted-foreground ml-1">({product.reviews.toLocaleString()} reviews)</span>
                 </div>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
               </CardContent>
               <CardFooter className="flex items-center justify-between pt-2">
-                <span className="text-2xl font-bold">${product.price.toFixed(2)}</span>
-                <Button className="rounded-full px-6">Add to Cart</Button>
+                <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
+                <Button className="amazon-btn-primary rounded-full px-6">Add to Cart</Button>
               </CardFooter>
             </Card>
           ))}
