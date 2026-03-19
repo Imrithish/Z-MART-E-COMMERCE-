@@ -5,23 +5,26 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingBag, Search, Filter, Loader2, MoreVertical, ExternalLink, Trash2 } from "lucide-react";
+import { ShoppingBag, Search, Filter, Loader2, MoreVertical, ExternalLink, Trash2, CheckCircle2, Truck, PackageCheck, PlayCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
 import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, orderBy, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, orderBy, deleteDoc, doc, updateDoc, writeBatch, getDocs, where } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { useToast } from "@/hooks/use-toast";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -33,8 +36,10 @@ const formatCurrency = (amount: number) => {
 
 export default function AdminOrders() {
   const db = useFirestore();
+  const { toast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProcessingAll, setIsProcessingAll] = useState(false);
 
   const ordersQuery = useMemo(() => {
     if (!db) return null;
@@ -47,6 +52,9 @@ export default function AdminOrders() {
     if (!db) return;
     
     deleteDoc(doc(db, 'orders', orderId))
+      .then(() => {
+        toast({ title: "Order Removed", description: "The transaction record has been deleted." });
+      })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
           path: `orders/${orderId}`,
@@ -56,10 +64,64 @@ export default function AdminOrders() {
       });
   };
 
+  const handleUpdateStatus = (orderId: string, newStatus: string) => {
+    if (!db) return;
+
+    updateDoc(doc(db, 'orders', orderId), { status: newStatus })
+      .then(() => {
+        toast({ 
+          title: `Status Updated`, 
+          description: `Order is now marked as ${newStatus}.` 
+        });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: `orders/${orderId}`,
+          operation: 'update',
+          requestResourceData: { status: newStatus }
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      });
+  };
+
+  const handleProcessAllPending = async () => {
+    if (!db || !orders) return;
+    
+    const pendingOrders = orders.filter(o => o.status === 'Pending');
+    if (pendingOrders.length === 0) {
+      toast({ title: "No Pending Orders", description: "Everything is already being processed." });
+      return;
+    }
+
+    setIsProcessingAll(true);
+    const batch = writeBatch(db);
+    
+    pendingOrders.forEach((order) => {
+      const orderRef = doc(db, 'orders', order.id);
+      batch.update(orderRef, { status: 'Processing' });
+    });
+
+    try {
+      await batch.commit();
+      toast({ 
+        title: "Batch Complete", 
+        description: `Successfully moved ${pendingOrders.length} orders to Processing.` 
+      });
+    } catch (error: any) {
+      toast({ 
+        variant: "destructive",
+        title: "Batch Failed", 
+        description: "Could not update orders. Check permissions." 
+      });
+    } finally {
+      setIsProcessingAll(false);
+    }
+  };
+
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
       <AdminSidebar />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-8 overflow-x-hidden">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 space-y-6 overflow-x-hidden">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h1 className="text-2xl md:text-3xl font-black tracking-tight mb-1 uppercase text-slate-900">Orders</h1>
@@ -67,7 +129,14 @@ export default function AdminOrders() {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <Button variant="outline" className="w-full sm:w-auto h-11 font-black uppercase tracking-widest text-[10px] rounded-xl">Export CSV</Button>
-            <Button className="w-full sm:w-auto h-11 px-6 rounded-xl shadow-lg bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-[10px] text-white">Process All</Button>
+            <Button 
+              onClick={handleProcessAllPending}
+              disabled={isProcessingAll || loading}
+              className="w-full sm:w-auto h-11 px-6 rounded-xl shadow-lg bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-[10px] text-white"
+            >
+              {isProcessingAll ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <PlayCircle className="h-4 w-4 mr-2" />}
+              Process All Pending
+            </Button>
           </div>
         </header>
 
@@ -152,7 +221,8 @@ export default function AdminOrders() {
                             className={`rounded-xl font-black px-4 py-1 text-[9px] uppercase tracking-widest border-none ${
                               order.status === 'Shipped' ? 'bg-green-100 text-green-700' : 
                               order.status === 'Pending' ? 'bg-orange-100 text-orange-700' : 
-                              'bg-blue-100 text-blue-700'
+                              order.status === 'Delivered' ? 'bg-blue-100 text-blue-700' :
+                              'bg-slate-100 text-slate-600'
                             }`}
                           >
                             {order.status}
@@ -168,7 +238,41 @@ export default function AdminOrders() {
                                 <MoreVertical className="h-4 w-4 text-slate-400" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="rounded-2xl p-2 border-none shadow-2xl bg-white">
+                            <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 border-none shadow-2xl bg-white">
+                              <DropdownMenuLabel className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-4 py-2">Lifecycle Management</DropdownMenuLabel>
+                              
+                              {order.status === 'Pending' && (
+                                <DropdownMenuItem 
+                                  onClick={() => handleUpdateStatus(order.id, 'Processing')}
+                                  className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer font-black uppercase tracking-widest text-[10px] hover:bg-slate-50"
+                                >
+                                  <PlayCircle className="h-4 w-4 text-primary" />
+                                  Process Order
+                                </DropdownMenuItem>
+                              )}
+
+                              {order.status === 'Processing' && (
+                                <DropdownMenuItem 
+                                  onClick={() => handleUpdateStatus(order.id, 'Shipped')}
+                                  className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer font-black uppercase tracking-widest text-[10px] hover:bg-slate-50"
+                                >
+                                  <Truck className="h-4 w-4 text-green-500" />
+                                  Mark as Shipped
+                                </DropdownMenuItem>
+                              )}
+
+                              {order.status === 'Shipped' && (
+                                <DropdownMenuItem 
+                                  onClick={() => handleUpdateStatus(order.id, 'Delivered')}
+                                  className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer font-black uppercase tracking-widest text-[10px] hover:bg-slate-50"
+                                >
+                                  <PackageCheck className="h-4 w-4 text-blue-500" />
+                                  Mark as Delivered
+                                </DropdownMenuItem>
+                              )}
+
+                              <DropdownMenuSeparator className="bg-slate-50 mx-2 my-1" />
+                              
                               <DropdownMenuItem 
                                 onClick={() => handleDeleteOrder(order.id)}
                                 className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 focus:text-red-600 focus:bg-red-50 cursor-pointer font-black uppercase tracking-widest text-[10px]"
