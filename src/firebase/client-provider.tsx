@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -20,7 +21,14 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   }, []);
 
   if (!firebaseData) {
-    return null;
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="h-12 w-12 bg-slate-200 rounded-2xl" />
+          <div className="h-4 w-32 bg-slate-200 rounded-full" />
+        </div>
+      </div>
+    );
   }
 
   return (
