@@ -167,6 +167,7 @@ export default function AdminOrders() {
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        showActions={false}
       />
     </div>
   );

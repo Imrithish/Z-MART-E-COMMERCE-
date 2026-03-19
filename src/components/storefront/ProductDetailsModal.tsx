@@ -18,6 +18,7 @@ interface ProductDetailsModalProps {
   product: Product | null;
   isOpen: boolean;
   onClose: () => void;
+  showActions?: boolean;
 }
 
 const formatCurrency = (amount: number) => {
@@ -28,7 +29,7 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetailsModalProps) {
+export function ProductDetailsModal({ product, isOpen, onClose, showActions = true }: ProductDetailsModalProps) {
   const { addItem } = useCart();
   const { toast } = useToast();
   const router = useRouter();
@@ -153,34 +154,36 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
                 <p className="text-xs text-slate-600 mt-1">Inclusive of all taxes</p>
               </div>
 
-              {/* Purchase Options */}
-              <div className="bg-[#fcfcfc] border border-slate-200 rounded-xl p-5 space-y-4">
-                <div className="flex items-center gap-3 text-sm text-slate-700">
-                  <Truck className="h-5 w-5 text-slate-400" />
-                  <p><span className="font-bold">FREE delivery</span> by Tomorrow, 11 AM</p>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-slate-700">
-                  <RotateCcw className="h-5 w-5 text-slate-400" />
-                  <p><span className="text-[#007185] font-bold">10 days Returnable</span></p>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-slate-700">
-                  <ShieldCheck className="h-5 w-5 text-slate-400" />
-                  <p><span className="text-[#007185] font-bold">Secure transaction</span></p>
-                </div>
+              {/* Purchase Options - Only visible in storefront context */}
+              {showActions && (
+                <div className="bg-[#fcfcfc] border border-slate-200 rounded-xl p-5 space-y-4">
+                  <div className="flex items-center gap-3 text-sm text-slate-700">
+                    <Truck className="h-5 w-5 text-slate-400" />
+                    <p><span className="font-bold">FREE delivery</span> by Tomorrow, 11 AM</p>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-slate-700">
+                    <RotateCcw className="h-5 w-5 text-slate-400" />
+                    <p><span className="text-[#007185] font-bold">10 days Returnable</span></p>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-slate-700">
+                    <ShieldCheck className="h-5 w-5 text-slate-400" />
+                    <p><span className="text-[#007185] font-bold">Secure transaction</span></p>
+                  </div>
 
-                <Button 
-                  onClick={handleAddToCart}
-                  className="w-full h-12 bg-[#ffd814] hover:bg-[#f7ca00] text-black border-[#fcd200] border shadow-sm rounded-full font-bold transition-all active:scale-95"
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" /> Add to Cart
-                </Button>
-                <Button 
-                  onClick={handleBuyNow}
-                  className="w-full h-12 bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-sm rounded-full font-bold transition-all active:scale-95"
-                >
-                  <Zap className="h-4 w-4 mr-2" /> Buy Now
-                </Button>
-              </div>
+                  <Button 
+                    onClick={handleAddToCart}
+                    className="w-full h-12 bg-[#ffd814] hover:bg-[#f7ca00] text-black border-[#fcd200] border shadow-sm rounded-full font-bold transition-all active:scale-95"
+                  >
+                    <ShoppingCart className="h-4 w-4 mr-2" /> Add to Cart
+                  </Button>
+                  <Button 
+                    onClick={handleBuyNow}
+                    className="w-full h-12 bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-sm rounded-full font-bold transition-all active:scale-95"
+                  >
+                    <Zap className="h-4 w-4 mr-2" /> Buy Now
+                  </Button>
+                </div>
+              )}
 
               {/* Product Description Section */}
               <div className="space-y-3 pt-4 border-t border-slate-50">

@@ -215,6 +215,7 @@ export default function AdminDashboard() {
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        showActions={false}
       />
     </div>
   );
