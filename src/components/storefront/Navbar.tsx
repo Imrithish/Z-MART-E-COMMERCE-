@@ -224,13 +224,6 @@ export function Navbar() {
                 >
                   Reset Selection
                 </button>
-                <Link 
-                  href="/products" 
-                  className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-2"
-                  onClick={() => setIsMegaMenuOpen(false)}
-                >
-                  Browse Full Catalog <ArrowRight className="h-3 w-3" />
-                </Link>
               </div>
             </PopoverContent>
           </Popover>
