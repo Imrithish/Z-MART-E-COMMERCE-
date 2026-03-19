@@ -28,18 +28,18 @@ export default function AdminDashboard() {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const ordersQuery = useMemo(() => {
-    if (!db) return null;
-    return query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(10));
-  }, [db]);
-
-  const { data: recentOrders, loading: ordersLoading } = useCollection(ordersQuery);
-
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/admin/login');
     }
   }, [user, authLoading, router]);
+
+  const ordersQuery = useMemo(() => {
+    if (!db || !user) return null;
+    return query(collection(db, 'orders'), orderBy('createdAt', 'desc'), limit(10));
+  }, [db, user]);
+
+  const { data: recentOrders, loading: ordersLoading } = useCollection(ordersQuery);
 
   const totalRevenue = useMemo(() => {
     return recentOrders?.reduce((sum, order: any) => sum + (order.totalAmount || 0), 0) || 0;

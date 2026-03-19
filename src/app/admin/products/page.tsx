@@ -27,9 +27,9 @@ const formatCurrency = (amount: number) => {
 };
 
 export default function AdminProducts() {
+  const { user, loading: authLoading } = useUser();
   const db = useFirestore();
   const { toast } = useToast();
-  const { user, loading: authLoading } = useUser();
   const router = useRouter();
   
   useEffect(() => {
@@ -39,9 +39,9 @@ export default function AdminProducts() {
   }, [user, authLoading, router]);
 
   const productsQuery = useMemo(() => {
-    if (!db) return null;
+    if (!db || !user) return null;
     return query(collection(db, 'products'), orderBy('createdAt', 'desc'));
-  }, [db]);
+  }, [db, user]);
 
   const { data: products, loading: dataLoading } = useCollection(productsQuery);
 

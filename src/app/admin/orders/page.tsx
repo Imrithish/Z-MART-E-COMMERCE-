@@ -16,15 +16,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu";
-import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, orderBy, deleteDoc, doc, updateDoc, writeBatch, getDocs, where } from "firebase/firestore";
-import { useMemo, useState } from "react";
+import { useCollection, useFirestore, useUser } from "@/firebase";
+import { collection, query, orderBy, deleteDoc, doc, updateDoc, writeBatch } from "firebase/firestore";
+import { useMemo, useState, useEffect } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -35,16 +36,24 @@ const formatCurrency = (amount: number) => {
 };
 
 export default function AdminOrders() {
+  const { user, loading: authLoading } = useUser();
   const db = useFirestore();
+  const router = useRouter();
   const { toast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProcessingAll, setIsProcessingAll] = useState(false);
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/admin/login');
+    }
+  }, [user, authLoading, router]);
+
   const ordersQuery = useMemo(() => {
-    if (!db) return null;
+    if (!db || !user) return null;
     return query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
-  }, [db]);
+  }, [db, user]);
 
   const { data: orders, loading } = useCollection(ordersQuery);
 
@@ -117,6 +126,16 @@ export default function AdminOrders() {
       setIsProcessingAll(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
