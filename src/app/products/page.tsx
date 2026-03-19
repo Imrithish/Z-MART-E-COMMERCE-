@@ -128,15 +128,16 @@ function ProductList() {
   return (
     <>
       <div className="mb-10 space-y-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-4">
-            <Link 
-              href="/" 
-              className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
-            >
-              <ChevronLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
-              Back to Home
-            </Link>
+        <div className="flex flex-col gap-6">
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
+          >
+            <ChevronLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
+            Back to Home
+          </Link>
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
                 {categoryFilter === "All Categories" ? (searchQuery ? `Results for: ${searchQuery}` : "All Products") : categoryFilter}
@@ -146,76 +147,77 @@ function ProductList() {
                 {displayProducts.length} Items
               </Badge>
             </div>
-            <p className="text-slate-500 font-medium text-sm md:text-lg">
-              Premium essentials curated for your collection.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-3">
-            {/* Filter Popover */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
-                  <Filter className="h-4 w-4 text-slate-600 group-hover:text-primary" />
-                  {priceRange !== "All Prices" && (
-                    <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
-                <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              {/* Filter Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
+                    <Filter className="h-4 w-4 md:h-5 md:w-5 text-slate-600 group-hover:text-primary" />
+                    {priceRange !== "All Prices" && (
+                      <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Price Range</label>
+                      <Select value={priceRange} onValueChange={setPriceRange}>
+                        <SelectTrigger className="h-11 border-none bg-slate-50 rounded-xl font-bold text-xs focus:ring-0">
+                          <SelectValue placeholder="Price Range" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
+                          {PRICE_RANGES.map((range) => (
+                            <SelectItem key={range.label} value={range.label} className="text-[10px] font-black uppercase tracking-widest py-3">{range.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => setPriceRange("All Prices")}
+                      className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-8"
+                    >
+                      Clear Filter
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
+              {/* Sort Popover */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
+                    <ArrowUpDown className="h-4 w-4 md:h-5 md:w-5 text-slate-600 group-hover:text-primary" />
+                    {sortBy !== "newest" && (
+                      <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Price Range</label>
-                    <Select value={priceRange} onValueChange={setPriceRange}>
-                      <SelectTrigger className="h-11 border-none bg-slate-50 rounded-xl font-bold text-xs focus:ring-0">
-                        <SelectValue placeholder="Price Range" />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Sort By</label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="h-11 border-none bg-slate-900 text-white rounded-xl font-bold text-xs focus:ring-0">
+                        <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                        {PRICE_RANGES.map((range) => (
-                          <SelectItem key={range.label} value={range.label} className="text-[10px] font-black uppercase tracking-widest py-3">{range.label}</SelectItem>
-                        ))}
+                        <SelectItem value="newest" className="text-[10px] font-black uppercase tracking-widest py-3">Newest Arrivals</SelectItem>
+                        <SelectItem value="price-asc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: Low to High</SelectItem>
+                        <SelectItem value="price-desc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: High to Low</SelectItem>
+                        <SelectItem value="rating" className="text-[10px] font-black uppercase tracking-widest py-3">Avg. Customer Rating</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    onClick={() => setPriceRange("All Prices")}
-                    className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-8"
-                  >
-                    Clear Filter
-                  </Button>
-                </div>
-              </PopoverContent>
-            </Popover>
-
-            {/* Sort Popover */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
-                  <ArrowUpDown className="h-4 w-4 text-slate-600 group-hover:text-primary" />
-                  {sortBy !== "newest" && (
-                    <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Sort By</label>
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="h-11 border-none bg-slate-900 text-white rounded-xl font-bold text-xs focus:ring-0">
-                      <SelectValue placeholder="Sort By" />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                      <SelectItem value="newest" className="text-[10px] font-black uppercase tracking-widest py-3">Newest Arrivals</SelectItem>
-                      <SelectItem value="price-asc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: Low to High</SelectItem>
-                      <SelectItem value="price-desc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: High to Low</SelectItem>
-                      <SelectItem value="rating" className="text-[10px] font-black uppercase tracking-widest py-3">Avg. Customer Rating</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
+          
+          <p className="text-slate-500 font-medium text-sm md:text-lg">
+            Premium essentials curated for your collection.
+          </p>
         </div>
       </div>
 
