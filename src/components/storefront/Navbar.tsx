@@ -161,7 +161,7 @@ export function Navbar() {
                     <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account</h4>
                     <ul className="space-y-3 pl-7">
                       <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Profile</Link></li>
-                      <li><Link href="/account#orders" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Orders</Link></li>
+                      <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Settings</Link></li>
                       {user && (
                         <li>
                           <button onClick={handleSignOut} className="text-sm font-bold text-red-400 uppercase tracking-tight">Sign Out</button>
@@ -237,15 +237,18 @@ export function Navbar() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 md:gap-4">
-          <div className="group relative hidden sm:block">
-            <button className="flex flex-col items-start leading-tight hover:bg-white/10 p-2 rounded-xl transition-all text-left">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Account'}
-              </span>
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-black uppercase tracking-tight">Profile</span>
-                <ChevronDown className="h-3 w-3 text-slate-400" />
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="group relative">
+            <button className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-xl transition-all text-left">
+              <User className="h-6 w-6 md:h-7 md:w-7 text-white" />
+              <div className="hidden sm:flex flex-col items-start leading-tight">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Account'}
+                </span>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-black uppercase tracking-tight">Profile</span>
+                  <ChevronDown className="h-3 w-3 text-slate-400" />
+                </div>
               </div>
             </button>
             
@@ -259,7 +262,7 @@ export function Navbar() {
                   <Separator />
                   <ul className="space-y-2">
                     <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Member Dashboard</Link></li>
-                    <li><Link href="/account#orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Order History</Link></li>
+                    <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Settings</Link></li>
                   </ul>
                   <Separator />
                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-10 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/10">
@@ -279,7 +282,7 @@ export function Navbar() {
             </div>
           </div>
 
-          <Link href="/cart" className="flex items-end gap-1 hover:bg-white/10 p-2 rounded-xl transition-all group relative">
+          <Link href="/cart" className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-xl transition-all group relative">
             <div className="relative">
               <ShoppingCart className="h-6 w-6 md:h-7 md:w-7 text-white" />
               <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-slate-900 text-[10px] font-black flex items-center justify-center rounded-full border-2 border-slate-900">
