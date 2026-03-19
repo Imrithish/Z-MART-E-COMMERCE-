@@ -96,7 +96,6 @@ export default function Home() {
       onClick={() => handleProductClick(product)}
     >
       <div className="flex flex-col h-full">
-        {/* Image Section */}
         <div className="relative aspect-square w-full bg-slate-50/50 rounded-xl overflow-hidden p-4 mb-4 group-hover:bg-white transition-colors duration-500">
           <Image 
             src={product.imageUrl || 'https://picsum.photos/seed/placeholder/400/400'} 
@@ -111,7 +110,6 @@ export default function Home() {
           )}
         </div>
         
-        {/* Details Section */}
         <div className="flex flex-col flex-1 min-w-0">
           <div className="space-y-1.5">
              <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">{product.category}</p>
@@ -157,32 +155,32 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        {/* Compact Hero Section */}
-        <section className="bg-slate-900 py-12 md:py-20 px-4 md:px-8 relative overflow-hidden">
+        {/* Compact Hero Section - Reduced Padding for tighter top alignment */}
+        <section className="bg-slate-900 py-8 md:py-12 px-4 md:px-8 relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent opacity-50" />
-          <div className="max-w-4xl mx-auto space-y-10 relative z-10">
-            <div className="text-center space-y-4">
-              <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tighter uppercase leading-[0.9] text-balance">The Premium Standard</h1>
+          <div className="max-w-4xl mx-auto space-y-8 relative z-10">
+            <div className="text-center space-y-2">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9] text-balance">The Premium Standard</h1>
               <p className="text-slate-400 font-black uppercase tracking-[0.4em] text-[10px] opacity-60">Global Curated Marketplace</p>
             </div>
-            <form onSubmit={handleSearch} className="flex items-center h-16 md:h-20 rounded-2xl md:rounded-[2.5rem] overflow-hidden bg-white shadow-2xl p-2">
+            <form onSubmit={handleSearch} className="flex items-center h-14 md:h-16 rounded-2xl md:rounded-[2rem] overflow-hidden bg-white shadow-2xl p-1.5">
               <Input 
                 placeholder="Search premium essentials..." 
-                className="flex-1 border-none focus-visible:ring-0 text-slate-900 h-full px-6 md:px-10 text-base md:text-lg font-bold"
+                className="flex-1 border-none focus-visible:ring-0 text-slate-900 h-full px-6 md:px-8 text-base font-bold"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-6 md:px-12 rounded-xl md:rounded-[2rem] transition-colors flex items-center justify-center gap-3">
-                <Search className="h-5 w-5 text-slate-900" />
-                <span className="hidden md:block font-black uppercase tracking-widest text-slate-900 text-xs">Search</span>
+              <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-6 md:px-10 rounded-xl md:rounded-[1.5rem] transition-colors flex items-center justify-center gap-3">
+                <Search className="h-4 w-4 text-slate-900" />
+                <span className="hidden md:block font-black uppercase tracking-widest text-slate-900 text-[10px]">Search</span>
               </button>
             </form>
           </div>
         </section>
 
         {/* Categories Overlap */}
-        <section className="max-w-[1450px] mx-auto px-4 md:px-8 -mt-8 relative z-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 -mt-6 relative z-20">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
               { title: "Digital Tech", hint: "laptop tech", href: "/products?category=Electronics", seed: "digital" },
               { title: "Luxe Home", hint: "living room", href: "/products?category=Home & Kitchen", seed: "interior" },
@@ -190,9 +188,9 @@ export default function Home() {
               { title: "Flash Deals", hint: "discount shopping", href: "/products", seed: "offer" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
-                <Card className="bg-white p-6 rounded-[2rem] shadow-xl flex flex-col h-full group hover:-translate-y-2 transition-all duration-500 border-none">
-                  <h3 className="text-lg font-black text-slate-900 mb-4 uppercase tracking-tight">{cat.title}</h3>
-                  <div className="relative aspect-[16/10] w-full bg-slate-50 rounded-2xl overflow-hidden mb-4 shadow-inner border border-slate-100">
+                <Card className="bg-white p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] shadow-xl flex flex-col h-full group hover:-translate-y-1 transition-all duration-500 border-none">
+                  <h3 className="text-sm md:text-lg font-black text-slate-900 mb-3 md:mb-4 uppercase tracking-tight">{cat.title}</h3>
+                  <div className="relative aspect-[16/10] w-full bg-slate-50 rounded-xl md:rounded-2xl overflow-hidden mb-4 shadow-inner border border-slate-100">
                     <Image 
                       src={`https://picsum.photos/seed/${cat.seed}/600/400`}
                       alt={cat.title}
@@ -201,8 +199,8 @@ export default function Home() {
                       data-ai-hint={cat.hint}
                     />
                   </div>
-                  <span className="text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto flex items-center gap-2">
-                    Browse Collection <ArrowRight className="h-3 w-3" />
+                  <span className="text-[9px] md:text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto flex items-center gap-2">
+                    Browse <ArrowRight className="h-3 w-3" />
                   </span>
                 </Card>
               </Link>
@@ -210,17 +208,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Tighter Section Flow */}
-        <div className="max-w-[1450px] mx-auto px-4 md:px-8 py-12 md:py-20 space-y-12 md:space-y-20">
+        {/* Product Sections - Reduced space-y for tighter layout */}
+        <div className="max-w-[1450px] mx-auto px-4 md:px-8 py-8 md:py-12 space-y-12 md:space-y-16">
           {curatedSections.newArrivals.length > 0 && (
             <section className="space-y-6">
-              <div className="flex items-end justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-3">
                 <div className="flex items-center gap-3">
                   <Clock className="h-5 w-5 text-primary" />
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">New Arrivals</h2>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {curatedSections.newArrivals.map((product) => <ProductCard key={product.id} product={product} />)}
               </div>
             </section>
@@ -228,13 +226,13 @@ export default function Home() {
 
           {categoryEntries[0] && (
             <section className="space-y-6">
-              <div className="flex items-end justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-3">
                 <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[0][0]}</h2>
                 <Link href={`/products?category=${categoryEntries[0][0]}`} className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {categoryEntries[0][1].slice(0, 4).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -244,13 +242,13 @@ export default function Home() {
 
           {curatedSections.bestSellers.length > 0 && (
             <section className="space-y-6">
-              <div className="flex items-end justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-3">
                 <div className="flex items-center gap-3">
                   <Sparkles className="h-5 w-5 text-primary" />
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Best Sellers</h2>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {curatedSections.bestSellers.map((product) => <ProductCard key={product.id} product={product} />)}
               </div>
             </section>
