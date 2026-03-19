@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Edit2, Trash2, Search, Filter, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import Image from "image";
+import Image from "next/image";
 import { useCollection, useFirestore, useUser } from "@/firebase";
 import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { useMemo, useEffect } from "react";
