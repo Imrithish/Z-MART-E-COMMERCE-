@@ -1,4 +1,3 @@
-
 "use client"
 
 import Link from "next/link";
@@ -15,34 +14,13 @@ import { useUser, useAuth } from "@/firebase";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 
-const CATEGORIES = [
-  {
-    title: "Trending",
-    items: ["Best Sellers", "New Releases", "Movers and Shakers"]
-  },
-  {
-    title: "Shop by Category",
-    items: ["Electronics", "Fashion", "Home & Kitchen", "Beauty & Personal Care", "Books", "Sports & Outdoors"]
-  },
-  {
-    title: "Programs & Features",
-    items: ["Today's Deals", "Gift Cards", "Z-Mart Live", "International Shopping"]
-  },
-  {
-    title: "Help & Settings",
-    items: ["Your Account", "Customer Service"]
-  }
-];
-
 const SEARCH_CATEGORIES = [
   "All Categories",
   "Electronics",
   "Fashion",
   "Home & Kitchen",
   "Beauty",
-  "Books",
-  "Sports",
-  "Devices"
+  "Books"
 ];
 
 export function Navbar() {
@@ -69,37 +47,41 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full flex flex-col">
-      {/* Primary Header */}
-      <div className="amazon-header-bg text-white h-[60px] flex items-center px-4 gap-2 md:gap-4">
-        {/* Logo */}
-        <Link href="/" className="flex items-center px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all">
-          <span className="text-2xl font-bold tracking-tighter">Z-MART</span>
-          <span className="text-[10px] mt-2 ml-0.5 text-[#ff9900]">.in</span>
-        </Link>
+    <header className="sticky top-0 z-50 w-full flex flex-col shadow-xl">
+      {/* Top Utility Bar */}
+      <div className="bg-slate-950 text-white h-8 flex items-center px-6 justify-between text-[10px] font-black uppercase tracking-[0.2em]">
+        <div className="flex gap-6">
+          <span>Free Express Shipping over ₹2000</span>
+          <span className="hidden md:block">World Class Support</span>
+        </div>
+        <div className="flex gap-4">
+          <Link href="/admin/login" className="text-primary hover:underline flex items-center gap-1">
+            <ShieldCheck className="h-3 w-3" /> Merchant Center
+          </Link>
+        </div>
+      </div>
 
-        {/* Deliver To */}
-        <button className="hidden lg:flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
-          <span className="text-[11px] text-gray-300 ml-5 font-medium">Deliver to</span>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            <span className="text-sm font-bold">Mumbai 400001</span>
-          </div>
-        </button>
+      {/* Primary Header */}
+      <div className="amazon-header-bg text-white h-[80px] flex items-center px-6 gap-6 md:gap-10">
+        {/* Logo */}
+        <Link href="/" className="flex items-center group">
+          <span className="text-3xl font-black tracking-tighter group-hover:text-primary transition-colors">Z-MART</span>
+          <div className="h-2 w-2 bg-primary rounded-full mt-4 ml-1 animate-pulse" />
+        </Link>
 
         {/* Search Bar */}
         <form 
           onSubmit={handleSearch}
-          className={`flex-1 flex items-center h-10 rounded-md overflow-hidden bg-white ${isSearchFocused ? 'ring-2 ring-[#ff9900]' : ''}`}
+          className={`hidden md:flex flex-1 items-center h-12 rounded-2xl overflow-hidden bg-white/10 border border-white/10 focus-within:bg-white transition-all focus-within:border-primary focus-within:shadow-2xl focus-within:shadow-primary/20`}
         >
-          <div className="h-full bg-gray-100 hover:bg-gray-200 border-r transition-colors">
+          <div className="h-full border-r border-white/10 focus-within:border-slate-200">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="h-full border-none bg-transparent focus:ring-0 text-[11px] text-gray-700 px-3 gap-1 rounded-none shadow-none w-auto max-w-[120px]">
+              <SelectTrigger className="h-full border-none bg-transparent focus:ring-0 text-[10px] text-white group-focus-within:text-slate-900 px-5 gap-2 rounded-none shadow-none font-black uppercase tracking-widest">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
-              <SelectContent className="rounded-sm border-gray-200 shadow-xl">
+              <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-2">
                 {SEARCH_CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat} className="text-xs py-2 cursor-pointer">
+                  <SelectItem key={cat} value={cat} className="text-[10px] py-3 cursor-pointer font-black uppercase tracking-widest rounded-xl">
                     {cat}
                   </SelectItem>
                 ))}
@@ -108,151 +90,85 @@ export function Navbar() {
           </div>
           
           <Input 
-            placeholder="Search Z-Mart" 
-            className="flex-1 border-none focus-visible:ring-0 text-black placeholder:text-gray-500 h-full rounded-none px-4"
+            placeholder="Search our premium catalog..." 
+            className="flex-1 border-none focus-visible:ring-0 text-white focus-within:text-slate-900 placeholder:text-slate-500 h-full rounded-none px-6 font-bold text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setIsSearchFocused(false)}
           />
-          <button type="submit" className="h-full bg-[#febd69] hover:bg-[#f3a847] px-4 transition-colors shrink-0">
-            <Search className="h-6 w-6 text-[#131921]" />
+          <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-8 transition-all shrink-0 active:scale-95">
+            <Search className="h-5 w-5 text-slate-900" />
           </button>
         </form>
 
-        {/* Account & Lists */}
-        <div className="group relative">
-          <div className="cursor-pointer flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
-            <span className="text-[11px] font-medium">Hello, {user?.displayName?.split(' ')[0] || 'sign in'}</span>
-            <div className="flex items-center gap-1">
-              <span className="text-sm font-bold">Account & Lists</span>
-              <ChevronDown className="h-3 w-3" />
+        {/* Actions */}
+        <div className="flex items-center gap-4">
+          <div className="group relative">
+            <button className="flex items-center gap-3 px-4 py-2 hover:bg-white/10 rounded-2xl transition-all">
+              <div className="h-10 w-10 bg-white/10 rounded-full flex items-center justify-center border border-white/10">
+                <User className="h-5 w-5" />
+              </div>
+              <div className="hidden lg:flex flex-col items-start leading-tight">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  {user ? 'Welcome Back' : 'Member Access'}
+                </span>
+                <span className="text-sm font-black truncate max-w-[100px]">
+                  {user?.displayName?.split(' ')[0] || 'Sign In'}
+                </span>
+              </div>
+            </button>
+            
+            {/* Dropdown Menu */}
+            <div className="absolute top-[calc(100%+8px)] right-0 w-64 bg-white text-slate-900 shadow-2xl rounded-3xl p-6 hidden group-hover:block border border-slate-100 z-50 animate-in fade-in zoom-in duration-200 origin-top-right">
+              {user ? (
+                <div className="space-y-6">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Logged in as</p>
+                    <p className="text-sm font-black truncate">{user.email}</p>
+                  </div>
+                  <Separator />
+                  <ul className="space-y-2">
+                    <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all"><User className="h-4 w-4" /> Your Profile</Link></li>
+                    <li><Link href="/account#orders" className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all"><ShoppingCart className="h-4 w-4" /> Your Orders</Link></li>
+                  </ul>
+                  <Separator />
+                  <Button onClick={handleSignOut} variant="destructive" className="w-full h-12 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/20">
+                    <LogOut className="h-4 w-4 mr-2" /> Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-6 text-center">
+                  <p className="text-sm font-bold text-slate-600">Join our community of elite shoppers.</p>
+                  <Button asChild className="amazon-btn-primary w-full h-14 rounded-2xl">
+                    <Link href="/login">Sign In Securely</Link>
+                  </Button>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    New? <Link href="/signup" className="text-primary hover:underline">Start Here</Link>
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-          {user ? (
-            <div className="absolute top-full right-0 w-56 bg-white text-slate-900 shadow-2xl rounded-sm p-4 hidden group-hover:block border border-slate-200 z-50">
-              <div className="text-xs font-bold mb-4 uppercase tracking-widest text-slate-400">Your Account</div>
-              <ul className="text-[13px] space-y-3 mb-4">
-                <li><Link href="/account" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Profile</Link></li>
-                <li><Link href="/account#orders" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Orders</Link></li>
-                <li><Link href="/cart" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Wish List</Link></li>
-              </ul>
-              
-              <Separator className="my-4" />
-              
-              <div className="text-xs font-bold mb-4 uppercase tracking-widest text-slate-400">Business Tools</div>
-              <ul className="text-[13px] space-y-3 mb-4">
-                <li>
-                  <Link href="/admin/dashboard" className="text-primary hover:underline font-bold flex items-center gap-2">
-                    <ShieldCheck className="h-4 w-4" /> Seller Central
-                  </Link>
-                </li>
-              </ul>
 
-              <Separator className="my-4" />
-              
-              <button 
-                onClick={handleSignOut}
-                className="flex items-center gap-2 text-[13px] font-bold text-red-600 hover:text-red-700 w-full mt-2"
-              >
-                <LogOut className="h-4 w-4" /> Sign Out
-              </button>
-            </div>
-          ) : (
-            <div className="absolute top-full right-0 w-56 bg-white text-slate-900 shadow-2xl rounded-sm p-6 hidden group-hover:block border border-slate-200 z-50 text-center">
-              <Button asChild className="amazon-btn-primary w-full h-9 mb-3">
-                <Link href="/login">Sign in</Link>
-              </Button>
-              <p className="text-[11px] text-gray-600">
-                New customer? <Link href="/signup" className="text-[#0066c0] hover:underline">Start here.</Link>
-              </p>
-              <Separator className="my-4" />
-              <Link href="/admin/login" className="text-[11px] font-bold text-gray-700 hover:text-primary flex items-center justify-center gap-1">
-                <ShieldCheck className="h-3 w-3" /> Merchant Access
-              </Link>
-            </div>
-          )}
+          <Link href="/cart" className="relative h-12 w-12 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 hover:bg-primary hover:text-slate-900 transition-all group">
+            <ShoppingCart className="h-5 w-5 group-hover:scale-110 transition-transform" />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 h-6 w-6 bg-primary text-slate-900 rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-bounce">
+                {totalItems}
+              </span>
+            )}
+          </Link>
         </div>
-
-        {/* Returns & Orders */}
-        <Link href={user ? "/account#orders" : "/login"} className="hidden md:flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
-          <span className="text-[11px] font-medium">Returns</span>
-          <span className="text-sm font-bold">& Orders</span>
-        </Link>
-
-        {/* Cart */}
-        <Link href="/cart" className="flex items-end px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all relative">
-          <div className="relative">
-            <ShoppingCart className="h-8 w-8" />
-            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[#f08804] font-bold text-base">
-              {totalItems}
-            </span>
-          </div>
-          <span className="text-sm font-bold hidden sm:inline-block mb-1 ml-1">Cart</span>
-        </Link>
       </div>
 
-      {/* Secondary Navigation (Subnav) */}
-      <div className="amazon-subnav-bg text-white h-[40px] flex items-center px-4 gap-4 overflow-x-auto no-scrollbar whitespace-nowrap text-sm font-medium">
-        <Sheet>
-          <SheetTrigger asChild>
-            <button className="flex items-center gap-1 px-2 py-1 border border-transparent hover:border-white rounded-sm shrink-0">
-              <Menu className="h-5 w-5" /> All
-            </button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-[365px] border-none bg-white">
-            <SheetHeader className="amazon-subnav-bg text-white p-4 flex flex-row items-center gap-3">
-              <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
-                <User className="h-5 w-5 text-[#232f3e]" />
-              </div>
-              <SheetTitle className="text-white text-lg font-bold">Hello, {user?.displayName || 'sign in'}</SheetTitle>
-            </SheetHeader>
-            <ScrollArea className="h-[calc(100vh-64px)] py-4">
-              {CATEGORIES.map((cat, idx) => (
-                <div key={idx} className="mb-4">
-                  <h3 className="px-8 py-2 text-base font-bold text-gray-900">{cat.title}</h3>
-                  <ul className="space-y-1">
-                    {cat.items.map((item, i) => (
-                      <li key={i}>
-                        <Link 
-                          href={`/products?category=${encodeURIComponent(item)}`}
-                          className="flex items-center justify-between px-8 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                        >
-                          {item}
-                          {(cat.title === "Shop by Category" || cat.title === "Trending") && (
-                            <ChevronRight className="h-4 w-4 text-gray-400" />
-                          )}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                  {idx < CATEGORIES.length - 1 && <Separator className="my-4 mx-0" />}
-                </div>
-              ))}
-              <div className="px-8 py-4 space-y-4">
-                 <Link href="/admin/login" className="flex items-center gap-2 text-sm font-bold text-primary hover:underline">
-                    <ShieldCheck className="h-5 w-5" /> Sell on Z-Mart
-                 </Link>
-                 {user && (
-                    <Button onClick={handleSignOut} variant="destructive" className="w-full h-8 rounded-sm text-xs font-bold uppercase tracking-widest">
-                      Sign Out
-                    </Button>
-                 )}
-              </div>
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
-        
-        <Link href="/" className="px-2 py-1 border border-transparent hover:border-white rounded-sm flex items-center gap-1.5">
-          <Home className="h-4 w-4" /> Home
+      {/* Sub-navigation */}
+      <div className="amazon-subnav-bg text-white h-[50px] flex items-center px-6 gap-8 overflow-x-auto no-scrollbar text-[11px] font-black uppercase tracking-widest">
+        <Link href="/products" className="hover:text-primary transition-colors flex items-center gap-2">
+          <Home className="h-4 w-4" /> Store
         </Link>
-        
-        <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Today's Deals</Link>
-        <Link href="/products?category=Electronics" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Electronics</Link>
-        <Link href="/products?category=Fashion" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Fashion</Link>
-        <Link href="/products?category=Home%20%26%20Kitchen" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Home & Kitchen</Link>
-        <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Customer Service</Link>
-        <Link href="/admin/login" className="px-2 py-1 border border-transparent hover:border-white rounded-sm font-bold text-[#ff9900]">Sell</Link>
+        <Link href="/products?category=Electronics" className="hover:text-primary transition-colors">Electronics</Link>
+        <Link href="/products?category=Fashion" className="hover:text-primary transition-colors">Fashion</Link>
+        <Link href="/products?category=Beauty" className="hover:text-primary transition-colors">Beauty</Link>
+        <Link href="/products" className="hover:text-primary transition-colors text-primary">New Releases</Link>
       </div>
     </header>
   );

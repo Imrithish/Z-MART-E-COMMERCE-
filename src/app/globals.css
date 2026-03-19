@@ -4,26 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%; /* Slightly lighter for better contrast */
-    --foreground: 221 70% 5%; /* Darker foreground for sharper text */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 221 70% 5%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 221 70% 5%;
-    --primary: 38 100% 50%; /* Amazon Orange #ff9900 */
-    --primary-foreground: 221 70% 5%;
-    --secondary: 195 100% 40%; /* Amazon Link Blue */
-    --secondary-foreground: 0 0% 100%;
-    --muted: 210 10% 90%;
-    --muted-foreground: 221 20% 30%; /* Darker muted text */
-    --accent: 215 90% 95%;
-    --accent-foreground: 215 90% 30%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 38 100% 50%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 223 9% 85%; /* Slightly darker borders */
-    --input: 223 9% 85%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 38 100% 50%;
-    --radius: 0.5rem;
+    --radius: 1rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 38 100% 50%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
   }
 }
 
@@ -37,23 +59,15 @@
 }
 
 .amazon-header-bg {
-  background-color: #131921;
+  @apply bg-slate-900;
 }
 
 .amazon-subnav-bg {
-  background-color: #232f3e;
-}
-
-.amazon-card {
-  @apply bg-white p-5 shadow-sm border border-slate-100 rounded-sm;
+  @apply bg-slate-800;
 }
 
 .amazon-btn-primary {
-  @apply bg-[#ffd814] hover:bg-[#f7ca00] text-black border-[#fcd200] border shadow-sm rounded-full py-2 px-4 font-medium transition-colors;
-}
-
-.amazon-btn-secondary {
-  @apply bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-sm rounded-full py-2 px-4 font-medium transition-colors;
+  @apply bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -65,4 +79,14 @@
 .no-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }

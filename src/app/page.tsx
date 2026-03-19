@@ -2,7 +2,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Product } from "@/lib/mock-data";
-import { Star, ChevronRight, ChevronLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { Star, ChevronRight, ChevronLeft, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -12,6 +12,7 @@ import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal
 import { ToastAction } from "@/components/ui/toast";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
+import { Button } from "@/components/ui/button";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -36,7 +37,6 @@ export default function Home() {
   const { data: products, loading } = useCollection(productsQuery);
 
   const deals = useMemo(() => products?.filter((p: any) => p.isDeal) || [], [products]);
-  const electronics = useMemo(() => products?.filter((p: any) => p.category === 'Electronics') || [], [products]);
 
   const handleProductClick = useCallback((product: Product) => {
     setSelectedProduct(product);
@@ -65,218 +65,184 @@ export default function Home() {
       ) as any,
       action: (
         <ToastAction altText="View Cart" asChild>
-          <Link href="/cart" className="bg-primary hover:bg-primary/90 text-black font-black text-[10px] px-4 py-2 rounded-xl uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20">
+          <Link href="/cart" className="amazon-btn-primary text-[10px] px-4 py-2 rounded-xl">
             View Cart
           </Link>
         </ToastAction>
       ),
     });
   }, [addItem, toast]);
-  
-  const amazonGridItems = useMemo(() => [
-    { title: "Gaming accessories", items: ["Headsets", "Keyboards", "Mice", "Chairs"], type: "quad" },
-    { title: "Deal of the Day", item: deals[0], type: "single" },
-    { title: "Health & Personal Care", items: ["Skincare", "Oral Care", "Haircare", "Grooming"], type: "quad" },
-    { title: "Sign in for the best experience", type: "auth" },
-    { title: "Explore Best Sellers", item: products?.[7], type: "single" },
-    { title: "Laptops for every need", item: electronics?.[0], type: "single" },
-    { title: "Refresh your space", items: ["Kitchen", "Dining", "Bedroom", "Living"], type: "quad" },
-    { title: "Latest Smartphone Deals", item: electronics?.[1], type: "single" },
-    { title: "Beauty Picks", items: ["Makeup", "Facewash", "Moisturizer", "Fragrance"], type: "quad" },
-    { title: "Home Decor Trends", item: products?.[11], type: "single" },
-    { title: "Fashion for Everyone", items: ["Menswear", "Womenswear", "Kids", "Accessories"], type: "quad" },
-    { title: "Fitness & Outdoors", item: products?.[10], type: "single" }
-  ], [deals, electronics, products]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#eaeded] flex flex-col items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <p className="mt-4 font-bold text-slate-500 uppercase tracking-widest text-xs">Loading Marketplace...</p>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="mt-4 font-black text-slate-400 uppercase tracking-widest text-[10px]">Loading Experience...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#eaeded] flex flex-col font-body">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-body">
       <Navbar />
 
-      <main className="flex-1 relative">
-        <section className="relative w-full h-[600px] overflow-hidden">
-          <div className="absolute inset-0">
-            <Image 
-              src="https://picsum.photos/seed/amz-hero-main/1500/600"
-              alt="Amazon Style Banner"
-              fill
-              className="object-cover"
-              priority
-              data-ai-hint="electronics warehouse"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#eaeded] pointer-events-none" />
-          </div>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative w-full h-[500px] md:h-[700px] overflow-hidden">
+          <Image 
+            src="https://picsum.photos/seed/zmart-hero/1920/1080"
+            alt="Hero Background"
+            fill
+            className="object-cover"
+            priority
+            data-ai-hint="luxury electronics"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent" />
           
-          <button className="absolute left-0 top-0 h-[300px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all z-20">
-            <ChevronLeft className="h-12 w-12 text-black/50" />
-          </button>
-          <button className="absolute right-0 top-0 h-[300px] w-20 flex items-center justify-center hover:ring-2 hover:ring-white transition-all z-20">
-            <ChevronRight className="h-12 w-12 text-black/50" />
-          </button>
+          <div className="absolute inset-0 flex items-center px-6 md:px-20">
+            <div className="max-w-2xl space-y-6 md:space-y-10">
+              <div className="space-y-4">
+                <span className="inline-block px-4 py-1.5 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
+                  New Collection 2024
+                </span>
+                <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">
+                  THE FUTURE <br /> OF PREMIUM.
+                </h1>
+                <p className="text-slate-300 text-lg md:text-xl font-medium max-w-lg leading-relaxed">
+                  Experience the next generation of lifestyle technology. Handpicked, curated, and delivered with precision.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <Button asChild className="h-16 px-10 rounded-2xl amazon-btn-primary text-xs">
+                  <Link href="/products">Explore Catalog <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                </Button>
+                <Button variant="outline" className="h-16 px-10 rounded-2xl border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px]">
+                  Watch Film
+                </Button>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <div className="max-w-[1500px] mx-auto px-4 -mt-[320px] relative z-30 pb-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr">
-            {amazonGridItems.map((gridItem, idx) => (
-              <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px] relative group overflow-hidden">
-                <h2 className="text-xl font-bold mb-4 text-slate-900 leading-tight h-[56px] flex items-center">{gridItem.title}</h2>
-                
-                <div className="flex-1 flex flex-col mb-12">
-                  {gridItem.type === 'quad' && (
-                    <div className="grid grid-cols-2 gap-3 flex-1">
-                      {gridItem.items?.map((sub, i) => (
-                        <div key={i} className="flex flex-col gap-1 group/item cursor-pointer">
-                          <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm">
-                            <Image 
-                              src={`https://picsum.photos/seed/quad-${idx}-${i}/300/300`} 
-                              alt={sub} 
-                              fill 
-                              className="object-cover transition-transform group-hover/item:scale-105" 
-                            />
-                          </div>
-                          <span className="text-[11px] font-medium text-slate-700 truncate">{sub}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {gridItem.type === 'single' && gridItem.item && (
-                    <div 
-                      className="group/item cursor-pointer flex-1 flex flex-col" 
-                      onClick={() => handleProductClick(gridItem.item as Product)}
-                    >
-                      <div className="relative aspect-[4/3] mb-4 bg-slate-50 overflow-hidden flex-1 max-h-[220px] rounded-sm">
-                        <Image 
-                          src={gridItem.item.imageUrl} 
-                          alt={gridItem.item.name} 
-                          fill 
-                          className="object-contain p-4 transition-transform group-hover/item:scale-105" 
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
-                        <span className="text-[#cc0c39] text-[10px] font-bold uppercase">Deal</span>
-                      </div>
-                      <p className="text-sm font-medium line-clamp-2 leading-snug mb-3">{gridItem.item.name}</p>
-                    </div>
-                  )}
-
-                  {gridItem.type === 'auth' && (
-                    <div className="flex flex-col gap-5 py-2 flex-1">
-                      <p className="text-sm text-slate-600 leading-relaxed">Sign in for the best experience and personalized results.</p>
-                      <Link href="/admin/login">
-                        <button className="amazon-btn-primary w-full text-sm h-11">Sign in securely</button>
-                      </Link>
-                      <div className="bg-slate-50 p-4 rounded-xl mt-auto border border-slate-100">
-                        <p className="text-[10px] font-bold uppercase text-slate-400 tracking-widest mb-1">New customer?</p>
-                        <Link href="/signup" className="text-xs text-primary hover:underline font-bold">Start here.</Link>
-                      </div>
-                    </div>
-                  )}
+        {/* Categories / Featured Grid */}
+        <div className="max-w-[1400px] mx-auto px-6 -mt-32 relative z-30 pb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { title: "Smart Living", hint: "smart home", color: "bg-blue-500" },
+              { title: "Audio Excellence", hint: "high end headphones", color: "bg-purple-500" },
+              { title: "Elite Tech", hint: "modern laptop", color: "bg-emerald-500" },
+              { title: "Curated Style", hint: "fashion model", color: "bg-orange-500" }
+            ].map((cat, idx) => (
+              <Card key={idx} className="group relative overflow-hidden h-[400px] rounded-3xl border-none shadow-2xl hover:scale-[1.02] transition-all duration-500">
+                <Image 
+                  src={`https://picsum.photos/seed/cat-${idx}/600/800`}
+                  alt={cat.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  data-ai-hint={cat.hint}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 space-y-2">
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tight leading-none">{cat.title}</h3>
+                  <Link href="/products" className="inline-flex items-center text-xs font-black text-primary uppercase tracking-widest hover:translate-x-2 transition-transform">
+                    Discover Now <ChevronRight className="ml-1 h-4 w-4" />
+                  </Link>
                 </div>
-
-                {gridItem.type !== 'auth' && (
-                  <div className="absolute bottom-5 left-5 right-5">
-                    <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline block mb-2">
-                      Shop now
-                    </Link>
-                    {gridItem.type === 'single' && gridItem.item && (
-                      <button 
-                        onClick={(e) => handleAddToCart(e, gridItem.item)}
-                        className="amazon-btn-primary w-full text-[11px] h-8 rounded-md"
-                      >
-                        Add to Cart
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
+              </Card>
             ))}
           </div>
 
-          {deals.length > 0 && (
-            <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
-              <div className="flex items-center gap-4 mb-6">
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Today's Deals</h2>
-                <Link href="/products" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
-                  See all deals
-                </Link>
+          {/* Today's Deals Section */}
+          <section className="mt-24 space-y-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-8">
+              <div className="space-y-2">
+                <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase">Today's Deals</h2>
+                <p className="text-slate-500 font-medium">Limited time offers on world-class products.</p>
               </div>
-              <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6 items-stretch">
-                {deals.map((deal) => (
-                  <div 
-                    key={deal.id} 
-                    className="min-w-[240px] flex flex-col gap-3 group cursor-pointer border border-transparent hover:border-slate-100 p-2 rounded-sm transition-all"
-                    onClick={() => handleProductClick(deal)}
-                  >
-                    <div className="relative aspect-square bg-slate-50 overflow-hidden rounded-sm border border-slate-100">
-                      <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-6 group-hover:scale-105 transition-transform" />
-                    </div>
-                    <div className="space-y-1.5 flex-1 flex flex-col">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-[#cc0c39] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-                          {Math.round((1 - deal.price / (deal.originalPrice || deal.price * 1.2)) * 100)}% off
-                        </span>
-                        <span className="text-[#cc0c39] text-[10px] font-bold uppercase tracking-tighter">Limited time deal</span>
-                      </div>
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-xl font-bold text-slate-900">{formatCurrency(deal.price)}</span>
-                        {deal.originalPrice && (
-                          <span className="text-xs text-slate-400 line-through font-medium">M.R.P: {formatCurrency(deal.originalPrice)}</span>
-                        )}
-                      </div>
-                      <p className="text-xs text-slate-700 font-medium line-clamp-2 leading-relaxed h-[32px]">{deal.name}</p>
-                      <button 
-                        onClick={(e) => handleAddToCart(e, deal)}
-                        className="amazon-btn-primary w-full text-[11px] h-8 rounded-md mt-auto"
-                      >
-                        Add to Cart
-                      </button>
+              <Button variant="ghost" asChild className="font-black uppercase tracking-widest text-[10px] hover:text-primary">
+                <Link href="/products">View All Listings</Link>
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {deals.slice(0, 4).map((product: any) => (
+                <Card 
+                  key={product.id} 
+                  className="group relative flex flex-col border-none bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                  onClick={() => handleProductClick(product)}
+                >
+                  <div className="relative aspect-[4/5] bg-slate-50 overflow-hidden">
+                    <Image 
+                      src={product.imageUrl} 
+                      alt={product.name} 
+                      fill 
+                      className="object-contain p-8 group-hover:scale-110 transition-transform duration-700" 
+                    />
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-[#cc0c39] text-white font-black uppercase text-[9px] tracking-widest px-3 py-1.5 border-none">
+                        - {Math.round((1 - product.price / (product.originalPrice || product.price * 1.2)) * 100)}% OFF
+                      </Badge>
                     </div>
                   </div>
-                ))}
-              </div>
-            </section>
-          )}
+                  <div className="p-8 flex-1 flex flex-col gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-primary text-primary" />
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.rating} Rating</span>
+                      </div>
+                      <h3 className="text-lg font-black text-slate-900 line-clamp-1 leading-tight group-hover:text-primary transition-colors">
+                        {product.name}
+                      </h3>
+                    </div>
+                    <div className="flex items-end justify-between mt-auto">
+                      <div className="flex flex-col">
+                        <span className="text-2xl font-black text-slate-900">{formatCurrency(product.price)}</span>
+                        {product.originalPrice && (
+                          <span className="text-xs text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
+                        )}
+                      </div>
+                      <Button 
+                        size="icon"
+                        onClick={(e) => handleAddToCart(e, product)}
+                        className="h-12 w-12 rounded-2xl amazon-btn-primary"
+                      >
+                        <CheckCircle2 className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </section>
         </div>
-
-        <button 
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="w-full bg-[#37475a] hover:bg-[#485769] text-white text-sm font-bold py-4 transition-colors tracking-wide mt-10"
-        >
-          Back to top
-        </button>
-
-        <footer className="bg-[#232f3e] text-white pt-12 pb-16">
-          <div className="max-w-[1000px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
-            <div className="space-y-4">
-              <h4 className="font-bold text-base">Get to Know Us</h4>
-              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
-                <li><Link href="#" className="hover:underline">Careers</Link></li>
-                <li><Link href="#" className="hover:underline">About Z-Mart</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-4">
-              <h4 className="font-bold text-base">Make Money with Us</h4>
-              <ul className="text-sm space-y-2.5 text-slate-300 font-medium">
-                <li><Link href="/admin/login" className="hover:underline">Sell products on Z-Mart</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="max-w-[1000px] mx-auto px-6 mt-16 pt-10 border-t border-slate-700 flex flex-col items-center gap-8">
-            <Link href="/" className="text-2xl font-black tracking-tighter hover:text-primary transition-colors">Z-MART</Link>
-            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-[0.2em]">© 1996-2024, Z-Mart.in, Inc. or its affiliates</p>
-          </div>
-        </footer>
       </main>
+
+      <footer className="bg-slate-900 text-white py-20">
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16">
+          <div className="space-y-6">
+            <h2 className="text-3xl font-black tracking-tighter">Z-MART</h2>
+            <p className="text-slate-400 text-sm font-medium leading-relaxed">
+              Redefining e-commerce with a focus on quality, speed, and premium user experience.
+            </p>
+          </div>
+          <div className="space-y-6">
+            <h4 className="font-black uppercase tracking-widest text-xs text-slate-500">Quick Links</h4>
+            <ul className="space-y-4 text-sm font-bold">
+              <li><Link href="/products" className="hover:text-primary transition-colors">Our Catalog</Link></li>
+              <li><Link href="/account" className="hover:text-primary transition-colors">Your Orders</Link></li>
+              <li><Link href="/admin/login" className="hover:text-primary transition-colors">Merchant Portal</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-[1400px] mx-auto px-6 mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">© 2024 Z-MART GLOBAL • ALL RIGHTS RESERVED</p>
+          <div className="flex gap-8 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+            <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="#" className="hover:text-white transition-colors">Terms</Link>
+            <Link href="#" className="hover:text-white transition-colors">Legal</Link>
+          </div>
+        </div>
+      </footer>
 
       <ProductDetailsModal 
         product={selectedProduct}
