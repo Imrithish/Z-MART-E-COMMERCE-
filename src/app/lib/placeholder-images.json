@@ -7,28 +7,40 @@
       "imageHint": "warehouse tech"
     },
     {
-      "id": "prod-1",
-      "description": "Premium Wireless Headphones",
-      "imageUrl": "https://picsum.photos/seed/zmart2/600/600",
+      "id": "amz-echo",
+      "description": "Smart Speaker",
+      "imageUrl": "https://picsum.photos/seed/echo1/600/600",
+      "imageHint": "smart speaker"
+    },
+    {
+      "id": "amz-kindle",
+      "description": "E-Reader device",
+      "imageUrl": "https://picsum.photos/seed/kindle/600/600",
+      "imageHint": "ereader"
+    },
+    {
+      "id": "amz-pot",
+      "description": "Smart Cooker",
+      "imageUrl": "https://picsum.photos/seed/pot/600/600",
+      "imageHint": "pressure cooker"
+    },
+    {
+      "id": "amz-sony",
+      "description": "Premium Headphones",
+      "imageUrl": "https://picsum.photos/seed/sony/600/600",
       "imageHint": "headphones"
     },
     {
-      "id": "prod-2",
-      "description": "Smart Home Hub",
-      "imageUrl": "https://picsum.photos/seed/zmart3/600/600",
-      "imageHint": "smart home"
+      "id": "amz-saree",
+      "description": "Silk Saree",
+      "imageUrl": "https://picsum.photos/seed/saree/600/600",
+      "imageHint": "silk saree"
     },
     {
-      "id": "prod-3",
-      "description": "Ergonomic Office Chair",
-      "imageUrl": "https://picsum.photos/seed/zmart4/600/600",
-      "imageHint": "office chair"
-    },
-    {
-      "id": "prod-4",
-      "description": "Mechanical Keyboard",
-      "imageUrl": "https://picsum.photos/seed/zmart5/600/600",
-      "imageHint": "keyboard"
+      "id": "amz-shirt",
+      "description": "Men's Casual Shirt",
+      "imageUrl": "https://picsum.photos/seed/shirt/600/600",
+      "imageHint": "men shirt"
     }
   ]
 }
