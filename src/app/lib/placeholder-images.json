@@ -1,46 +1,40 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-bg",
-      "description": "Modern warehouse with professional equipment",
-      "imageUrl": "https://picsum.photos/seed/zmart1/1200/600",
-      "imageHint": "warehouse tech"
+      "id": "amazon-hero-1",
+      "description": "Amazon Style Hero Banner - Electronics",
+      "imageUrl": "https://picsum.photos/seed/amzhero1/1500/600",
+      "imageHint": "electronics sale"
     },
     {
-      "id": "amz-echo",
-      "description": "Smart Speaker",
-      "imageUrl": "https://picsum.photos/seed/echo1/600/600",
-      "imageHint": "smart speaker"
+      "id": "amazon-hero-2",
+      "description": "Amazon Style Hero Banner - Fashion",
+      "imageUrl": "https://picsum.photos/seed/amzhero2/1500/600",
+      "imageHint": "fashion banner"
     },
     {
-      "id": "amz-kindle",
-      "description": "E-Reader device",
-      "imageUrl": "https://picsum.photos/seed/kindle/600/600",
-      "imageHint": "ereader"
+      "id": "kindle-paperwhite",
+      "description": "Kindle E-reader",
+      "imageUrl": "https://picsum.photos/seed/kindle/400/400",
+      "imageHint": "kindle paperwhite"
     },
     {
-      "id": "amz-pot",
-      "description": "Smart Cooker",
-      "imageUrl": "https://picsum.photos/seed/pot/600/600",
-      "imageHint": "pressure cooker"
+      "id": "echo-dot",
+      "description": "Echo Dot Smart Speaker",
+      "imageUrl": "https://picsum.photos/seed/echo/400/400",
+      "imageHint": "echo dot"
     },
     {
-      "id": "amz-sony",
-      "description": "Premium Headphones",
-      "imageUrl": "https://picsum.photos/seed/sony/600/600",
-      "imageHint": "headphones"
+      "id": "fire-tablet",
+      "description": "Fire Tablet",
+      "imageUrl": "https://picsum.photos/seed/tablet/400/400",
+      "imageHint": "fire tablet"
     },
     {
-      "id": "amz-saree",
-      "description": "Silk Saree",
-      "imageUrl": "https://picsum.photos/seed/saree/600/600",
-      "imageHint": "silk saree"
-    },
-    {
-      "id": "amz-shirt",
-      "description": "Men's Casual Shirt",
-      "imageUrl": "https://picsum.photos/seed/shirt/600/600",
-      "imageHint": "men shirt"
+      "id": "ring-doorbell",
+      "description": "Ring Video Doorbell",
+      "imageUrl": "https://picsum.photos/seed/ring/400/400",
+      "imageHint": "ring doorbell"
     }
   ]
 }
