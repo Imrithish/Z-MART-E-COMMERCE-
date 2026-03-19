@@ -18,17 +18,11 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -200,20 +194,27 @@ function ProductList() {
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-4 rounded-[2rem] shadow-2xl border-none bg-white" align="end" sideOffset={10}>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4 mb-2 block">Sort By</label>
-                    <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger className="h-12 border-none bg-slate-900 text-white rounded-2xl font-bold text-xs focus:ring-0">
-                        <SelectValue placeholder="Sort By" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-2xl border-none shadow-2xl bg-white">
-                        <SelectItem value="newest" className="text-[10px] font-black uppercase tracking-widest py-3">Newest Arrivals</SelectItem>
-                        <SelectItem value="price-asc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: Low to High</SelectItem>
-                        <SelectItem value="price-desc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: High to Low</SelectItem>
-                        <SelectItem value="rating" className="text-[10px] font-black uppercase tracking-widest py-3">Avg. Customer Rating</SelectItem>
-                      </SelectContent>
-                    </Select>
+                <PopoverContent className="w-64 p-2 rounded-[2rem] shadow-2xl border-none bg-white" align="end" sideOffset={10}>
+                  <div className="flex flex-col gap-1">
+                    <div className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Sort By</div>
+                    {[
+                      { value: "newest", label: "Newest Arrivals" },
+                      { value: "price-asc", label: "Price: Low to High" },
+                      { value: "price-desc", label: "Price: High to Low" },
+                      { value: "rating", label: "Avg. Customer Rating" }
+                    ].map((option) => (
+                      <Button
+                        key={option.value}
+                        variant="ghost"
+                        onClick={() => setSortBy(option.value)}
+                        className={cn(
+                          "w-full justify-start h-12 rounded-xl text-[10px] font-black uppercase tracking-widest px-4 transition-all",
+                          sortBy === option.value ? "bg-slate-900 text-white hover:bg-slate-900 hover:text-white" : "text-slate-600 hover:bg-slate-50"
+                        )}
+                      >
+                        {option.label}
+                      </Button>
+                    ))}
                   </div>
                 </PopoverContent>
               </Popover>
