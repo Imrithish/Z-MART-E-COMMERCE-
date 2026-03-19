@@ -1,18 +1,9 @@
-// IMPORTANT: You MUST replace the placeholder values below with your actual 
-// Firebase project configuration. 
-//
-// To find these values:
-// 1. Go to https://console.firebase.google.com/
-// 2. Select your project.
-// 3. Click the Gear Icon (Project Settings) > General.
-// 4. Scroll down to "Your apps" and select your Web App (create one if needed).
-// 5. Copy the 'firebaseConfig' object values here.
-
+// Updated with your real project configuration.
 export const firebaseConfig = {
-  apiKey: "REPLACE_WITH_YOUR_API_KEY",
-  authDomain: "REPLACE_WITH_YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "REPLACE_WITH_YOUR_PROJECT_ID",
-  storageBucket: "REPLACE_WITH_YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
-  appId: "REPLACE_WITH_YOUR_APP_ID"
+  apiKey: "AIzaSyDbxJGYLg3_d9DsWHzCQTH9Yeqy11fhhPU",
+  authDomain: "studio-5897850960-f8765.firebaseapp.com",
+  projectId: "studio-5897850960-f8765",
+  storageBucket: "studio-5897850960-f8765.firebasestorage.app",
+  messagingSenderId: "692430828538",
+  appId: "1:692430828538:web:c3412a2bb4ee500b2a2a43"
 };
