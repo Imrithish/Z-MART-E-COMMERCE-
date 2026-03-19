@@ -77,7 +77,14 @@ export default function AdminProducts() {
       <main className="flex-1 p-8 lg:p-12 space-y-10">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-black tracking-tight mb-2 text-slate-900">Products</h1>
+            <div className="flex items-center gap-4 mb-2">
+              <h1 className="text-4xl font-black tracking-tight text-slate-900">Products</h1>
+              {!dataLoading && products && (
+                <Badge variant="outline" className="h-8 px-4 rounded-xl border-slate-200 text-slate-500 font-black text-[10px] uppercase tracking-widest bg-white">
+                  {products.length} Total
+                </Badge>
+              )}
+            </div>
             <p className="text-slate-500 text-lg font-medium">Manage your products, stock, and descriptions.</p>
           </div>
           <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest text-xs transition-all active:scale-95">
