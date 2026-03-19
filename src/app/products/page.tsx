@@ -182,9 +182,9 @@ export default function StorefrontProducts() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 bg-white p-6 shadow-sm rounded-sm">
           <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight">
-              {q ? `Results for "${q}"` : "Full Catalog"}
+              {q ? `Results for "${q}"` : "Premium Catalog"}
             </h1>
-            <p className="text-sm text-gray-500">Explore our premium live collection.</p>
+            <p className="text-sm text-gray-500">Explore our curated collection.</p>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="outline" className="gap-2 h-9 text-xs">

@@ -119,10 +119,10 @@ export default function Home() {
               </div>
               <div className="flex flex-wrap justify-center gap-6">
                 <Button asChild className="h-20 px-12 rounded-[2rem] amazon-btn-primary text-sm shadow-2xl shadow-primary/40">
-                  <Link href="/products">Shop The Future <ArrowRight className="ml-2 h-5 w-5" /></Link>
+                  <Link href="/products">Shop The Collection <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
-                <Button variant="outline" className="h-20 px-12 rounded-[2rem] border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px] backdrop-blur-md">
-                  Browse Catalog
+                <Button variant="outline" asChild className="h-20 px-12 rounded-[2rem] border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px] backdrop-blur-md">
+                   <Link href="/products">Discover All</Link>
                 </Button>
               </div>
             </div>
@@ -272,7 +272,7 @@ export default function Home() {
                 <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">Freshly Added</h2>
               </div>
               <Button asChild variant="outline" className="h-16 px-10 rounded-2xl border-slate-200 font-black uppercase tracking-widest text-[10px] hover:bg-slate-50">
-                <Link href="/products">View All Products <ChevronRight className="ml-2 h-4 w-4" /></Link>
+                <Link href="/products">View All <ChevronRight className="ml-2 h-4 w-4" /></Link>
               </Button>
             </div>
 
