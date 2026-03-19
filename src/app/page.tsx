@@ -1,8 +1,12 @@
+"use client"
+
 import { Navbar } from "@/components/storefront/Navbar";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
 import { Star, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "@/context/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -13,7 +17,17 @@ const formatCurrency = (amount: number) => {
 };
 
 export default function Home() {
+  const { addItem } = useCart();
+  const { toast } = useToast();
   const deals = MOCK_PRODUCTS.filter(p => p.isDeal);
+
+  const handleAddToCart = (product: any) => {
+    addItem(product);
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your shopping cart.`,
+    });
+  };
   
   const amazonGridItems = [
     { title: "Gaming accessories", items: ["Headsets", "Keyboards", "Mice", "Chairs"], type: "quad" },
@@ -82,21 +96,29 @@ export default function Home() {
                   )}
 
                   {gridItem.type === 'single' && gridItem.item && (
-                    <Link href={`/products`} className="group block">
-                      <div className="relative aspect-[4/3] mb-3 bg-gray-50 overflow-hidden">
-                        <Image 
-                          src={gridItem.item.imageUrl} 
-                          alt={gridItem.item.name} 
-                          fill 
-                          className="object-contain p-4 transition-transform group-hover:scale-105" 
-                        />
-                      </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="bg-[#cc0c39] text-white text-xs font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
-                        <span className="text-[#cc0c39] text-xs font-bold">Deal</span>
-                      </div>
-                      <p className="text-sm font-medium line-clamp-2">{gridItem.item.name}</p>
-                    </Link>
+                    <div className="group">
+                      <Link href={`/products`} className="block">
+                        <div className="relative aspect-[4/3] mb-3 bg-gray-50 overflow-hidden">
+                          <Image 
+                            src={gridItem.item.imageUrl} 
+                            alt={gridItem.item.name} 
+                            fill 
+                            className="object-contain p-4 transition-transform group-hover:scale-105" 
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="bg-[#cc0c39] text-white text-xs font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
+                          <span className="text-[#cc0c39] text-xs font-bold">Deal</span>
+                        </div>
+                        <p className="text-sm font-medium line-clamp-2 h-10">{gridItem.item.name}</p>
+                      </Link>
+                      <button 
+                        onClick={() => handleAddToCart(gridItem.item)}
+                        className="amazon-btn-primary w-full text-xs mt-3 h-8"
+                      >
+                        Add to Cart
+                      </button>
+                    </div>
                   )}
 
                   {gridItem.type === 'auth' && (
@@ -126,10 +148,10 @@ export default function Home() {
             </div>
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
               {deals.map((deal) => (
-                <div key={deal.id} className="min-w-[200px] flex flex-col gap-2 group cursor-pointer">
-                  <div className="relative aspect-square bg-gray-100 overflow-hidden rounded-sm">
+                <div key={deal.id} className="min-w-[200px] flex flex-col gap-2 group">
+                  <Link href="/products" className="relative aspect-square bg-gray-100 overflow-hidden rounded-sm cursor-pointer">
                     <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" />
-                  </div>
+                  </Link>
                   <div className="flex items-center gap-2">
                     <span className="bg-[#cc0c39] text-white text-[11px] font-bold px-1.5 py-0.5 rounded-sm">
                       {Math.round((1 - deal.price / (deal.originalPrice || deal.price)) * 100)}% off
@@ -142,32 +164,14 @@ export default function Home() {
                       <span className="text-xs text-gray-500 line-through">List: {formatCurrency(deal.originalPrice)}</span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-700 line-clamp-1">{deal.name}</p>
+                  <p className="text-xs text-gray-700 line-clamp-1 h-4">{deal.name}</p>
+                  <button 
+                    onClick={() => handleAddToCart(deal)}
+                    className="amazon-btn-primary text-xs mt-1 h-7 rounded-md"
+                  >
+                    Add to Cart
+                  </button>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          {/* More Categories / Personal Recommendations */}
-          <section className="bg-white p-5 mt-5 shadow-sm">
-            <h2 className="text-xl font-bold mb-4">Inspired by your shopping trend</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-              {MOCK_PRODUCTS.slice(0, 6).map((product) => (
-                <Link key={product.id} href="/products" className="flex flex-col gap-2 group">
-                  <div className="relative aspect-square bg-gray-50 overflow-hidden">
-                    <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-4 transition-transform group-hover:scale-105" />
-                  </div>
-                  <p className="text-xs text-[#007185] hover:text-[#c45500] hover:underline line-clamp-2">{product.name}</p>
-                  <div className="flex items-center gap-1">
-                    <div className="flex">
-                      {[1,2,3,4,5].map(i => (
-                        <Star key={i} className={`h-3 w-3 ${i <= product.rating ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">{product.reviews.toLocaleString()}</span>
-                  </div>
-                  <span className="text-sm font-bold">{formatCurrency(product.price)}</span>
-                </Link>
               ))}
             </div>
           </section>
@@ -228,7 +232,7 @@ export default function Home() {
             <Link href="#" className="hover:underline">Privacy Notice</Link>
             <Link href="#" className="hover:underline">Your Ads Privacy Choices</Link>
           </div>
-          <p className="text-xs text-gray-400">© 1996-2024, Z-Mart.us, Inc. or its affiliates</p>
+          <p className="text-xs text-gray-400">© 1996-2024, Z-Mart.in, Inc. or its affiliates</p>
         </div>
       </footer>
     </div>

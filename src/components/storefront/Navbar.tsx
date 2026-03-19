@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
+import { useCart } from "@/context/CartContext";
 
 export function Navbar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 w-full flex flex-col">
@@ -18,7 +17,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all">
           <span className="text-2xl font-bold tracking-tighter">Z-MART</span>
-          <span className="text-[10px] mt-2 ml-0.5 text-[#ff9900]">.us</span>
+          <span className="text-[10px] mt-2 ml-0.5 text-[#ff9900]">.in</span>
         </Link>
 
         {/* Deliver To */}
@@ -26,7 +25,7 @@ export function Navbar() {
           <span className="text-[11px] text-gray-300 ml-5 font-medium">Deliver to</span>
           <div className="flex items-center gap-1">
             <MapPin className="h-4 w-4" />
-            <span className="text-sm font-bold">New York 10001</span>
+            <span className="text-sm font-bold">Mumbai 400001</span>
           </div>
         </button>
 
@@ -72,7 +71,9 @@ export function Navbar() {
         <Link href="/cart" className="flex items-end px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all relative">
           <div className="relative">
             <ShoppingCart className="h-8 w-8" />
-            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[#f08804] font-bold text-base">0</span>
+            <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[#f08804] font-bold text-base">
+              {totalItems}
+            </span>
           </div>
           <span className="text-sm font-bold hidden sm:inline-block mb-1 ml-1">Cart</span>
         </Link>
@@ -85,7 +86,8 @@ export function Navbar() {
         </button>
         <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Today's Deals</Link>
         <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Customer Service</Link>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Registry</Link>
+        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Electronics</Link>
+        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Home & Kitchen</Link>
         <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Gift Cards</Link>
         <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Sell</Link>
         <div className="flex-1" />
