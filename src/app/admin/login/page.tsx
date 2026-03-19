@@ -40,12 +40,12 @@ export default function AdminLoginPage() {
       console.error("Login Error:", error.code, error.message);
       let message = "Invalid credentials. Please check your password and try again.";
       
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        message = "Account not found or incorrect credentials. Have you created this user in your Firebase Console under 'Authentication > Users'?";
+      if (error.code === 'auth/invalid-api-key' || error.message?.includes('api-key-not-valid')) {
+        message = "Critical Error: Your Firebase API Key is missing or invalid. Please update 'src/firebase/config.ts' with your real credentials from the Firebase Console.";
+      } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        message = "Account not found or incorrect credentials. Ensure this user exists in your Firebase Console under 'Authentication > Users'.";
       } else if (error.code === 'auth/operation-not-allowed') {
-        message = "Email/Password sign-in is not enabled in your Firebase Console. Go to 'Authentication > Sign-in method' to enable it.";
-      } else if (error.code === 'auth/invalid-api-key' || error.code === 'auth/network-request-failed') {
-        message = "Configuration Error: Please ensure your Firebase credentials in 'src/firebase/config.ts' are correct.";
+        message = "Sign-in provider is not enabled. Go to 'Authentication > Sign-in method' in your Firebase Console to enable Email/Password and Google.";
       }
 
       setErrorMessage(message);
@@ -72,10 +72,15 @@ export default function AdminLoginPage() {
       });
       router.push('/admin/dashboard');
     } catch (error: any) {
+      console.error("Google Login Error:", error.code, error.message);
       let message = error.message || "An error occurred during Google sign-in.";
-      if (error.code === 'auth/operation-not-allowed') {
+      
+      if (error.code === 'auth/invalid-api-key' || error.message?.includes('api-key-not-valid')) {
+        message = "Critical Error: Your Firebase API Key is missing or invalid. Check 'src/firebase/config.ts'.";
+      } else if (error.code === 'auth/operation-not-allowed') {
         message = "Google Sign-in is not enabled in your Firebase Console.";
       }
+      
       setErrorMessage(message);
       toast({
         variant: "destructive",
@@ -88,7 +93,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4 font-body">
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 p-4 font-body text-slate-900">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2 text-slate-900 font-black text-2xl tracking-tighter hover:scale-105 transition-transform">
@@ -113,7 +118,7 @@ export default function AdminLoginPage() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle className="font-black uppercase tracking-widest text-[10px]">Setup Required</AlertTitle>
                 <AlertDescription className="text-xs font-bold leading-relaxed space-y-2">
-                  <p>{errorMessage}</p>
+                  <p className="text-red-600">{errorMessage}</p>
                   <Link 
                     href="https://console.firebase.google.com/" 
                     target="_blank" 
@@ -172,7 +177,7 @@ export default function AdminLoginPage() {
             <Button 
               type="button" 
               variant="outline" 
-              className="w-full h-14 rounded-2xl border-slate-200 font-black uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-3 shadow-sm"
+              className="w-full h-14 rounded-2xl border-slate-200 font-black uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-3 shadow-sm text-slate-900"
               onClick={handleGoogleLogin}
               disabled={isLoading || isGoogleLoading}
             >
