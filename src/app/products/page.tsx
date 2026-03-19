@@ -5,7 +5,7 @@ import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Product } from "@/lib/mock-data";
-import { Star, Loader2, ShoppingBag, Zap, Search } from "lucide-react";
+import { Star, Loader2, ShoppingBag, Zap, Search, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +14,7 @@ import { useState, Suspense, useMemo, useCallback } from "react";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
+import Link from "next/link";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -71,11 +72,35 @@ function ProductList() {
   }, [addItem]);
 
   if (loading) {
-    return <div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-4">
+        <Loader2 className="animate-spin h-10 w-10 text-primary" />
+        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Syncing Catalog...</p>
+      </div>
+    );
   }
 
   return (
     <>
+      <div className="mb-10 space-y-4">
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
+        >
+          <ChevronLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
+          Back to Home
+        </Link>
+        <div className="flex items-center gap-4">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
+            {categoryFilter || (searchQuery ? `Search: ${searchQuery}` : "All Products")}
+          </h1>
+          <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4" />
+        </div>
+        <p className="text-slate-500 font-medium text-sm md:text-lg">
+          {displayProducts.length} Premium items found in {categoryFilter || "our collection"}.
+        </p>
+      </div>
+
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-stretch">
         {displayProducts.length > 0 ? (
           displayProducts.map((product: any) => (
@@ -156,8 +181,13 @@ export default function StorefrontProducts() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-body">
       <Navbar />
-      <main className="container mx-auto px-4 md:px-8 py-4 md:py-8 flex-1 max-w-[1450px]">
-        <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>}>
+      <main className="container mx-auto px-4 md:px-8 py-8 md:py-12 flex-1 max-w-[1450px]">
+        <Suspense fallback={
+          <div className="flex flex-col items-center justify-center py-40 gap-4">
+            <Loader2 className="animate-spin h-10 w-10 text-primary" />
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Z-MART Storefront...</p>
+          </div>
+        }>
           <ProductList />
         </Suspense>
       </main>
