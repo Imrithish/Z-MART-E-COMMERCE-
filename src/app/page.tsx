@@ -68,37 +68,7 @@ export default function Home() {
   const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
     addItem(product);
-    toast({
-      title: (
-        <div className="flex items-center gap-2 text-green-600 font-black uppercase tracking-widest text-[10px]">
-          <CheckCircle2 className="h-4 w-4" /> Added to Cart
-        </div>
-      ) as any,
-      description: (
-        <div className="flex items-center gap-3 mt-2">
-          <div className="relative h-12 w-12 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
-            <Image 
-              src={product.imageUrl || 'https://placehold.co/100x100?text=No+Image'} 
-              alt={product.name} 
-              fill 
-              className="object-contain p-1" 
-            />
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <p className="text-xs font-black text-slate-900 line-clamp-1">{product.name}</p>
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ready for checkout</p>
-          </div>
-        </div>
-      ) as any,
-      action: (
-        <ToastAction altText="View Cart" asChild>
-          <Link href="/cart" className="amazon-btn-primary text-[10px] px-4 py-2 rounded-xl">
-            View Cart
-          </Link>
-        </ToastAction>
-      ),
-    });
-  }, [addItem, toast]);
+  }, [addItem]);
 
   if (loading) {
     return (

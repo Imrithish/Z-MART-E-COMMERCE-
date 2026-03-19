@@ -49,9 +49,6 @@ export default function AdminProducts() {
     if (!db) return;
     
     deleteDoc(doc(db, 'products', productId))
-      .then(() => {
-        toast({ title: "Product Deleted", description: "The item has been removed from the catalog." });
-      })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
           path: `products/${productId}`,

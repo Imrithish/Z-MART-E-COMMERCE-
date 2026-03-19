@@ -71,12 +71,6 @@ export default function UserDashboard() {
       status: 'Cancelled',
       updatedAt: new Date()
     })
-    .then(() => {
-      toast({
-        title: "Order Cancelled",
-        description: "The order has been successfully cancelled.",
-      });
-    })
     .catch(async (error) => {
       const permissionError = new FirestorePermissionError({
         path: `orders/${orderId}`,
