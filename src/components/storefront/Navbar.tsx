@@ -17,7 +17,9 @@ import {
   Sparkles, 
   ArrowRight,
   Menu,
-  X
+  Package,
+  Shield,
+  UserCircle
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -157,18 +159,27 @@ export function Navbar() {
                   
                   <Separator className="bg-white/5" />
                   
-                  <div className="space-y-4">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account</h4>
-                    <ul className="space-y-3 pl-7">
-                      <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Profile</Link></li>
-                      <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Settings</Link></li>
-                      {user && (
+                  {user && (
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Your Account</h4>
+                      <ul className="space-y-3 pl-7">
+                        <li><Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}><Package className="h-4 w-4" /> Your Orders</Link></li>
+                        <li><Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}><Shield className="h-4 w-4" /> Login & Security</Link></li>
+                        <li><Link href="/account" className="flex items-center gap-2 text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}><MapPin className="h-4 w-4" /> Your Addresses</Link></li>
                         <li>
-                          <button onClick={handleSignOut} className="text-sm font-bold text-red-400 uppercase tracking-tight">Sign Out</button>
+                          <button onClick={handleSignOut} className="flex items-center gap-2 text-sm font-bold text-red-400 uppercase tracking-tight"><LogOut className="h-4 w-4" /> Sign Out</button>
                         </li>
-                      )}
-                    </ul>
-                  </div>
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {!user && (
+                    <div className="space-y-4">
+                      <Button asChild className="w-full bg-primary text-slate-900 font-black uppercase text-xs tracking-widest">
+                        <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </ScrollArea>
             </SheetContent>
@@ -240,7 +251,7 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="group relative">
             <button className="flex items-center gap-2 hover:bg-white/10 p-2 rounded-xl transition-all text-left">
-              <User className="h-6 w-6 md:h-7 md:w-7 text-white" />
+              <UserCircle className="h-6 w-6 md:h-7 md:w-7 text-white" />
               <div className="hidden sm:flex flex-col items-start leading-tight">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Account'}
@@ -252,21 +263,37 @@ export function Navbar() {
               </div>
             </button>
             
-            <div className="absolute top-[calc(100%+0px)] right-0 w-64 bg-white text-slate-900 shadow-2xl rounded-3xl p-6 hidden group-hover:block border border-slate-100 z-50 animate-in fade-in zoom-in duration-150 origin-top-right">
+            <div className="absolute top-[calc(100%+0px)] right-0 w-72 bg-white text-slate-900 shadow-2xl rounded-3xl p-6 hidden group-hover:block border border-slate-100 z-50 animate-in fade-in zoom-in duration-150 origin-top-right">
               {user ? (
                 <div className="space-y-6">
                   <div className="space-y-1">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Identity</p>
-                    <p className="text-sm font-black truncate">{user.email}</p>
+                    <p className="text-sm font-black truncate text-slate-900">{user.email}</p>
                   </div>
-                  <Separator />
-                  <ul className="space-y-2">
-                    <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Member Dashboard</Link></li>
-                    <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Settings</Link></li>
-                  </ul>
-                  <Separator />
-                  <Button onClick={handleSignOut} variant="destructive" className="w-full h-10 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/10">
-                    Sign Out
+                  <Separator className="bg-slate-100" />
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Your Account</p>
+                    <ul className="space-y-1">
+                      <li>
+                        <Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-[11px] font-black uppercase tracking-widest transition-all">
+                          <Package className="h-4 w-4 text-slate-400" /> Your Orders
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-[11px] font-black uppercase tracking-widest transition-all">
+                          <Shield className="h-4 w-4 text-slate-400" /> Login & Security
+                        </Link>
+                      </li>
+                      <li>
+                        <Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-[11px] font-black uppercase tracking-widest transition-all">
+                          <MapPin className="h-4 w-4 text-slate-400" /> Your Addresses
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                  <Separator className="bg-slate-100" />
+                  <Button onClick={handleSignOut} variant="ghost" className="w-full h-12 rounded-xl font-black uppercase tracking-widest text-[10px] text-red-500 hover:bg-red-50 hover:text-red-600 transition-all">
+                    <LogOut className="h-4 w-4 mr-2" /> Sign Out
                   </Button>
                 </div>
               ) : (
