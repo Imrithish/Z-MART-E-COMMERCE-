@@ -29,14 +29,14 @@ export function ReceiptModal({ order, isOpen, onClose }: ReceiptModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[400px] p-0 bg-transparent border-none shadow-none flex items-center justify-center">
+      <DialogContent className="max-w-[400px] p-0 bg-transparent border-none shadow-none flex items-center justify-center overflow-visible">
         <DialogHeader className="sr-only">
           <DialogTitle>Order Receipt - #{order.id?.slice(-8).toUpperCase()}</DialogTitle>
         </DialogHeader>
         
-        <div className="w-full bg-white relative rounded-t-[2rem] overflow-hidden flex flex-col animate-in slide-in-from-bottom-8 duration-500">
+        <div className="w-full bg-white relative rounded-[2.5rem] overflow-y-auto max-h-[90vh] no-scrollbar flex flex-col animate-in slide-in-from-bottom-8 duration-500 shadow-2xl">
           {/* Top Brand Section */}
-          <div className="bg-slate-900 p-8 text-center space-y-2 relative">
+          <div className="bg-slate-900 p-8 text-center space-y-2 relative shrink-0">
              <div className="absolute top-0 left-0 w-full h-full bg-primary/5 opacity-50" />
              <h2 className="text-2xl font-black text-white tracking-tighter uppercase relative z-10">Z-MART</h2>
              <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] relative z-10">Official Receipt</p>
@@ -117,7 +117,7 @@ export function ReceiptModal({ order, isOpen, onClose }: ReceiptModalProps) {
           </div>
 
           {/* Bottom Barcode Section - Simulated with SVG */}
-          <div className="bg-slate-50 p-8 flex flex-col items-center gap-4 border-t-2 border-dashed border-white">
+          <div className="bg-slate-50 p-8 flex flex-col items-center gap-4 border-t-2 border-dashed border-white shrink-0">
              <div className="flex flex-col items-center gap-2 opacity-30">
                 <div className="flex items-center gap-[2px]">
                    {[2, 1, 4, 3, 2, 6, 1, 3, 5, 2, 4, 1, 2, 4, 2, 6].map((w, i) => (
@@ -126,7 +126,7 @@ export function ReceiptModal({ order, isOpen, onClose }: ReceiptModalProps) {
                 </div>
                 <p className="text-[8px] font-bold tracking-[0.5em] text-black">ZMRT-{order.id?.slice(0, 10).toUpperCase()}</p>
              </div>
-             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Thank you for shopping at Z-MART</p>
+             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest text-center">Thank you for shopping at Z-MART</p>
           </div>
         </div>
       </DialogContent>
