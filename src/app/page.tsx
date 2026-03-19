@@ -176,22 +176,24 @@ export default function Home() {
               { title: "Fashion", hint: "fashion model", color: "bg-emerald-500", h: "h-[450px]", href: "/products?category=Fashion" },
               { title: "Home Decor", hint: "interior design", color: "bg-orange-500", h: "h-[550px] lg:-mt-10", href: "/products?category=Home" }
             ].map((cat, idx) => (
-              <Card key={idx} className={`group relative overflow-hidden ${cat.h} rounded-[2.5rem] border-none shadow-xl hover:shadow-2xl transition-all duration-700`}>
-                <Image 
-                  src={`https://picsum.photos/seed/cat-${idx}-creative/800/1200`}
-                  alt={cat.title}
-                  fill
-                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                  data-ai-hint={cat.hint}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
-                <div className="absolute bottom-0 left-0 right-0 p-10 space-y-4">
-                  <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">{cat.title}</h3>
-                  <Link href={cat.href} className="inline-flex items-center text-xs font-black text-primary uppercase tracking-widest hover:translate-x-3 transition-transform">
-                    Explore Tier <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </div>
-              </Card>
+              <Link key={idx} href={cat.href}>
+                <Card className={`group relative overflow-hidden ${cat.h} rounded-[2.5rem] border-none shadow-xl hover:shadow-2xl transition-all duration-700 cursor-pointer`}>
+                  <Image 
+                    src={`https://picsum.photos/seed/cat-${idx}-creative/800/1200`}
+                    alt={cat.title}
+                    fill
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                    data-ai-hint={cat.hint}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
+                  <div className="absolute bottom-0 left-0 right-0 p-10 space-y-4">
+                    <h3 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">{cat.title}</h3>
+                    <div className="inline-flex items-center text-xs font-black text-primary uppercase tracking-widest hover:translate-x-3 transition-transform">
+                      Explore Tier <ArrowRight className="ml-2 h-4 w-4" />
+                    </div>
+                  </div>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
