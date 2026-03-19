@@ -18,6 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, ArrowRight, MapPin, Phone, CreditCard, ShoppingBag, Truck } from "lucide-react";
 import Image from "next/image";
+import { OrderSuccessModal } from "@/components/storefront/OrderSuccessModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -37,6 +38,8 @@ function CheckoutContent() {
   const productId = searchParams.get('productId');
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [confirmedTotal, setConfirmedTotal] = useState(0);
 
   // Form State
   const [address, setAddress] = useState({
@@ -124,11 +127,8 @@ function CheckoutContent() {
     addDoc(collection(db, 'orders'), orderData)
       .then(() => {
         if (!productId) clearCart();
-        toast({
-          title: "Order Placed!",
-          description: `Total: ${formatCurrency(grandTotal)}. Track your items in the dashboard.`,
-        });
-        router.push('/account#orders');
+        setConfirmedTotal(grandTotal);
+        setIsSuccessModalOpen(true);
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
@@ -354,6 +354,15 @@ function CheckoutContent() {
            </Card>
         </div>
       </main>
+
+      <OrderSuccessModal 
+        isOpen={isSuccessModalOpen}
+        onClose={() => {
+          setIsSuccessModalOpen(false);
+          router.push('/account#orders');
+        }}
+        orderTotal={confirmedTotal}
+      />
     </div>
   );
 }
