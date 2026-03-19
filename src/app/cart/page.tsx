@@ -8,23 +8,16 @@ import {
   ShoppingBag, 
   ArrowRight, 
   Truck,
-  Star,
-  Loader2
+  Star
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { useFirestore, useUser } from "@/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { useState } from "react";
+import { useUser } from "@/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { errorEmitter } from "@/firebase/error-emitter";
-import { FirestorePermissionError } from "@/firebase/errors";
-import { OrderSuccessModal } from "@/components/storefront/OrderSuccessModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -35,12 +28,7 @@ const formatCurrency = (amount: number) => {
 };
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, subtotal, totalItems, clearCart } = useCart();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [lastOrderTotal, setLastOrderTotal] = useState(0);
-  
-  const db = useFirestore();
+  const { items, removeItem, subtotal, totalItems, clearCart } = useCart();
   const { user } = useUser();
   const { toast } = useToast();
   const router = useRouter();
@@ -51,8 +39,8 @@ export default function CartPage() {
   const shippingFee = progressToFreeShipping === 100 ? 0 : 99;
   const grandTotal = subtotal + shippingFee;
 
-  const handleCheckout = async () => {
-    if (!db || items.length === 0) return;
+  const handleGoToCheckout = () => {
+    if (items.length === 0) return;
     
     if (!user) {
       toast({
@@ -63,36 +51,7 @@ export default function CartPage() {
       return;
     }
 
-    setIsCheckingOut(true);
-    const orderData = {
-      customerName: user.displayName || "Anonymous User",
-      customerEmail: user.email || "guest@example.com",
-      items: items.map(item => ({
-        productId: item.product.id,
-        name: item.product.name,
-        quantity: item.quantity,
-        price: item.product.price
-      })),
-      totalAmount: grandTotal,
-      status: 'Pending',
-      createdAt: serverTimestamp(),
-    };
-
-    addDoc(collection(db, 'orders'), orderData)
-      .then(() => {
-        setLastOrderTotal(grandTotal);
-        setShowSuccessModal(true);
-        clearCart();
-      })
-      .catch(async (error) => {
-        const permissionError = new FirestorePermissionError({
-          path: 'orders',
-          operation: 'create',
-          requestResourceData: orderData,
-        });
-        errorEmitter.emit('permission-error', permissionError);
-      })
-      .finally(() => setIsCheckingOut(false));
+    router.push('/checkout');
   };
 
   return (
@@ -233,13 +192,11 @@ export default function CartPage() {
 
                 <div className="space-y-3 pt-4">
                   <Button 
-                    onClick={handleCheckout}
-                    disabled={isCheckingOut}
+                    onClick={handleGoToCheckout}
                     className="w-full h-16 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all group"
                   >
-                    {isCheckingOut ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
-                    {isCheckingOut ? "Processing..." : user ? "Place Your Order" : "Sign in to Order"}
-                    {!isCheckingOut && <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />}
+                    Proceed to Checkout
+                    <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </div>
                </div>
@@ -251,12 +208,6 @@ export default function CartPage() {
       <footer className="mt-auto bg-white border-t border-slate-100 py-10 text-center">
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">© 2024 Z-MART.in • All Rights Reserved</p>
       </footer>
-
-      <OrderSuccessModal 
-        isOpen={showSuccessModal} 
-        onClose={() => setShowSuccessModal(false)} 
-        orderTotal={lastOrderTotal}
-      />
     </div>
   );
 }

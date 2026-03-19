@@ -4,13 +4,15 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2 } from "lucide-react";
+import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/mock-data";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/firebase";
 
 interface ProductDetailsModalProps {
   product: Product | null;
@@ -29,6 +31,8 @@ const formatCurrency = (amount: number) => {
 export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetailsModalProps) {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const router = useRouter();
+  const { user } = useUser();
 
   if (!product) return null;
 
@@ -60,6 +64,19 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
       ),
     });
     onClose();
+  };
+
+  const handleBuyNow = () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to use Buy Now.",
+      });
+      router.push('/login');
+      return;
+    }
+    onClose();
+    router.push(`/checkout?productId=${product.id}`);
   };
 
   const discountPercentage = product.originalPrice 
@@ -161,9 +178,10 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
                   <ShoppingCart className="h-4 w-4 mr-2" /> Add to Cart
                 </Button>
                 <Button 
+                  onClick={handleBuyNow}
                   className="w-full h-12 bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-sm rounded-full font-bold transition-all active:scale-95"
                 >
-                  Buy Now
+                  <Zap className="h-4 w-4 mr-2" /> Buy Now
                 </Button>
               </div>
 

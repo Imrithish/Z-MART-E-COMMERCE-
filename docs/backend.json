@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Product": {
@@ -30,9 +31,35 @@
         "customerEmail": { "type": "string", "format": "email" },
         "totalAmount": { "type": "number" },
         "status": { "type": "string", "enum": ["Pending", "Processing", "Shipped", "Delivered"] },
+        "shippingAddress": {
+          "type": "object",
+          "properties": {
+            "houseNo": { "type": "string" },
+            "street": { "type": "string" },
+            "city": { "type": "string" },
+            "state": { "type": "string" },
+            "pincode": { "type": "string" },
+            "landmark": { "type": "string" }
+          },
+          "required": ["houseNo", "street", "city", "state", "pincode"]
+        },
+        "phoneNumber": { "type": "string" },
+        "paymentMethod": { "type": "string", "enum": ["COD", "Online"] },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" }
+            }
+          }
+        },
         "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["customerName", "totalAmount", "status"]
+      "required": ["customerName", "customerEmail", "totalAmount", "status", "phoneNumber", "paymentMethod"]
     }
   },
   "auth": {
