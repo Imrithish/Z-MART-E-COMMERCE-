@@ -1,12 +1,39 @@
+"use client"
+
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MOCK_ORDERS } from "@/lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingCart, TrendingUp, Users, DollarSign, ArrowUpRight, Box } from "lucide-react";
-import { format } from "date-fns";
+import { ShoppingCart, TrendingUp, Users, DollarSign, ArrowUpRight, Box, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/firebase";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AdminDashboard() {
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/admin/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="font-black text-slate-400 uppercase tracking-widest text-xs">Verifying Access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
   const stats = [
     { label: 'Total Revenue', value: '$12,845.00', icon: DollarSign, change: '+12.5%', color: 'text-green-600', bg: 'bg-green-50' },
     { label: 'Active Orders', value: '45', icon: ShoppingCart, change: '+5', color: 'text-blue-600', bg: 'bg-blue-50' },

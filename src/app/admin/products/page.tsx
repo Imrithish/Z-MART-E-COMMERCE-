@@ -8,23 +8,32 @@ import { Plus, Edit2, Trash2, Search, Filter, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import Image from "next/image";
-import { useCollection, useFirestore } from "@/firebase";
+import { useCollection, useFirestore, useUser } from "@/firebase";
 import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+import { useRouter } from "next/navigation";
 
 export default function AdminProducts() {
   const db = useFirestore();
   const { toast } = useToast();
+  const { user, loading: authLoading } = useUser();
+  const router = useRouter();
   
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/admin/login');
+    }
+  }, [user, authLoading, router]);
+
   const productsQuery = useMemo(() => {
     if (!db) return null;
     return query(collection(db, 'products'), orderBy('createdAt', 'desc'));
   }, [db]);
 
-  const { data: products, loading } = useCollection(productsQuery);
+  const { data: products, loading: dataLoading } = useCollection(productsQuery);
 
   const handleDelete = (productId: string) => {
     if (!db) return;
@@ -42,81 +51,87 @@ export default function AdminProducts() {
       });
   };
 
+  if (authLoading) {
+    return <div className="h-screen w-full flex items-center justify-center"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>;
+  }
+
+  if (!user) return null;
+
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-slate-50">
       <AdminSidebar />
       <main className="flex-1 p-8 lg:p-12 space-y-10">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight mb-2">Products</h1>
-            <p className="text-muted-foreground text-lg">Manage your catalog, stock, and descriptions.</p>
+            <h1 className="text-4xl font-black tracking-tight mb-2 text-slate-900">Products</h1>
+            <p className="text-slate-500 text-lg font-medium">Manage your catalog, stock, and descriptions.</p>
           </div>
-          <Button asChild className="h-11 px-6 rounded-xl shadow-lg shadow-primary/20">
+          <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs transition-all active:scale-95">
             <Link href="/admin/products/new">
               <Plus className="h-5 w-5 mr-2" /> Add New Product
             </Link>
           </Button>
         </header>
 
-        <Card className="border-none shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between pb-6 gap-4">
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search products..." className="pl-9 bg-muted/30 border-none" />
+        <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
+          <CardHeader className="flex flex-col md:flex-row items-center justify-between p-8 gap-4 border-b border-slate-50">
+            <div className="relative flex-1 max-w-sm w-full">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <Input placeholder="Search products..." className="pl-11 bg-slate-50 border-none rounded-xl h-12 font-bold" />
             </div>
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" /> Filter
+            <Button variant="outline" className="gap-2 h-12 rounded-xl px-6 font-black uppercase tracking-widest text-[10px] border-slate-200">
+              <Filter className="h-4 w-4" /> Filter Category
             </Button>
           </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-20 gap-4">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                <p className="text-muted-foreground font-medium">Synchronizing with catalog...</p>
+          <CardContent className="p-0">
+            {dataLoading ? (
+              <div className="flex flex-col items-center justify-center py-32 gap-4">
+                <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Synchronizing Catalog...</p>
               </div>
             ) : products && products.length > 0 ? (
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Image</TableHead>
-                    <TableHead>Product</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Stock</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                <TableHeader className="bg-slate-50/50">
+                  <TableRow className="hover:bg-transparent border-none">
+                    <TableHead className="w-[100px] px-8 h-14 font-black text-slate-400 uppercase text-[10px] tracking-widest">Image</TableHead>
+                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Product</TableHead>
+                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Category</TableHead>
+                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right">Price</TableHead>
+                    <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Stock</TableHead>
+                    <TableHead className="text-right px-8 font-black text-slate-400 uppercase text-[10px] tracking-widest">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {products.map((product: any) => (
-                    <TableRow key={product.id}>
-                      <TableCell>
-                        <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-muted border">
+                    <TableRow key={product.id} className="group border-slate-50 hover:bg-slate-50/80 transition-colors">
+                      <TableCell className="px-8">
+                        <div className="relative h-16 w-16 rounded-2xl overflow-hidden bg-white border border-slate-100 shadow-sm group-hover:scale-105 transition-transform">
                           <Image src={product.imageUrl} alt={product.name} fill className="object-cover" />
                         </div>
                       </TableCell>
-                      <TableCell>
-                        <div className="font-bold">{product.name}</div>
-                        <div className="text-xs text-muted-foreground line-clamp-1">{product.description}</div>
+                      <TableCell className="py-6">
+                        <div className="font-black text-slate-900 text-lg leading-tight mb-1">{product.name}</div>
+                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest line-clamp-1">{product.description}</div>
                       </TableCell>
                       <TableCell>
-                        <span className="bg-muted px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wider">{product.category}</span>
+                        <Badge className="bg-slate-100 text-slate-600 hover:bg-slate-200 border-none rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-widest">{product.category}</Badge>
                       </TableCell>
-                      <TableCell className="font-bold">${product.price.toFixed(2)}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className={`h-2 w-2 rounded-full ${product.stock > 10 ? 'bg-green-500' : 'bg-orange-500'}`} />
-                          {product.stock} units
+                      <TableCell className="text-right font-black text-slate-900 text-lg">${product.price.toFixed(2)}</TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex flex-col items-center">
+                          <span className="font-black text-slate-900">{product.stock}</span>
+                          <span className={`text-[8px] font-black uppercase tracking-[0.2em] ${product.stock > 10 ? 'text-green-500' : 'text-orange-500'}`}>Units Available</span>
                         </div>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right px-8">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-primary/5 hover:text-primary">
+                          <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all">
                             <Edit2 className="h-4 w-4" />
                           </Button>
                           <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="h-8 w-8 hover:bg-destructive/5 hover:text-destructive"
+                            className="h-10 w-10 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all"
                             onClick={() => handleDelete(product.id)}
                           >
                             <Trash2 className="h-4 w-4" />
@@ -128,13 +143,13 @@ export default function AdminProducts() {
                 </TableBody>
               </Table>
             ) : (
-              <div className="text-center py-20 bg-muted/20 rounded-2xl">
-                <div className="bg-muted h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                   <Plus className="h-6 w-6 text-muted-foreground" />
+              <div className="text-center py-32 bg-slate-50/50">
+                <div className="bg-white h-20 w-20 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl">
+                   <Plus className="h-10 w-10 text-slate-200" />
                 </div>
-                <h3 className="font-bold text-lg">No Products Found</h3>
-                <p className="text-muted-foreground mb-6">Start building your catalog by adding your first product.</p>
-                <Button asChild variant="outline">
+                <h3 className="font-black text-2xl text-slate-900 uppercase tracking-tight">No Products Found</h3>
+                <p className="text-slate-500 mb-10 font-medium">Start building your catalog by adding your first product.</p>
+                <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest">
                   <Link href="/admin/products/new">Create First Listing</Link>
                 </Button>
               </div>

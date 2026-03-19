@@ -2,10 +2,12 @@
 
 import { LayoutDashboard, Box, ShoppingCart, Settings, LogOut, ChevronLeft, ChevronRight, Store } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useAuth } from "@/firebase";
+import { signOut } from "firebase/auth";
 
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
@@ -16,62 +18,73 @@ const NAV_ITEMS = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const auth = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const handleLogout = async () => {
+    if (!auth) return;
+    await signOut(auth);
+    router.push('/admin/login');
+  };
 
   return (
     <aside className={cn(
-      "h-screen sticky top-0 bg-primary text-primary-foreground border-r transition-all duration-300 flex flex-col",
-      isCollapsed ? "w-20" : "w-64"
+      "h-screen sticky top-0 bg-slate-900 text-white transition-all duration-300 flex flex-col z-40",
+      isCollapsed ? "w-20" : "w-72"
     )}>
-      <div className="p-6 flex items-center justify-between">
-        {!isCollapsed && <span className="text-2xl font-bold tracking-tighter">Z-MART</span>}
+      <div className="p-8 flex items-center justify-between">
+        {!isCollapsed && <span className="text-3xl font-black tracking-tighter text-primary">Z-MART</span>}
         <Button 
           variant="ghost" 
           size="icon" 
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hover:bg-white/10"
+          className="hover:bg-white/10 text-white rounded-xl"
         >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
         </Button>
       </div>
 
-      <nav className="flex-1 px-3 space-y-1 mt-6">
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
-              pathname.startsWith(item.href) 
-                ? "bg-white text-primary shadow-lg" 
-                : "hover:bg-white/10"
-            )}
-          >
-            <item.icon className="h-5 w-5 shrink-0" />
-            {!isCollapsed && <span className="font-medium">{item.label}</span>}
-          </Link>
-        ))}
+      <nav className="flex-1 px-4 space-y-2 mt-8">
+        {NAV_ITEMS.map((item) => {
+          const isActive = pathname.startsWith(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-4 px-5 py-4 rounded-2xl transition-all group",
+                isActive 
+                  ? "bg-primary text-white shadow-2xl shadow-primary/20" 
+                  : "hover:bg-white/5 text-slate-400 hover:text-white"
+              )}
+            >
+              <item.icon className={cn("h-6 w-6 shrink-0 transition-transform group-hover:scale-110", isActive && "scale-110")} />
+              {!isCollapsed && <span className="font-black uppercase tracking-widest text-[11px]">{item.label}</span>}
+            </Link>
+          );
+        })}
       </nav>
 
-      <div className="p-4 space-y-2">
+      <div className="p-6 space-y-3">
         <Link 
           href="/"
           className={cn(
-            "flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-all text-white/70",
+            "flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-white/5 transition-all text-slate-400 hover:text-white group",
           )}
         >
-          <Store className="h-5 w-5 shrink-0" />
-          {!isCollapsed && <span className="text-sm">Storefront</span>}
+          <Store className="h-6 w-6 shrink-0 group-hover:scale-110" />
+          {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest">Storefront</span>}
         </Link>
-        <Link 
-          href="/admin/login"
+        <button 
+          onClick={handleLogout}
           className={cn(
-            "flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-all text-red-300",
+            "w-full flex items-center gap-4 px-5 py-4 rounded-2xl hover:bg-red-500/10 transition-all text-red-400 group",
           )}
         >
-          <LogOut className="h-5 w-5 shrink-0" />
-          {!isCollapsed && <span className="text-sm">Logout</span>}
-        </Link>
+          <LogOut className="h-6 w-6 shrink-0 group-hover:scale-110" />
+          {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest text-left">Logout</span>}
+        </button>
       </div>
     </aside>
   );
