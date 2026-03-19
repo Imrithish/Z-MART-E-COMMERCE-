@@ -90,26 +90,22 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1 pb-24">
-        {/* Amazon-Style Hero Banner */}
-        <section className="relative w-full h-[400px] md:h-[600px] overflow-hidden bg-slate-900">
-          <Image 
-            src="https://picsum.photos/seed/zmart-hero-2/1920/1080"
-            alt="Hero Banner"
-            fill
-            className="object-cover opacity-80"
-            priority
-            data-ai-hint="luxury office"
-          />
+        {/* Amazon-Style Hero Section (No BG Image) */}
+        <section className="relative w-full h-[300px] md:h-[400px] overflow-hidden bg-slate-900 flex items-center justify-center text-center p-8">
+          <div className="space-y-4 max-w-2xl relative z-10">
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase">Premium Marketplace</h1>
+            <p className="text-slate-400 font-medium text-lg">Curated technology and lifestyle products for the modern world.</p>
+          </div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-100/100" />
         </section>
 
-        {/* Overlapping Category Grid (Amazon Style) */}
-        <section className="max-w-[1450px] mx-auto px-4 md:px-8 relative -mt-[150px] md:-mt-[350px] z-10">
+        {/* Overlapping Category Grid */}
+        <section className="max-w-[1450px] mx-auto px-4 md:px-8 relative -mt-[100px] md:-mt-[150px] z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
-              { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", desc: "Latest gadgets & high-end computing" },
-              { title: "Home & Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", desc: "Premium living essentials" },
-              { title: "Luxury Fashion", hint: "model pose", href: "/products?category=Fashion", desc: "Trendsetting global collections" },
+              { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", desc: "Latest gadgets & computing" },
+              { title: "Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", desc: "Premium living essentials" },
+              { title: "Fashion", hint: "model pose", href: "/products?category=Fashion", desc: "Trendsetting collections" },
               { title: "New Arrivals", hint: "unboxing package", href: "/products", desc: "Freshly dropped inventory" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
@@ -125,7 +121,7 @@ export default function Home() {
                     />
                   </div>
                   <span className="text-[10px] font-black text-primary group-hover:underline uppercase tracking-widest mt-auto flex items-center gap-2">
-                    Shop Now <ArrowRight className="h-3 w-3" />
+                    Explore <ArrowRight className="h-3 w-3" />
                   </span>
                 </Card>
               </Link>
@@ -139,7 +135,7 @@ export default function Home() {
             <Card className="bg-white rounded-none border-none shadow-sm p-8">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Today's Flash Deals</h2>
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Flash Deals</h2>
                   <Link href="/products" className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest">
                     See all offers
                   </Link>
@@ -182,13 +178,13 @@ export default function Home() {
           </section>
         )}
 
-        {/* Freshly Dropped Grid */}
+        {/* Just Dropped Grid */}
         <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-12">
           <Card className="bg-white rounded-none border-none shadow-sm p-8">
             <div className="flex items-center justify-between mb-8">
               <div className="space-y-1">
-                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Freshly Dropped</h2>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Newest additions to our inventory</p>
+                <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Just Dropped</h2>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">The latest additions to our store</p>
               </div>
               <Link href="/products" className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest">
                 Browse Full Catalog
