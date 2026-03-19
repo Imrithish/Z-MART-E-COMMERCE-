@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "@/firebase";
 import { signOut } from "firebase/auth";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const NAV_ITEMS = [
   { label: 'Overview', icon: LayoutDashboard, href: '/admin/dashboard' },
@@ -93,6 +93,9 @@ export function AdminSidebar() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 border-none bg-slate-900 text-white w-80">
+            <SheetHeader className="sr-only">
+              <SheetTitle>Admin Navigation Menu</SheetTitle>
+            </SheetHeader>
             <SidebarContent />
           </SheetContent>
         </Sheet>
