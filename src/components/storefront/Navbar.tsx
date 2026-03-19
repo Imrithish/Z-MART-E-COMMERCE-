@@ -122,18 +122,19 @@ export function Navbar() {
 
         {/* Account & Lists */}
         <div className="group relative">
-          <Link href={user ? "#" : "/login"} className="flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
+          <div className="cursor-pointer flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
             <span className="text-[11px] font-medium">Hello, {user?.displayName?.split(' ')[0] || 'sign in'}</span>
             <div className="flex items-center gap-1">
               <span className="text-sm font-bold">Account & Lists</span>
               <ChevronDown className="h-3 w-3" />
             </div>
-          </Link>
+          </div>
           {user ? (
             <div className="absolute top-full right-0 w-56 bg-white text-slate-900 shadow-2xl rounded-sm p-4 hidden group-hover:block border border-slate-200 z-50">
               <div className="text-xs font-bold mb-4 uppercase tracking-widest text-slate-400">Your Account</div>
               <ul className="text-[13px] space-y-3 mb-4">
-                <li><Link href="/cart" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Orders</Link></li>
+                <li><Link href="/account" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Profile</Link></li>
+                <li><Link href="/account#orders" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Orders</Link></li>
                 <li><Link href="/cart" className="hover:text-[#c45500] hover:underline flex items-center gap-2">Your Wish List</Link></li>
               </ul>
               
@@ -174,10 +175,10 @@ export function Navbar() {
         </div>
 
         {/* Returns & Orders */}
-        <button className="hidden md:flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
+        <Link href={user ? "/account#orders" : "/login"} className="hidden md:flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
           <span className="text-[11px] font-medium">Returns</span>
           <span className="text-sm font-bold">& Orders</span>
-        </button>
+        </Link>
 
         {/* Cart */}
         <Link href="/cart" className="flex items-end px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all relative">
