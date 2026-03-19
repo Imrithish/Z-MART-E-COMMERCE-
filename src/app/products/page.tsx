@@ -2,7 +2,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { MOCK_PRODUCTS } from "@/lib/mock-data";
+import { MOCK_PRODUCTS, Product } from "@/lib/mock-data";
 import { Star, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,8 @@ import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
-import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { useFirestore } from "@/firebase";
+import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -27,16 +27,9 @@ function ProductList() {
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get('category');
   const searchQuery = searchParams.get('q');
-  const db = useFirestore();
-
-  const handleAddToCart = (product: any) => {
-    addItem(product);
-    toast({
-      title: "Added to Cart",
-      description: `${product.name} has been added to your shopping cart.`,
-    });
-  };
-
+  
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [displayProducts, setDisplayProducts] = useState<any[]>(MOCK_PRODUCTS);
 
   useEffect(() => {
@@ -58,60 +51,86 @@ function ProductList() {
     setDisplayProducts(filtered);
   }, [categoryFilter, searchQuery]);
 
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, product: any) => {
+    e.stopPropagation();
+    addItem(product);
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} has been added to your shopping cart.`,
+    });
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-      {displayProducts.length > 0 ? (
-        displayProducts.map((product) => (
-          <Card key={product.id} className="group overflow-hidden border-none shadow-sm bg-white rounded-sm flex flex-col">
-            <div className="relative aspect-square overflow-hidden bg-gray-50 p-4">
-              <Image 
-                src={product.imageUrl}
-                alt={product.name}
-                fill
-                className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
-              />
-            </div>
-            <CardHeader className="pt-4 pb-2 px-4 space-y-1">
-              <div className="text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
-              <CardTitle className="text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[3rem]">
-                {product.name}
-              </CardTitle>
-              <div className="flex items-center gap-1">
-                 <div className="flex">
-                  {[1,2,3,4,5].map(i => (
-                    <Star key={i} className={`h-3 w-3 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
-                  ))}
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {displayProducts.length > 0 ? (
+          displayProducts.map((product) => (
+            <Card 
+              key={product.id} 
+              className="group overflow-hidden border-none shadow-sm bg-white rounded-sm flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => handleProductClick(product)}
+            >
+              <div className="relative aspect-square overflow-hidden bg-gray-50 p-4">
+                <Image 
+                  src={product.imageUrl}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <CardHeader className="pt-4 pb-2 px-4 space-y-1">
+                <div className="text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
+                <CardTitle className="text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[3rem]">
+                  {product.name}
+                </Title>
+                <div className="flex items-center gap-1">
+                   <div className="flex">
+                    {[1,2,3,4,5].map(i => (
+                      <Star key={i} className={`h-3 w-3 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
+                    ))}
+                  </div>
+                  <span className="text-[11px] text-[#007185] ml-1">{product.reviews.toLocaleString()}</span>
                 </div>
-                <span className="text-[11px] text-[#007185] ml-1">{product.reviews.toLocaleString()}</span>
-              </div>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <div className="flex items-baseline gap-1">
-                 <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
-                 {product.originalPrice && (
-                   <span className="text-xs text-gray-500 line-through">{formatCurrency(product.originalPrice)}</span>
-                 )}
-              </div>
-              <p className="text-[11px] text-gray-500 mt-1">Get it by Tomorrow, 10 AM</p>
-              <p className="text-[11px] text-gray-500">FREE Delivery by Z-Mart</p>
-            </CardContent>
-            <CardFooter className="mt-auto px-4 pb-4 pt-0">
-              <Button 
-                onClick={() => handleAddToCart(product)}
-                className="amazon-btn-primary w-full h-8 text-xs rounded-full"
-              >
-                Add to Cart
-              </Button>
-            </CardFooter>
-          </Card>
-        ))
-      ) : (
-        <div className="col-span-full py-20 text-center bg-white rounded-sm shadow-sm">
-          <p className="text-lg font-medium text-gray-600">No results found for your search.</p>
-          <p className="text-sm text-gray-400 mt-1">Try checking your spelling or use more general terms.</p>
-        </div>
-      )}
-    </div>
+              </CardHeader>
+              <CardContent className="px-4 pb-4">
+                <div className="flex items-baseline gap-1">
+                   <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
+                   {product.originalPrice && (
+                     <span className="text-xs text-gray-500 line-through">{formatCurrency(product.originalPrice)}</span>
+                   )}
+                </div>
+                <p className="text-[11px] text-gray-500 mt-1">Get it by Tomorrow, 10 AM</p>
+                <p className="text-[11px] text-gray-500">FREE Delivery by Z-Mart</p>
+              </CardContent>
+              <CardFooter className="mt-auto px-4 pb-4 pt-0">
+                <Button 
+                  onClick={(e) => handleAddToCart(e, product)}
+                  className="amazon-btn-primary w-full h-8 text-xs rounded-full"
+                >
+                  Add to Cart
+                </Button>
+              </CardFooter>
+            </Card>
+          ))
+        ) : (
+          <div className="col-span-full py-20 text-center bg-white rounded-sm shadow-sm">
+            <p className="text-lg font-medium text-gray-600">No results found for your search.</p>
+            <p className="text-sm text-gray-400 mt-1">Try checking your spelling or use more general terms.</p>
+          </div>
+        )}
+      </div>
+
+      <ProductDetailsModal 
+        product={selectedProduct}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
   );
 }
 

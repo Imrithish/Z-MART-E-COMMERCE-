@@ -1,12 +1,14 @@
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
-import { MOCK_PRODUCTS } from "@/lib/mock-data";
+import { MOCK_PRODUCTS, Product } from "@/lib/mock-data";
 import { Star, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -19,9 +21,18 @@ const formatCurrency = (amount: number) => {
 export default function Home() {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const deals = MOCK_PRODUCTS.filter(p => p.isDeal);
 
-  const handleAddToCart = (product: any) => {
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent, product: any) => {
+    e.stopPropagation();
     addItem(product);
     toast({
       title: "Added to Cart",
@@ -96,24 +107,25 @@ export default function Home() {
                   )}
 
                   {gridItem.type === 'single' && gridItem.item && (
-                    <div className="group">
-                      <Link href={`/products`} className="block">
-                        <div className="relative aspect-[4/3] mb-3 bg-gray-50 overflow-hidden">
-                          <Image 
-                            src={gridItem.item.imageUrl} 
-                            alt={gridItem.item.name} 
-                            fill 
-                            className="object-contain p-4 transition-transform group-hover:scale-105" 
-                          />
-                        </div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="bg-[#cc0c39] text-white text-xs font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
-                          <span className="text-[#cc0c39] text-xs font-bold">Deal</span>
-                        </div>
-                        <p className="text-sm font-medium line-clamp-2 h-10">{gridItem.item.name}</p>
-                      </Link>
+                    <div 
+                      className="group cursor-pointer" 
+                      onClick={() => handleProductClick(gridItem.item as Product)}
+                    >
+                      <div className="relative aspect-[4/3] mb-3 bg-gray-50 overflow-hidden">
+                        <Image 
+                          src={gridItem.item.imageUrl} 
+                          alt={gridItem.item.name} 
+                          fill 
+                          className="object-contain p-4 transition-transform group-hover:scale-105" 
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="bg-[#cc0c39] text-white text-xs font-bold px-1.5 py-1 rounded-sm">Up to 40% off</span>
+                        <span className="text-[#cc0c39] text-xs font-bold">Deal</span>
+                      </div>
+                      <p className="text-sm font-medium line-clamp-2 h-10">{gridItem.item.name}</p>
                       <button 
-                        onClick={() => handleAddToCart(gridItem.item)}
+                        onClick={(e) => handleAddToCart(e, gridItem.item)}
                         className="amazon-btn-primary w-full text-xs mt-3 h-8"
                       >
                         Add to Cart
@@ -148,10 +160,14 @@ export default function Home() {
             </div>
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
               {deals.map((deal) => (
-                <div key={deal.id} className="min-w-[200px] flex flex-col gap-2 group">
-                  <Link href="/products" className="relative aspect-square bg-gray-100 overflow-hidden rounded-sm cursor-pointer">
+                <div 
+                  key={deal.id} 
+                  className="min-w-[200px] flex flex-col gap-2 group cursor-pointer"
+                  onClick={() => handleProductClick(deal)}
+                >
+                  <div className="relative aspect-square bg-gray-100 overflow-hidden rounded-sm cursor-pointer">
                     <Image src={deal.imageUrl} alt={deal.name} fill className="object-contain p-4 group-hover:scale-105 transition-transform" />
-                  </Link>
+                  </div>
                   <div className="flex items-center gap-2">
                     <span className="bg-[#cc0c39] text-white text-[11px] font-bold px-1.5 py-0.5 rounded-sm">
                       {Math.round((1 - deal.price / (deal.originalPrice || deal.price)) * 100)}% off
@@ -166,7 +182,7 @@ export default function Home() {
                   </div>
                   <p className="text-xs text-gray-700 line-clamp-1 h-4">{deal.name}</p>
                   <button 
-                    onClick={() => handleAddToCart(deal)}
+                    onClick={(e) => handleAddToCart(e, deal)}
                     className="amazon-btn-primary text-xs mt-1 h-7 rounded-md"
                   >
                     Add to Cart
@@ -176,6 +192,12 @@ export default function Home() {
             </div>
           </section>
         </div>
+
+        <ProductDetailsModal 
+          product={selectedProduct}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </main>
 
       {/* Back to top button */}
