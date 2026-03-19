@@ -1,10 +1,32 @@
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe } from "lucide-react";
+import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+
+const CATEGORIES = [
+  {
+    title: "Trending",
+    items: ["Best Sellers", "New Releases", "Movers and Shakers"]
+  },
+  {
+    title: "Shop by Category",
+    items: ["Electronics", "Fashion", "Home & Kitchen", "Beauty & Personal Care", "Books", "Sports & Outdoors"]
+  },
+  {
+    title: "Programs & Features",
+    items: ["Today's Deals", "Gift Cards", "Z-Mart Live", "International Shopping"]
+  },
+  {
+    title: "Help & Settings",
+    items: ["Your Account", "Customer Service", "Sign Out"]
+  }
+];
 
 export function Navbar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -81,15 +103,51 @@ export function Navbar() {
 
       {/* Secondary Navigation (Subnav) */}
       <div className="amazon-subnav-bg text-white h-[40px] flex items-center px-4 gap-4 overflow-x-auto no-scrollbar whitespace-nowrap text-sm font-medium">
-        <button className="flex items-center gap-1 px-2 py-1 border border-transparent hover:border-white rounded-sm">
-          <Menu className="h-5 w-5" /> All
-        </button>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Today's Deals</Link>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Customer Service</Link>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Electronics</Link>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Home & Kitchen</Link>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Gift Cards</Link>
-        <Link href="#" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Sell</Link>
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className="flex items-center gap-1 px-2 py-1 border border-transparent hover:border-white rounded-sm shrink-0">
+              <Menu className="h-5 w-5" /> All
+            </button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-[365px] border-none bg-white">
+            <SheetHeader className="amazon-subnav-bg text-white p-4 flex flex-row items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
+                <User className="h-5 w-5 text-[#232f3e]" />
+              </div>
+              <SheetTitle className="text-white text-lg font-bold">Hello, sign in</SheetTitle>
+            </SheetHeader>
+            <ScrollArea className="h-[calc(100vh-64px)] py-4">
+              {CATEGORIES.map((cat, idx) => (
+                <div key={idx} className="mb-4">
+                  <h3 className="px-8 py-2 text-base font-bold text-gray-900">{cat.title}</h3>
+                  <ul className="space-y-1">
+                    {cat.items.map((item, i) => (
+                      <li key={i}>
+                        <Link 
+                          href={`/products?category=${encodeURIComponent(item)}`}
+                          className="flex items-center justify-between px-8 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        >
+                          {item}
+                          {(cat.title === "Shop by Category" || cat.title === "Trending") && (
+                            <ChevronRight className="h-4 w-4 text-gray-400" />
+                          )}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  {idx < CATEGORIES.length - 1 && <Separator className="my-4 mx-0" />}
+                </div>
+              ))}
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
+        
+        <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Today's Deals</Link>
+        <Link href="/products?category=Electronics" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Electronics</Link>
+        <Link href="/products?category=Fashion" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Fashion</Link>
+        <Link href="/products?category=Home%20%26%20Kitchen" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Home & Kitchen</Link>
+        <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Customer Service</Link>
+        <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Sell</Link>
         <div className="flex-1" />
         <span className="hidden lg:block text-sm font-bold px-2 py-1">Shop great deals now</span>
       </div>

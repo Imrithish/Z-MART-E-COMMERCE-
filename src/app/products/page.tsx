@@ -3,11 +3,15 @@
 import { Navbar } from "@/components/storefront/Navbar";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
-import { Star, Filter, SlidersHorizontal } from "lucide-react";
+import { Star, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useCollection, useFirestore } from "@/firebase";
+import { collection, query, where, orderBy } from "firebase/firestore";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -17,9 +21,12 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export default function StorefrontProducts() {
+function ProductList() {
   const { addItem } = useCart();
   const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const categoryFilter = searchParams.get('category');
+  const db = useFirestore();
 
   const handleAddToCart = (product: any) => {
     addItem(product);
@@ -29,6 +36,70 @@ export default function StorefrontProducts() {
     });
   };
 
+  // Use Firestore if DB is available, otherwise fallback to mock data
+  const [displayProducts, setDisplayProducts] = useState<any[]>(MOCK_PRODUCTS);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (categoryFilter) {
+      const filtered = MOCK_PRODUCTS.filter(p => p.category.toLowerCase() === categoryFilter.toLowerCase());
+      setDisplayProducts(filtered.length > 0 ? filtered : MOCK_PRODUCTS);
+    } else {
+      setDisplayProducts(MOCK_PRODUCTS);
+    }
+  }, [categoryFilter]);
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {displayProducts.map((product) => (
+        <Card key={product.id} className="group overflow-hidden border-none shadow-sm bg-white rounded-sm flex flex-col">
+          <div className="relative aspect-square overflow-hidden bg-gray-50 p-4">
+            <Image 
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
+          <CardHeader className="pt-4 pb-2 px-4 space-y-1">
+            <div className="text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
+            <CardTitle className="text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[3rem]">
+              {product.name}
+            </CardTitle>
+            <div className="flex items-center gap-1">
+               <div className="flex">
+                {[1,2,3,4,5].map(i => (
+                  <Star key={i} className={`h-3 w-3 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
+                ))}
+              </div>
+              <span className="text-[11px] text-[#007185] ml-1">{product.reviews.toLocaleString()}</span>
+            </div>
+          </CardHeader>
+          <CardContent className="px-4 pb-4">
+            <div className="flex items-baseline gap-1">
+               <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
+               {product.originalPrice && (
+                 <span className="text-xs text-gray-500 line-through">{formatCurrency(product.originalPrice)}</span>
+               )}
+            </div>
+            <p className="text-[11px] text-gray-500 mt-1">Get it by Tomorrow, 10 AM</p>
+            <p className="text-[11px] text-gray-500">FREE Delivery by Z-Mart</p>
+          </CardContent>
+          <CardFooter className="mt-auto px-4 pb-4 pt-0">
+            <Button 
+              onClick={() => handleAddToCart(product)}
+              className="amazon-btn-primary w-full h-8 text-xs rounded-full"
+            >
+              Add to Cart
+            </Button>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+export default function StorefrontProducts() {
   return (
     <div className="min-h-screen bg-[#eaeded]">
       <Navbar />
@@ -48,52 +119,9 @@ export default function StorefrontProducts() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {MOCK_PRODUCTS.map((product) => (
-            <Card key={product.id} className="group overflow-hidden border-none shadow-sm bg-white rounded-sm flex flex-col">
-              <div className="relative aspect-square overflow-hidden bg-gray-50 p-4">
-                <Image 
-                  src={product.imageUrl}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-6 transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-              <CardHeader className="pt-4 pb-2 px-4 space-y-1">
-                <div className="text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
-                <CardTitle className="text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[3rem]">
-                  {product.name}
-                </CardTitle>
-                <div className="flex items-center gap-1">
-                   <div className="flex">
-                    {[1,2,3,4,5].map(i => (
-                      <Star key={i} className={`h-3 w-3 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
-                    ))}
-                  </div>
-                  <span className="text-[11px] text-[#007185] ml-1">{product.reviews.toLocaleString()}</span>
-                </div>
-              </CardHeader>
-              <CardContent className="px-4 pb-4">
-                <div className="flex items-baseline gap-1">
-                   <span className="text-2xl font-bold">{formatCurrency(product.price)}</span>
-                   {product.originalPrice && (
-                     <span className="text-xs text-gray-500 line-through">{formatCurrency(product.originalPrice)}</span>
-                   )}
-                </div>
-                <p className="text-[11px] text-gray-500 mt-1">Get it by Tomorrow, 10 AM</p>
-                <p className="text-[11px] text-gray-500">FREE Delivery by Z-Mart</p>
-              </CardContent>
-              <CardFooter className="mt-auto px-4 pb-4 pt-0">
-                <Button 
-                  onClick={() => handleAddToCart(product)}
-                  className="amazon-btn-primary w-full h-8 text-xs rounded-full"
-                >
-                  Add to Cart
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>}>
+          <ProductList />
+        </Suspense>
       </main>
     </div>
   );
