@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react";
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon } from "lucide-react";
 import { aiProductDescriptionGenerator } from "@/ai/flows/ai-product-description-generator";
+import { aiProductImageGenerator } from "@/ai/flows/ai-product-image-generator";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useFirestore } from "@/firebase";
@@ -52,7 +52,8 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const router = useRouter();
   const db = useFirestore();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+  const [isGeneratingImg, setIsGeneratingImg] = useState(false);
   
   const [formData, setFormData] = useState(initialData || {
     name: '',
@@ -75,9 +76,8 @@ export function ProductForm({ initialData }: { initialData?: any }) {
       return;
     }
 
-    setIsGenerating(true);
+    setIsGeneratingDesc(true);
     try {
-      // Parse features and provide a fallback if empty to satisfy Zod schema min(1)
       const features = formData.features.split(',').map((f: string) => f.trim()).filter(Boolean);
       const keyFeatures = features.length > 0 ? features : ["High quality", "Durable design", "Premium performance"];
 
@@ -102,7 +102,43 @@ export function ProductForm({ initialData }: { initialData?: any }) {
         variant: "destructive",
       });
     } finally {
-      setIsGenerating(false);
+      setIsGeneratingDesc(false);
+    }
+  };
+
+  const generateImage = async () => {
+    if (!formData.name || !formData.category) {
+      toast({
+        title: "Details Required",
+        description: "Please enter a product name and category before generating an image.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingImg(true);
+    try {
+      const result = await aiProductImageGenerator({
+        productName: formData.name,
+        category: formData.category,
+      });
+
+      if (result && result.imageUrl) {
+        setFormData({ ...formData, imageUrl: result.imageUrl });
+        toast({
+          title: "AI Image Generated",
+          description: "Professional product photography has been created.",
+        });
+      }
+    } catch (error: any) {
+      console.error("AI Image Error:", error);
+      toast({
+        title: "AI Service Error",
+        description: "Could not generate image. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingImg(false);
     }
   };
 
@@ -112,8 +148,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
     setIsLoading(true);
     
-    const finalImageUrl = formData.imageUrl.trim() || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000000)}/600/600`;
-    
     const productData = {
       name: formData.name,
       description: formData.description || "No description provided.",
@@ -122,7 +156,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
       category: formData.category,
       stock: parseInt(formData.stock),
       features: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
-      imageUrl: finalImageUrl,
+      imageUrl: formData.imageUrl || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000000)}/600/600`,
       rating: 4.5,
       reviews: Math.floor(Math.random() * 500),
       isDeal: true,
@@ -229,16 +263,28 @@ export function ProductForm({ initialData }: { initialData?: any }) {
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="imageUrl" className={fieldLabelClass}>Image URL</Label>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="imageUrl" className={fieldLabelClass}>Image URL</Label>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={generateImage}
+                  disabled={isGeneratingImg}
+                  className="gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary font-black uppercase text-[10px] tracking-widest rounded-xl h-10 px-5 transition-all"
+                >
+                  {isGeneratingImg ? <Loader2 className="h-3 w-3 animate-spin" /> : <ImageIcon className="h-3 w-3" />}
+                  {isGeneratingImg ? "AI Painting..." : "AI Generate Image"}
+                </Button>
+              </div>
               <div className="relative">
-                <ImageIcon className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input 
                   id="imageUrl" 
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-                  placeholder="Paste an image URL" 
-                  className={`${inputClass} pl-12`}
+                  placeholder="Paste an image URL or generate one" 
+                  className={inputClass}
                 />
               </div>
             </div>
@@ -273,11 +319,11 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                   variant="outline" 
                   size="sm" 
                   onClick={generateDescription}
-                  disabled={isGenerating}
+                  disabled={isGeneratingDesc}
                   className="gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary font-black uppercase text-[10px] tracking-widest rounded-xl h-10 px-5 transition-all"
                 >
-                  {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                  {isGenerating ? "AI Working..." : "AI Generate"}
+                  {isGeneratingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                  {isGeneratingDesc ? "AI Working..." : "AI Generate Desc"}
                 </Button>
               </div>
               <Textarea 
