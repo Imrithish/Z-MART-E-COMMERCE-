@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
       await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: "Access Verified",
-        description: "Entering the Merchant Dashboard.",
+        description: "Entering the Admin Dashboard.",
       });
       router.push('/admin/dashboard');
     } catch (error: any) {
@@ -75,9 +75,9 @@ export default function AdminLoginPage() {
         <div className="text-center space-y-4">
           <Link href="/" className="inline-flex items-center gap-3 text-white font-black text-4xl tracking-tighter hover:scale-105 transition-transform">
             <ShieldCheck className="h-10 w-10 text-primary" />
-            Z-MART HUB
+            Z-MART ADMIN
           </Link>
-          <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px]">Merchant Enterprise Access</p>
+          <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px]">Administrative Access</p>
         </div>
 
         <Card className="shadow-2xl border-none rounded-[3rem] overflow-hidden bg-white p-2">
@@ -86,8 +86,8 @@ export default function AdminLoginPage() {
               <Store className="h-10 w-10" />
             </div>
             <div className="space-y-2">
-              <CardTitle className="text-3xl font-black tracking-tight text-slate-950 uppercase">Merchant Portal</CardTitle>
-              <CardDescription className="text-slate-500 font-medium">Secure authentication for administrative operations.</CardDescription>
+              <CardTitle className="text-3xl font-black tracking-tight text-slate-950 uppercase">Admin Portal</CardTitle>
+              <CardDescription className="text-slate-500 font-medium">Secure authentication for store management.</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="px-10 pb-12">
@@ -102,7 +102,7 @@ export default function AdminLoginPage() {
 
             <form onSubmit={handleLogin} className="space-y-8">
               <div className="space-y-3">
-                <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Email Identity</Label>
+                <Label htmlFor="email" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Email Address</Label>
                 <Input 
                   id="email" 
                   type="email" 
@@ -113,7 +113,7 @@ export default function AdminLoginPage() {
                 />
               </div>
               <div className="space-y-3">
-                <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Security Key</Label>
+                <Label htmlFor="password" className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Password</Label>
                 <Input 
                   id="password" 
                   type="password" 
@@ -125,7 +125,7 @@ export default function AdminLoginPage() {
               </div>
               <Button type="submit" className="w-full h-20 bg-slate-950 hover:bg-slate-900 text-white font-black uppercase tracking-widest rounded-3xl shadow-2xl shadow-primary/20 active:scale-95 transition-all text-xs group" disabled={isLoading}>
                 {isLoading ? <Loader2 className="h-6 w-6 animate-spin mr-3" /> : null}
-                {isLoading ? "Validating..." : "Initialize Dashboard"}
+                {isLoading ? "Signing in..." : "Sign In"}
                 {!isLoading && <ArrowRight className="h-5 w-5 ml-3 group-hover:translate-x-2 transition-transform" />}
               </Button>
             </form>

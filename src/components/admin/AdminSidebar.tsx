@@ -12,8 +12,8 @@ import { signOut } from "firebase/auth";
 const NAV_ITEMS = [
   { label: 'Overview', icon: LayoutDashboard, href: '/admin/dashboard' },
   { label: 'Catalog', icon: Box, href: '/admin/products' },
-  { label: 'Fulfillment', icon: ShoppingCart, href: '/admin/orders' },
-  { label: 'Preferences', icon: Settings, href: '/admin/settings' },
+  { label: 'Orders', icon: ShoppingCart, href: '/admin/orders' },
+  { label: 'Settings', icon: Settings, href: '/admin/settings' },
 ];
 
 export function AdminSidebar() {
@@ -39,7 +39,7 @@ export function AdminSidebar() {
             <ShieldCheck className="h-8 w-8 text-primary" />
             <div className="flex flex-col">
               <span className="text-xl font-black tracking-tighter leading-none">Z-MART</span>
-              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">Merchant Hub</span>
+              <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-500">Admin Panel</span>
             </div>
           </div>
         )}
@@ -85,7 +85,7 @@ export function AdminSidebar() {
           )}
         >
           <Store className="h-6 w-6 shrink-0 transition-transform group-hover:scale-110" />
-          {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest">View Home</span>}
+          {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest">Store</span>}
         </Link>
         <button 
           onClick={handleLogout}

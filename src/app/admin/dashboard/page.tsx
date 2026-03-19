@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   if (!user) return null;
 
   const stats = [
-    { label: 'Recent Revenue', value: formatCurrency(totalRevenue), icon: IndianRupee, change: '+12.5%', color: 'text-green-700', bg: 'bg-green-100' },
+    { label: 'Total Revenue', value: formatCurrency(totalRevenue), icon: IndianRupee, change: '+12.5%', color: 'text-green-700', bg: 'bg-green-100' },
     { label: 'Active Orders', value: activeOrdersCount.toString(), icon: ShoppingCart, change: '+5', color: 'text-blue-700', bg: 'bg-blue-100' },
     { label: 'Total Customers', value: '1,240', icon: Users, change: '+18%', color: 'text-purple-700', bg: 'bg-purple-100' },
     { label: 'Conversion Rate', value: '3.2%', icon: TrendingUp, change: '+0.4%', color: 'text-orange-700', bg: 'bg-orange-100' },
@@ -70,8 +70,8 @@ export default function AdminDashboard() {
       <AdminSidebar />
       <main className="flex-1 p-6 md:p-10 lg:p-14 space-y-12 overflow-hidden">
         <header className="flex flex-col gap-2">
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 uppercase">Merchant Insights</h1>
-          <p className="text-slate-500 text-lg font-medium">Monitoring your premium marketplace performance.</p>
+          <h1 className="text-4xl font-black tracking-tight text-slate-900 uppercase">Admin Dashboard</h1>
+          <p className="text-slate-500 text-lg font-medium">Monitoring your store performance.</p>
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -99,7 +99,7 @@ export default function AdminDashboard() {
             <CardHeader className="p-10 border-b border-slate-50">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Recent Transactions</CardTitle>
-                <Badge className="rounded-xl px-4 py-1.5 font-black uppercase text-[9px] bg-slate-900 text-white border-none tracking-widest">Live Stream</Badge>
+                <Badge className="rounded-xl px-4 py-1.5 font-black uppercase text-[9px] bg-slate-900 text-white border-none tracking-widest">Live</Badge>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
           <div className="space-y-8">
             <Card className="border-none shadow-sm rounded-[2rem] p-10 bg-white">
               <CardHeader className="p-0 mb-10">
-                <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Supply Alerts</CardTitle>
+                <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Alerts</CardTitle>
               </CardHeader>
               <CardContent className="p-0 space-y-10">
                 {[

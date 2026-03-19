@@ -1,4 +1,3 @@
-
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -35,8 +34,8 @@ export default function AdminSettings() {
     setTimeout(() => {
       setIsSaving(false);
       toast({
-        title: "Settings Updated",
-        description: "Your administrative preferences have been saved.",
+        title: "Settings Saved",
+        description: "Your preferences have been updated.",
       });
     }, 1000);
   };
@@ -59,8 +58,8 @@ export default function AdminSettings() {
       await Promise.all(seedPromises);
       
       toast({
-        title: "Database Seeded Successfully",
-        description: `${MOCK_PRODUCTS.length} premium products have been added to your catalog.`,
+        title: "Store Seeded",
+        description: `${MOCK_PRODUCTS.length} products have been added to your store.`,
       });
       router.push('/admin/products');
     } catch (error: any) {
@@ -90,7 +89,7 @@ export default function AdminSettings() {
       <main className="flex-1 p-6 md:p-10 lg:p-14 space-y-12">
         <header className="flex flex-col gap-2">
           <h1 className="text-4xl font-black tracking-tight text-slate-900 uppercase">Settings</h1>
-          <p className="text-slate-600 text-lg font-medium">Manage your merchant account and platform preferences.</p>
+          <p className="text-slate-600 text-lg font-medium">Manage your admin account and store preferences.</p>
         </header>
 
         <div className="grid lg:grid-cols-3 gap-10">
@@ -101,17 +100,17 @@ export default function AdminSettings() {
                   <div className="p-2 bg-slate-100 rounded-xl">
                     <User className="h-5 w-5 text-slate-600" />
                   </div>
-                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Account Profile</CardTitle>
+                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Admin Profile</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Admin Display Name</Label>
-                    <Input defaultValue={user.displayName || "Merchant Admin"} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Display Name</Label>
+                    <Input defaultValue={user.displayName || "Admin User"} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Primary Contact Email</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Admin Email</Label>
                     <Input defaultValue={user.email || ""} disabled className="h-12 rounded-xl bg-slate-100 border-none font-bold text-slate-500" />
                   </div>
                 </div>
@@ -124,13 +123,13 @@ export default function AdminSettings() {
                   <div className="p-2 bg-slate-100 rounded-xl text-primary">
                     <Database className="h-5 w-5" />
                   </div>
-                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Database Tools</CardTitle>
+                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Setup Tools</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="p-8 space-y-6">
                 <div className="space-y-4">
                   <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
-                    Populate your store with AI-curated premium products. This will add 12 high-quality listings to your live catalog instantly.
+                    Quickly populate your store with a curated list of sample products.
                   </p>
                   <Button 
                     onClick={seedDatabase} 
@@ -139,7 +138,7 @@ export default function AdminSettings() {
                     className="h-16 px-8 rounded-2xl border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-widest transition-all"
                   >
                     {isSeeding ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <Sparkles className="h-5 w-5 mr-3" />}
-                    {isSeeding ? "Generating Catalog..." : "Seed Initial Catalog"}
+                    {isSeeding ? "Adding Sample Products..." : "Seed Sample Products"}
                   </Button>
                 </div>
               </CardContent>
@@ -148,7 +147,7 @@ export default function AdminSettings() {
 
           <aside className="space-y-8">
             <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white p-8">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Security & Auth</h3>
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Security</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
                   <div className="flex items-center gap-3">
@@ -160,7 +159,7 @@ export default function AdminSettings() {
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
                   <div className="flex items-center gap-3">
                     <Bell className="h-4 w-4 text-slate-400" />
-                    <span className="text-xs font-bold text-slate-700">Order Notifications</span>
+                    <span className="text-xs font-bold text-slate-700">Notifications</span>
                   </div>
                   <div className="h-2 w-2 rounded-full bg-green-500" />
                 </div>
@@ -173,7 +172,7 @@ export default function AdminSettings() {
               className="w-full h-16 bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all"
             >
               {isSaving ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Save className="h-5 w-5 mr-2" />}
-              {isSaving ? "Saving..." : "Save Preferences"}
+              {isSaving ? "Saving..." : "Save Settings"}
             </Button>
           </aside>
         </div>
