@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
 
 const CATEGORIES = [
   {
@@ -30,7 +31,16 @@ const CATEGORIES = [
 
 export function Navbar() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { totalItems } = useCart();
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full flex flex-col">
@@ -52,20 +62,25 @@ export function Navbar() {
         </button>
 
         {/* Search Bar */}
-        <div className={`flex-1 flex items-center h-10 rounded-md overflow-hidden bg-white ${isSearchFocused ? 'ring-2 ring-[#ff9900]' : ''}`}>
-          <button className="h-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-3 border-r flex items-center gap-1">
+        <form 
+          onSubmit={handleSearch}
+          className={`flex-1 flex items-center h-10 rounded-md overflow-hidden bg-white ${isSearchFocused ? 'ring-2 ring-[#ff9900]' : ''}`}
+        >
+          <button type="button" className="h-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs px-3 border-r flex items-center gap-1">
             All <ChevronDown className="h-3 w-3" />
           </button>
           <Input 
             placeholder="Search Z-Mart" 
             className="flex-1 border-none focus-visible:ring-0 text-black placeholder:text-gray-500 h-full rounded-none"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setIsSearchFocused(false)}
           />
-          <button className="h-full bg-[#febd69] hover:bg-[#f3a847] px-3 transition-colors">
+          <button type="submit" className="h-full bg-[#febd69] hover:bg-[#f3a847] px-3 transition-colors">
             <Search className="h-6 w-6 text-[#131921]" />
           </button>
-        </div>
+        </form>
 
         {/* Language/Flag */}
         <button className="hidden xl:flex items-center gap-1 px-2 py-2 border border-transparent hover:border-white rounded-sm transition-all">
