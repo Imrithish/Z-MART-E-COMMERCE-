@@ -4,7 +4,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2, Zap } from "lucide-react";
+import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2, Zap, AlignLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/mock-data";
@@ -106,7 +106,7 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
           </div>
 
           {/* Right: Details Section */}
-          <div className="w-full md:w-1/2 p-8 overflow-y-auto bg-white">
+          <div className="w-full md:w-1/2 p-8 overflow-y-auto bg-white no-scrollbar">
             <DialogHeader className="mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer text-sm font-bold uppercase tracking-wider">
@@ -133,7 +133,7 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
               </div>
             </DialogHeader>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Pricing */}
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
@@ -182,26 +182,34 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
                 </Button>
               </div>
 
-              {/* Product Features */}
-              <div className="space-y-3">
-                <h4 className="font-bold text-slate-900">About this item</h4>
-                <ul className="space-y-2">
-                  {product.features?.map((feature, idx) => (
-                    <li key={idx} className="text-sm text-slate-700 flex gap-2">
-                      <span className="text-slate-300">•</span>
-                      {feature}
-                    </li>
-                  ))}
-                  {!product.features && (
-                    <li className="text-sm text-slate-700 line-clamp-4 leading-relaxed">
-                      {product.description}
-                    </li>
-                  )}
-                </ul>
+              {/* Product Description Section */}
+              <div className="space-y-3 pt-4 border-t border-slate-50">
+                <div className="flex items-center gap-2 text-slate-900">
+                  <AlignLeft className="h-4 w-4 text-slate-400" />
+                  <h4 className="font-bold">Description</h4>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed italic">
+                  {product.description}
+                </p>
               </div>
 
+              {/* Product Features Section */}
+              {product.features && product.features.length > 0 && (
+                <div className="space-y-3 pt-4 border-t border-slate-50">
+                  <h4 className="font-bold text-slate-900 uppercase tracking-widest text-[10px]">Key Features</h4>
+                  <ul className="space-y-2">
+                    {product.features.map((feature, idx) => (
+                      <li key={idx} className="text-sm text-slate-700 flex gap-2">
+                        <span className="text-slate-300">•</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Extra Info */}
-              <div className="pt-4 border-t border-slate-100 flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              <div className="pt-6 border-t border-slate-100 flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                 <Info className="h-3 w-3" />
                 <span>Product code: {product.id}</span>
               </div>
