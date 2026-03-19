@@ -2,7 +2,7 @@
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
-import { Star, CheckCircle2, Loader2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Star, CheckCircle2, Loader2, ShoppingBag, ArrowRight, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -15,6 +15,8 @@ import { collection, query, limit } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -28,8 +30,10 @@ export default function Home() {
   const { addItem } = useCart();
   const { toast } = useToast();
   const db = useFirestore();
+  const router = useRouter();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
@@ -52,6 +56,13 @@ export default function Home() {
     setSelectedProduct(product);
     setIsModalOpen(true);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
@@ -102,15 +113,29 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1 pb-24">
-        {/* Simplified Hero */}
-        <section className="relative w-full h-[250px] md:h-[350px] overflow-hidden bg-slate-900 flex items-center justify-center text-center p-8">
-          <div className="space-y-4 max-w-2xl relative z-10">
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase">Premium Marketplace</h1>
-            <p className="text-slate-400 font-medium text-lg">Curated technology and lifestyle products.</p>
+        {/* Search Bar Section - Placed at the top of Home */}
+        <section className="bg-slate-900 py-10 px-4 md:px-8 border-b border-white/5">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="text-center space-y-2 mb-6">
+              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase">What are you looking for?</h1>
+              <p className="text-slate-400 font-medium text-sm uppercase tracking-widest">Discover our premium catalog</p>
+            </div>
+            <form onSubmit={handleSearch} className="flex items-center h-16 rounded-2xl overflow-hidden bg-white shadow-2xl focus-within:ring-4 focus-within:ring-primary/20 transition-all">
+              <Input 
+                placeholder="Search products, categories, electronics..." 
+                className="flex-1 border-none focus-visible:ring-0 text-slate-900 h-full px-8 text-lg font-bold placeholder:text-slate-400"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-8 transition-colors flex items-center justify-center gap-2 group">
+                <Search className="h-6 w-6 text-slate-900 group-hover:scale-110 transition-transform" />
+                <span className="hidden md:block font-black uppercase tracking-widest text-slate-900 text-xs">Search</span>
+              </button>
+            </form>
           </div>
         </section>
 
-        {/* Rectangular Category Boxes */}
+        {/* Categories Section */}
         <section className="max-w-[1450px] mx-auto px-4 md:px-8 py-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
@@ -242,7 +267,7 @@ export default function Home() {
       <footer className="bg-slate-900 text-white py-20 border-t border-white/5">
         <div className="max-w-[1450px] mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2 space-y-6">
-            <h2 className="text-3xl font-black tracking-tighter">Z-MART</h2>
+            <h2 className="text-3xl font-black tracking-tighter uppercase">Z-MART</h2>
             <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-md">
               The premium gateway to modern commerce.
             </p>

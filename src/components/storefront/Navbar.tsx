@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from "next/link";
@@ -114,195 +115,190 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full flex flex-col shadow-xl">
       {/* Primary Header */}
-      <div className="amazon-header-bg text-white h-[65px] flex items-center px-4 md:px-6 gap-3 md:gap-8">
+      <div className="amazon-header-bg text-white h-[65px] flex items-center px-4 md:px-6 gap-3 md:gap-8 justify-between">
         
-        {/* Mobile Menu Trigger */}
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10">
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0 border-none bg-slate-900 text-white w-[300px]">
-            <SheetHeader className="p-6 border-b border-white/5 bg-slate-950">
-              <SheetTitle className="text-white flex items-center gap-2">
-                <span className="text-xl font-black uppercase tracking-tighter">Z-MART</span>
-                <span className="text-[10px] font-black uppercase tracking-widest text-primary">Browse</span>
-              </SheetTitle>
-            </SheetHeader>
-            <ScrollArea className="h-[calc(100vh-80px)]">
-              <div className="p-6 space-y-8">
-                {CATEGORY_GROUPS.map((group) => (
-                  <div key={group.label} className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <group.icon className="h-4 w-4 text-primary" />
-                      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{group.label}</h4>
-                    </div>
-                    <ul className="space-y-3 pl-7">
-                      {group.items.map((item) => (
-                        <li key={item.name}>
-                          <button 
-                            onClick={() => selectCategoryFromMenu(item.name)}
-                            className="text-sm font-bold text-white/80 hover:text-primary transition-colors uppercase tracking-tight"
-                          >
-                            {item.name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-                
-                <Separator className="bg-white/5" />
-                
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account</h4>
-                  <ul className="space-y-3 pl-7">
-                    <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Profile</Link></li>
-                    <li><Link href="/account#orders" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Orders</Link></li>
-                    {user && (
-                      <li>
-                        <button onClick={handleSignOut} className="text-sm font-bold text-red-400 uppercase tracking-tight">Sign Out</button>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </ScrollArea>
-          </SheetContent>
-        </Sheet>
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center group shrink-0">
-          <span className="text-xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors uppercase">Z-MART</span>
-          <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-0.5" />
-        </Link>
-
-        {/* Search Bar with Mega Menu Trigger - Now after Logo */}
-        <div className="flex flex-1 items-center h-10 rounded-md overflow-hidden bg-white group focus-within:ring-2 focus-within:ring-primary">
-          <div className="h-full border-r border-slate-200 hidden md:block">
-            <Popover open={isMegaMenuOpen} onOpenChange={setIsMegaMenuOpen}>
-              <PopoverTrigger asChild>
-                <button className="h-full bg-slate-50 hover:bg-slate-100 text-slate-600 px-4 gap-2 flex items-center text-[10px] font-black uppercase tracking-widest min-w-[140px] transition-colors">
-                  <span className="truncate">{selectedCategory}</span>
-                  <ChevronDown className={cn("h-3 w-3 transition-transform", isMegaMenuOpen && "rotate-180")} />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[800px] p-0 border-none shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-none overflow-hidden" align="start">
-                <div className="grid grid-cols-4 p-8 bg-white gap-8">
+        <div className="flex items-center gap-4">
+          {/* Mobile Menu Trigger */}
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden text-white hover:bg-white/10">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 border-none bg-slate-900 text-white w-[300px]">
+              <SheetHeader className="p-6 border-b border-white/5 bg-slate-950">
+                <SheetTitle className="text-white flex items-center gap-2">
+                  <span className="text-xl font-black uppercase tracking-tighter">Z-MART</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-primary">Browse</span>
+                </SheetTitle>
+              </SheetHeader>
+              <ScrollArea className="h-[calc(100vh-80px)]">
+                <div className="p-6 space-y-8">
                   {CATEGORY_GROUPS.map((group) => (
-                    <div key={group.label} className="space-y-6">
+                    <div key={group.label} className="space-y-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
-                          <group.icon className="h-4 w-4" />
-                        </div>
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{group.label}</h4>
+                        <group.icon className="h-4 w-4 text-primary" />
+                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{group.label}</h4>
                       </div>
-                      <ul className="space-y-4">
+                      <ul className="space-y-3 pl-7">
                         {group.items.map((item) => (
                           <li key={item.name}>
                             <button 
                               onClick={() => selectCategoryFromMenu(item.name)}
-                              className="group flex flex-col items-start text-left hover:text-primary transition-colors w-full"
+                              className="text-sm font-bold text-white/80 hover:text-primary transition-colors uppercase tracking-tight"
                             >
-                              <span className="text-xs font-black text-slate-900 uppercase tracking-tight mb-0.5 group-hover:text-primary">{item.name}</span>
-                              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{item.desc}</span>
+                              {item.name}
                             </button>
                           </li>
                         ))}
                       </ul>
                     </div>
                   ))}
+                  
+                  <Separator className="bg-white/5" />
+                  
+                  <div className="space-y-4">
+                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Account</h4>
+                    <ul className="space-y-3 pl-7">
+                      <li><Link href="/account" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Profile</Link></li>
+                      <li><Link href="/account#orders" className="text-sm font-bold text-white/80 uppercase tracking-tight" onClick={() => setIsMobileMenuOpen(false)}>Your Orders</Link></li>
+                      {user && (
+                        <li>
+                          <button onClick={handleSignOut} className="text-sm font-bold text-red-400 uppercase tracking-tight">Sign Out</button>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
                 </div>
-                <div className="bg-slate-50 p-4 border-t border-slate-100 flex items-center justify-between">
-                  <button 
-                    onClick={() => selectCategoryFromMenu("All")}
-                    className="text-[10px] font-black text-slate-400 hover:text-slate-900 uppercase tracking-widest flex items-center gap-2 transition-colors"
-                  >
-                    Reset to all categories
-                  </button>
-                  <Link 
-                    href="/products" 
-                    className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-2"
-                    onClick={() => setIsMegaMenuOpen(false)}
-                  >
-                    View all features <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-          
+              </ScrollArea>
+            </SheetContent>
+          </Sheet>
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center group shrink-0">
+            <span className="text-xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors uppercase">Z-MART</span>
+            <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-0.5" />
+          </Link>
+        </div>
+
+        {/* Categories Mega Menu Selector (Desktop) */}
+        <div className="hidden md:block">
+          <Popover open={isMegaMenuOpen} onOpenChange={setIsMegaMenuOpen}>
+            <PopoverTrigger asChild>
+              <button className="h-10 bg-white/5 hover:bg-white/10 text-white px-6 gap-2 flex items-center text-[10px] font-black uppercase tracking-widest rounded-xl transition-all border border-white/10">
+                <Menu className="h-4 w-4 mr-2" />
+                <span>Categories</span>
+                <ChevronDown className={cn("h-3 w-3 transition-transform", isMegaMenuOpen && "rotate-180")} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[800px] p-0 border-none shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-[2rem] overflow-hidden" align="center" sideOffset={10}>
+              <div className="grid grid-cols-4 p-8 bg-white gap-8">
+                {CATEGORY_GROUPS.map((group) => (
+                  <div key={group.label} className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400">
+                        <group.icon className="h-4 w-4" />
+                      </div>
+                      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{group.label}</h4>
+                    </div>
+                    <ul className="space-y-4">
+                      {group.items.map((item) => (
+                        <li key={item.name}>
+                          <button 
+                            onClick={() => selectCategoryFromMenu(item.name)}
+                            className="group flex flex-col items-start text-left hover:text-primary transition-colors w-full"
+                          >
+                            <span className="text-xs font-black text-slate-900 uppercase tracking-tight mb-0.5 group-hover:text-primary">{item.name}</span>
+                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{item.desc}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <div className="bg-slate-50 p-6 border-t border-slate-100 flex items-center justify-between">
+                <button 
+                  onClick={() => selectCategoryFromMenu("All")}
+                  className="text-[10px] font-black text-slate-400 hover:text-slate-900 uppercase tracking-widest flex items-center gap-2 transition-colors"
+                >
+                  Reset Selection
+                </button>
+                <Link 
+                  href="/products" 
+                  className="text-[10px] font-black text-primary hover:underline uppercase tracking-widest flex items-center gap-2"
+                  onClick={() => setIsMegaMenuOpen(false)}
+                >
+                  Browse Full Catalog <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* Global Search (Header) */}
+        <div className="hidden lg:flex flex-1 max-w-xl mx-4 items-center h-10 rounded-xl overflow-hidden bg-white/10 group focus-within:bg-white transition-all border border-white/10 focus-within:border-primary">
           <form onSubmit={handleSearch} className="flex-1 flex items-center h-full">
             <Input 
-              placeholder="Search Z-MART..." 
-              className="flex-1 border-none focus-visible:ring-0 text-slate-900 placeholder:text-slate-400 h-full rounded-none px-3 font-bold text-sm"
+              placeholder="Quick search..." 
+              className="flex-1 border-none focus-visible:ring-0 text-white group-focus-within:text-slate-900 placeholder:text-white/50 group-focus-within:placeholder:text-slate-400 h-full bg-transparent px-4 font-bold text-xs"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button type="submit" className="h-full bg-primary hover:bg-primary/90 px-3 md:px-5 transition-all shrink-0">
-              <Search className="h-5 w-5 text-slate-900" />
+            <button type="submit" className="h-full px-4 hover:text-primary transition-colors">
+              <Search className="h-4 w-4" />
             </button>
           </form>
-        </div>
-
-        {/* Location (Desktop Only) - Now after Search Bar */}
-        <div className="hidden lg:flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm cursor-pointer transition-all">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Deliver to</span>
-          <div className="flex items-center gap-1">
-            <MapPin className="h-4 w-4" />
-            <span className="text-xs font-black uppercase tracking-tight">Select Location</span>
-          </div>
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-1 md:gap-4">
           <div className="group relative hidden sm:block">
-            <button className="flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm transition-all text-left">
+            <button className="flex flex-col items-start leading-tight hover:bg-white/10 p-2 rounded-xl transition-all text-left">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Sign In'}
+                {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Account'}
               </span>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-black uppercase tracking-tight">Account</span>
+                <span className="text-xs font-black uppercase tracking-tight">Profile</span>
                 <ChevronDown className="h-3 w-3 text-slate-400" />
               </div>
             </button>
             
-            <div className="absolute top-[calc(100%+0px)] right-0 w-64 bg-white text-slate-900 shadow-2xl rounded-none p-6 hidden group-hover:block border border-slate-100 z-50 animate-in fade-in zoom-in duration-150 origin-top-right">
+            <div className="absolute top-[calc(100%+0px)] right-0 w-64 bg-white text-slate-900 shadow-2xl rounded-3xl p-6 hidden group-hover:block border border-slate-100 z-50 animate-in fade-in zoom-in duration-150 origin-top-right">
               {user ? (
                 <div className="space-y-6">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Your Account</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Identity</p>
                     <p className="text-sm font-black truncate">{user.email}</p>
                   </div>
                   <Separator />
                   <ul className="space-y-2">
-                    <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Your Profile</Link></li>
-                    <li><Link href="/account#orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Your Orders</Link></li>
+                    <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Member Dashboard</Link></li>
+                    <li><Link href="/account#orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Order History</Link></li>
                     <li><Link href="/admin/login" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest text-primary">Merchant Hub</Link></li>
                   </ul>
                   <Separator />
                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-10 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/10">
-                    Sign Out
+                    Exit Terminal
                   </Button>
                 </div>
               ) : (
                 <div className="space-y-6 text-center">
                   <Button asChild className="amazon-btn-primary w-full h-12 rounded-xl">
-                    <Link href="/login">Sign In Securely</Link>
+                    <Link href="/login">Initialize Session</Link>
                   </Button>
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    New? <Link href="/signup" className="text-primary hover:underline">Start Here</Link>
+                    Unauthorized? <Link href="/signup" className="text-primary hover:underline">Register Key</Link>
                   </p>
                 </div>
               )}
             </div>
           </div>
 
-          <Link href="/cart" className="flex items-end gap-1 hover:ring-1 hover:ring-white p-2 rounded-sm transition-all group">
+          <Link href="/cart" className="flex items-end gap-1 hover:bg-white/10 p-2 rounded-xl transition-all group relative">
             <div className="relative">
               <ShoppingCart className="h-6 w-6 md:h-7 md:w-7 text-white" />
-              <span className="absolute -top-1 left-1/2 -translate-x-1/2 h-4 w-4 md:h-5 md:w-5 text-primary text-[10px] md:text-[12px] font-black flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-slate-900 text-[10px] font-black flex items-center justify-center rounded-full border-2 border-slate-900">
                 {totalItems}
               </span>
             </div>
@@ -311,17 +307,17 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Amazon-Style Sub-navigation (Hidden on very small mobile, Scrollable) */}
-      <div className="amazon-subnav-bg text-white h-[40px] flex items-center px-4 md:px-6 gap-3 md:gap-6 overflow-x-auto no-scrollbar text-[10px] md:text-[11px] font-black uppercase tracking-widest">
-        <Link href="/" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all flex items-center gap-2 shrink-0">
+      {/* Sub-navigation */}
+      <div className="amazon-subnav-bg text-white h-[45px] flex items-center px-4 md:px-6 gap-3 md:gap-6 overflow-x-auto no-scrollbar text-[10px] md:text-[11px] font-black uppercase tracking-widest border-t border-white/5">
+        <Link href="/" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all flex items-center gap-2 shrink-0">
           <Home className="h-3 w-3" /> Home
         </Link>
-        <Link href="/products?category=Electronics" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all shrink-0">Electronics</Link>
-        <Link href="/products?category=Fashion" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all shrink-0">Fashion</Link>
-        <Link href="/products?category=Home & Kitchen" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all shrink-0">Home Decor</Link>
-        <Link href="/products" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all text-primary shrink-0">Today's Deals</Link>
-        <Link href="/admin/login" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all ml-auto shrink-0 flex items-center gap-1">
-          <ShieldCheck className="h-3 w-3" /> Merchant Hub
+        <Link href="/products?category=Electronics" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Electronics</Link>
+        <Link href="/products?category=Fashion" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Fashion</Link>
+        <Link href="/products?category=Home & Kitchen" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Home Decor</Link>
+        <Link href="/products" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all text-primary shrink-0">Today's Deals</Link>
+        <Link href="/admin/login" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all ml-auto shrink-0 flex items-center gap-1">
+          <ShieldCheck className="h-3 w-3" /> Admin Hub
         </Link>
       </div>
     </header>
