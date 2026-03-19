@@ -95,8 +95,7 @@ export default function Home() {
       className="group cursor-pointer flex flex-col h-full bg-white p-3 md:p-5 rounded-2xl md:rounded-[2rem] shadow-[0_4px_12px_-6px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] transition-all duration-500 ease-out border border-slate-100/50 hover:border-primary/20 hover:-translate-y-2 relative overflow-hidden"
       onClick={() => handleProductClick(product)}
     >
-      {/* Container that handles mobile list vs desktop grid */}
-      <div className="flex flex-row sm:flex-col gap-4 sm:gap-2 h-full">
+      <div className="flex flex-row sm:flex-col gap-4 sm:gap-4 h-full">
         {/* Image Section */}
         <div className="relative w-32 h-32 sm:w-full sm:aspect-[4/3] bg-slate-50/50 rounded-xl md:rounded-2xl overflow-hidden p-2 sm:p-4 mb-0 group-hover:bg-white transition-colors duration-500 shrink-0">
           <Image 
@@ -113,8 +112,8 @@ export default function Home() {
         </div>
         
         {/* Details Section */}
-        <div className="flex flex-col flex-1 min-w-0 space-y-2">
-          <div className="space-y-1">
+        <div className="flex flex-col flex-1 min-w-0">
+          <div className="space-y-1 sm:space-y-2">
              <p className="text-[8px] md:text-[10px] font-black text-primary uppercase tracking-[0.2em]">{product.category}</p>
              <h3 className="text-xs md:text-sm font-black text-slate-900 line-clamp-2 uppercase tracking-tight leading-tight group-hover:text-primary transition-colors min-h-[2.5rem]">
                {product.name}
@@ -128,7 +127,7 @@ export default function Home() {
              </div>
           </div>
           
-          <div className="mt-auto pt-2 space-y-3">
+          <div className="mt-4 pt-2 border-t border-slate-50 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-base md:text-xl font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
               <button 
@@ -192,7 +191,7 @@ export default function Home() {
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
                 <Card className="bg-white p-6 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl flex flex-col h-full group cursor-pointer hover:-translate-y-3 transition-all duration-500 border-none">
-                  <h3 className="text-lg md:text-xl font-black text-slate-900 mb-4 md:text-6xl uppercase tracking-tight">{cat.title}</h3>
+                  <h3 className="text-lg md:text-xl font-black text-slate-900 mb-4 md:text-2xl uppercase tracking-tight">{cat.title}</h3>
                   <div className="relative aspect-[16/10] w-full bg-slate-50 rounded-2xl overflow-hidden mb-4 md:mb-6 shadow-inner border border-slate-100">
                     <Image 
                       src={`https://picsum.photos/seed/${cat.seed}/600/400`}
@@ -222,7 +221,7 @@ export default function Home() {
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">New Arrivals</h2>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 items-stretch">
                 {curatedSections.newArrivals.map((product) => <ProductCard key={product.id} product={product} />)}
               </div>
             </section>
@@ -236,7 +235,7 @@ export default function Home() {
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 items-stretch">
                 {categoryEntries[0][1].slice(0, 4).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -252,7 +251,7 @@ export default function Home() {
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Best Sellers</h2>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 items-stretch">
                 {curatedSections.bestSellers.map((product) => <ProductCard key={product.id} product={product} />)}
               </div>
             </section>
@@ -266,7 +265,7 @@ export default function Home() {
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 items-stretch">
                 {categoryEntries[1][1].slice(0, 4).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -282,7 +281,7 @@ export default function Home() {
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">Popular Now</h2>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 items-stretch">
                 {curatedSections.popular.map((product) => <ProductCard key={product.id} product={product} />)}
               </div>
             </section>
@@ -297,7 +296,7 @@ export default function Home() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8 items-stretch">
                 {catProducts.slice(0, 4).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

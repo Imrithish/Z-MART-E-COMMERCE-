@@ -79,16 +79,16 @@ function ProductList() {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-stretch">
         {displayProducts.length > 0 ? (
           displayProducts.map((product: any) => (
             <Card 
               key={product.id} 
-              className="group overflow-hidden border-none shadow-sm bg-white rounded-xl md:rounded-sm flex flex-col cursor-pointer hover:shadow-md transition-shadow h-full"
+              className="group overflow-hidden border-none shadow-sm bg-white rounded-xl sm:rounded-2xl flex flex-col cursor-pointer hover:shadow-xl transition-all duration-300 h-full border border-slate-100/50"
               onClick={() => handleProductClick(product)}
             >
               <div className="flex flex-row sm:flex-col h-full">
-                <div className="relative w-32 h-32 sm:w-full sm:aspect-square overflow-hidden bg-gray-50/50 p-2 sm:p-4 shrink-0">
+                <div className="relative w-32 h-32 sm:w-full sm:aspect-square overflow-hidden bg-slate-50 p-2 sm:p-6 shrink-0">
                   <Image 
                     src={product.imageUrl}
                     alt={product.name}
@@ -97,53 +97,54 @@ function ProductList() {
                   />
                 </div>
                 
-                <div className="flex flex-col flex-1 p-3 sm:p-0">
-                  <CardHeader className="pt-0 sm:pt-4 pb-1 sm:pb-2 px-0 sm:px-4 space-y-0.5 sm:space-y-1">
-                    <div className="text-[9px] sm:text-[11px] text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer uppercase tracking-wider font-bold">{product.category}</div>
-                    <CardTitle className="text-xs sm:text-base font-medium group-hover:text-[#c45500] transition-colors line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem]">
+                <div className="flex flex-col flex-1 p-3 sm:p-5">
+                  <div className="flex-1 space-y-1 sm:space-y-2">
+                    <div className="text-[9px] sm:text-[10px] text-primary uppercase tracking-widest font-black">{product.category}</div>
+                    <CardTitle className="text-xs sm:text-base font-black text-slate-900 group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem] sm:min-h-[3rem] uppercase tracking-tight leading-tight">
                       {product.name}
                     </CardTitle>
                     <div className="flex items-center gap-1">
                        <div className="flex">
                         {[1,2,3,4,5].map(i => (
-                          <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i <= Math.floor(product.rating || 5) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-300'}`} />
+                          <Star key={i} className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${i <= Math.floor(product.rating || 5) ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
                         ))}
                       </div>
-                      <span className="text-[10px] sm:text-[11px] text-[#007185] ml-1">{(product.reviews || 0).toLocaleString()}</span>
+                      <span className="text-[10px] sm:text-[11px] font-black text-slate-900 ml-1">{(product.reviews || 0).toLocaleString()}</span>
                     </div>
-                  </CardHeader>
-                  <CardContent className="px-0 sm:px-4 pb-2 sm:pb-4 mt-auto">
-                    <div className="flex items-baseline gap-1">
-                       <span className="text-lg sm:text-2xl font-bold">{formatCurrency(product.price)}</span>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-slate-50 space-y-3">
+                    <div className="flex items-center justify-between">
+                       <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tighter">{formatCurrency(product.price)}</span>
                     </div>
-                    <p className="hidden sm:block text-[11px] text-gray-500 mt-1">Get it by Tomorrow, 10 AM</p>
-                    <p className="hidden sm:block text-[11px] text-gray-500">FREE Delivery by Z-Mart</p>
-                  </CardContent>
-                  <CardFooter className="px-0 sm:px-4 pb-3 sm:pb-4 pt-0">
+                    
                     <div className="flex gap-2 w-full">
                       <Button 
                         onClick={(e) => handleAddToCart(e, product)}
-                        className="amazon-btn-primary flex-1 h-8 text-[9px] sm:text-xs rounded-full"
+                        className="bg-slate-900 hover:bg-primary text-white hover:text-slate-900 flex-1 h-9 sm:h-11 text-[9px] sm:text-[10px] font-black uppercase tracking-widest rounded-lg sm:rounded-xl shadow-lg shadow-slate-900/10 transition-all active:scale-95"
                       >
                         Add to Cart
                       </Button>
                       <Button 
                         variant="outline"
                         onClick={(e) => { e.stopPropagation(); handleProductClick(product); }}
-                        className="sm:hidden h-8 w-8 p-0 rounded-full border-slate-200"
+                        className="sm:hidden h-9 w-9 p-0 rounded-lg border-slate-200"
                       >
-                        <Zap className="h-3.5 w-3.5" />
+                        <Zap className="h-4 w-4" />
                       </Button>
                     </div>
-                  </CardFooter>
+                  </div>
                 </div>
               </div>
             </Card>
           ))
         ) : (
-          <div className="col-span-full py-20 text-center bg-white rounded-sm shadow-sm">
-            <p className="text-lg font-medium text-gray-600">No products found.</p>
-            <p className="text-sm text-gray-400 mt-1">Try checking your spelling or use more general terms.</p>
+          <div className="col-span-full py-32 text-center bg-white rounded-2xl shadow-sm border border-slate-100">
+             <div className="bg-slate-50 h-20 w-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="h-10 w-10 text-slate-200" />
+             </div>
+            <p className="text-xl font-black text-slate-900 uppercase tracking-tight">No products found</p>
+            <p className="text-sm text-slate-400 mt-2 font-medium">Try checking your spelling or use more general terms.</p>
           </div>
         )}
       </div>
@@ -159,9 +160,9 @@ function ProductList() {
 
 export default function StorefrontProducts() {
   return (
-    <div className="min-h-screen bg-[#eaeded] flex flex-col">
+    <div className="min-h-screen bg-slate-100 flex flex-col font-body">
       <Navbar />
-      <main className="container mx-auto px-2 md:px-4 py-4 md:py-8 flex-1">
+      <main className="container mx-auto px-4 md:px-8 py-8 flex-1 max-w-[1450px]">
         <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>}>
           <ProductList />
         </Suspense>
