@@ -2,8 +2,7 @@
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
-import { Product } from "@/lib/mock-data";
-import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight, ShieldCheck, Zap, Globe, Truck, RotateCcw } from "lucide-react";
+import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight, ShieldCheck, Zap, Globe, Truck, RotateCcw, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -29,9 +28,10 @@ export default function Home() {
   const { addItem } = useCart();
   const { toast } = useToast();
   const db = useFirestore();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Fetch the latest 20 products from Firestore
   const productsQuery = useMemo(() => {
     if (!db) return null;
     return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(20));
@@ -39,9 +39,11 @@ export default function Home() {
 
   const { data: products, loading } = useCollection(productsQuery);
 
+  // Derived collections for different home page sections
   const deals = useMemo(() => products?.filter((p: any) => p.isDeal) || [], [products]);
+  const newArrivals = useMemo(() => products || [], [products]);
 
-  const handleProductClick = useCallback((product: Product) => {
+  const handleProductClick = useCallback((product: any) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
   }, []);
@@ -80,7 +82,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 font-black text-slate-400 uppercase tracking-widest text-[10px]">Loading Experience...</p>
+        <p className="mt-4 font-black text-slate-400 uppercase tracking-widest text-[10px]">Initializing Storefront...</p>
       </div>
     );
   }
@@ -93,12 +95,12 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative w-full h-[700px] md:h-[850px] overflow-hidden bg-slate-950">
           <Image 
-            src="https://picsum.photos/seed/zmart-hero-luxury/1920/1080"
+            src="https://picsum.photos/seed/zmart-hero-v2/1920/1080"
             alt="Hero Background"
             fill
             className="object-cover opacity-60 mix-blend-overlay"
             priority
-            data-ai-hint="luxury electronics"
+            data-ai-hint="minimalist workspace"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-white" />
           
@@ -106,10 +108,10 @@ export default function Home() {
             <div className="max-w-4xl space-y-10">
               <div className="space-y-6">
                 <Badge className="bg-primary/20 text-primary border-primary/30 backdrop-blur-md px-6 py-2 rounded-full font-black uppercase tracking-[0.4em] text-[10px]">
-                  Curated Collection 2024
+                  Premium Marketplace Live
                 </Badge>
                 <h1 className="text-6xl md:text-9xl font-black text-white leading-[0.85] tracking-tighter drop-shadow-2xl">
-                  BEYOND <br /> ORDINARY.
+                  UPGRADE <br /> YOUR LIFE.
                 </h1>
                 <p className="text-slate-300 text-lg md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
                   Discover the next generation of lifestyle technology. Handpicked, curated, and delivered with surgical precision.
@@ -120,7 +122,7 @@ export default function Home() {
                   <Link href="/products">Shop The Future <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
                 <Button variant="outline" className="h-20 px-12 rounded-[2rem] border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px] backdrop-blur-md">
-                  Our Story
+                  Browse Catalog
                 </Button>
               </div>
             </div>
@@ -172,15 +174,15 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { title: "Electronics", hint: "electronics gadgets", color: "bg-blue-500", h: "h-[500px]", href: "/products?category=Electronics" },
-              { title: "Kitchen", hint: "kitchen appliance", color: "bg-purple-500", h: "h-[650px] lg:-mt-20", href: "/products?category=Home & Kitchen" },
-              { title: "Fashion", hint: "fashion model", color: "bg-emerald-500", h: "h-[450px]", href: "/products?category=Fashion" },
-              { title: "Home Decor", hint: "interior design", color: "bg-orange-500", h: "h-[550px] lg:-mt-10", href: "/products?category=Home" }
+              { title: "Electronics", hint: "modern electronics", h: "h-[500px]", href: "/products?category=Electronics" },
+              { title: "Kitchen", hint: "modern kitchen", h: "h-[650px] lg:-mt-20", href: "/products?category=Home & Kitchen" },
+              { title: "Fashion", hint: "luxury fashion", h: "h-[450px]", href: "/products?category=Fashion" },
+              { title: "Home Decor", hint: "interior styling", h: "h-[550px] lg:-mt-10", href: "/products?category=Home" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
                 <Card className={`group relative overflow-hidden ${cat.h} rounded-[2.5rem] border-none shadow-xl hover:shadow-2xl transition-all duration-700 cursor-pointer`}>
                   <Image 
-                    src={`https://picsum.photos/seed/cat-${idx}-creative/800/1200`}
+                    src={`https://picsum.photos/seed/cat-${idx}-store/800/1200`}
                     alt={cat.title}
                     fill
                     className="object-cover transition-transform duration-1000 group-hover:scale-110"
@@ -199,57 +201,119 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Flash Deals Section */}
-        <section className="bg-slate-50 py-32">
+        {/* Flash Deals Section (Filtered Live) */}
+        {deals.length > 0 && (
+          <section className="bg-slate-50 py-32">
+            <div className="max-w-[1400px] mx-auto px-6 space-y-20">
+              <div className="text-center space-y-6">
+                <h2 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter uppercase">Flash Deals</h2>
+                <p className="text-slate-500 font-medium text-lg">Limited stock items. Premium pricing activated.</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                {deals.slice(0, 4).map((product: any) => (
+                  <Card 
+                    key={product.id} 
+                    className="group relative flex flex-col border-none bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer"
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <div className="relative aspect-square bg-white overflow-hidden p-10">
+                      <Image 
+                        src={product.imageUrl} 
+                        alt={product.name} 
+                        fill 
+                        className="object-contain transition-transform duration-1000 group-hover:scale-110" 
+                      />
+                      <div className="absolute top-6 left-6">
+                        <Badge className="bg-[#cc0c39] text-white font-black uppercase text-[9px] tracking-[0.2em] px-4 py-2 border-none rounded-full shadow-lg">
+                          Limited Offer
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="p-10 flex-1 flex flex-col gap-6">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-primary text-primary" />
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.rating || 5.0} Performance Score</span>
+                        </div>
+                        <h3 className="text-xl font-black text-slate-900 line-clamp-1 tracking-tight group-hover:text-primary transition-colors">
+                          {product.name}
+                        </h3>
+                      </div>
+                      <div className="flex items-end justify-between mt-auto">
+                        <div className="flex flex-col">
+                          <span className="text-3xl font-black text-slate-900">{formatCurrency(product.price)}</span>
+                          {product.originalPrice && (
+                            <span className="text-xs text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
+                          )}
+                        </div>
+                        <Button 
+                          size="icon"
+                          onClick={(e) => handleAddToCart(e, product)}
+                          className="h-14 w-14 rounded-2xl amazon-btn-primary"
+                        >
+                          <CheckCircle2 className="h-6 w-6" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* New Arrivals / All Products (Live) */}
+        <section className="bg-white py-32">
           <div className="max-w-[1400px] mx-auto px-6 space-y-20">
-            <div className="text-center space-y-6">
-              <h2 className="text-5xl md:text-8xl font-black text-slate-900 tracking-tighter uppercase">Flash Deals</h2>
-              <p className="text-slate-500 font-medium text-lg">Limited production runs. Absolute price points.</p>
+            <div className="flex flex-col md:flex-row items-end justify-between gap-8">
+              <div className="space-y-4">
+                <span className="text-primary font-black uppercase tracking-[0.3em] text-[10px]">Just Dropped</span>
+                <h2 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tighter uppercase leading-none">Freshly Added</h2>
+              </div>
+              <Button asChild variant="outline" className="h-16 px-10 rounded-2xl border-slate-200 font-black uppercase tracking-widest text-[10px] hover:bg-slate-50">
+                <Link href="/products">View All Products <ChevronRight className="ml-2 h-4 w-4" /></Link>
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-              {deals.slice(0, 4).map((product: any) => (
+              {newArrivals.slice(0, 8).map((product: any) => (
                 <Card 
                   key={product.id} 
-                  className="group relative flex flex-col border-none bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-700 cursor-pointer"
+                  className="group relative flex flex-col border border-slate-100 bg-white rounded-[2rem] overflow-hidden hover:shadow-2xl transition-all duration-700 cursor-pointer"
                   onClick={() => handleProductClick(product)}
                 >
-                  <div className="relative aspect-square bg-white overflow-hidden p-10">
+                  <div className="relative aspect-square bg-slate-50/50 overflow-hidden p-10">
                     <Image 
                       src={product.imageUrl} 
                       alt={product.name} 
                       fill 
                       className="object-contain transition-transform duration-1000 group-hover:scale-110" 
                     />
-                    <div className="absolute top-6 left-6">
-                      <Badge className="bg-[#cc0c39] text-white font-black uppercase text-[9px] tracking-[0.2em] px-4 py-2 border-none rounded-full shadow-lg">
-                        -{Math.round((1 - product.price / (product.originalPrice || product.price * 1.2)) * 100)}% OFF
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="p-10 flex-1 flex flex-col gap-6">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-primary text-primary" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.rating} Performance Score</span>
+                    {product.stock < 10 && (
+                      <div className="absolute bottom-4 right-4">
+                        <Badge className="bg-orange-100 text-orange-600 border-none font-black text-[8px] px-3 py-1 rounded-full uppercase">
+                          Only {product.stock} Left
+                        </Badge>
                       </div>
-                      <h3 className="text-xl font-black text-slate-900 line-clamp-1 tracking-tight group-hover:text-primary transition-colors">
+                    )}
+                  </div>
+                  <div className="p-8 space-y-4 flex-1 flex flex-col">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.category}</p>
+                      <h3 className="text-lg font-black text-slate-900 line-clamp-1 tracking-tight group-hover:text-primary transition-colors">
                         {product.name}
                       </h3>
                     </div>
-                    <div className="flex items-end justify-between mt-auto">
-                      <div className="flex flex-col">
-                        <span className="text-3xl font-black text-slate-900">{formatCurrency(product.price)}</span>
-                        {product.originalPrice && (
-                          <span className="text-xs text-slate-400 line-through font-bold">{formatCurrency(product.originalPrice)}</span>
-                        )}
-                      </div>
+                    <div className="flex items-center justify-between mt-auto pt-4">
+                      <span className="text-2xl font-black text-slate-900">{formatCurrency(product.price)}</span>
                       <Button 
+                        variant="ghost"
                         size="icon"
                         onClick={(e) => handleAddToCart(e, product)}
-                        className="h-14 w-14 rounded-2xl amazon-btn-primary"
+                        className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all"
                       >
-                        <CheckCircle2 className="h-6 w-6" />
+                        <ShoppingBag className="h-5 w-5" />
                       </Button>
                     </div>
                   </div>
@@ -257,11 +321,13 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="text-center">
-              <Button asChild variant="ghost" className="h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:text-primary hover:bg-white transition-all">
-                <Link href="/products">Initialize Full Catalog <ChevronRight className="ml-2 h-4 w-4" /></Link>
-              </Button>
-            </div>
+            {newArrivals.length === 0 && (
+              <div className="text-center py-20 bg-slate-50 rounded-[3rem] border border-dashed border-slate-200">
+                <ShoppingBag className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest">Our catalog is coming soon</h3>
+                <p className="text-slate-500 font-medium">We're currently stocking our virtual shelves. Check back shortly!</p>
+              </div>
+            )}
           </div>
         </section>
       </main>
