@@ -1,4 +1,3 @@
-
 export interface Product {
   id: string;
   name: string;
@@ -60,6 +59,22 @@ export const MOCK_PRODUCTS: Product[] = [
     features: ['Motion Detection', 'Temperature Sensor', 'Rich Sound', 'Privacy Controls']
   },
   {
+    id: 'amz-s24u',
+    name: 'Samsung Galaxy S24 Ultra 5G (Titanium Gray, 12GB, 256GB Storage)',
+    description: 'Meet Galaxy S24 Ultra, the ultimate form of Galaxy Ultra with a new titanium exterior and a 17.25cm (6.8") flat display. It’s an absolute marvel of design.',
+    price: 129999,
+    originalPrice: 134999,
+    category: 'Electronics',
+    stock: 45,
+    imageUrl: 'https://picsum.photos/seed/s24ultra/600/600',
+    rating: 4.7,
+    reviews: 890,
+    isDeal: true,
+    isBestSeller: true,
+    brand: 'Samsung',
+    features: ['Galaxy AI', '200MP Camera', 'Snapdragon 8 Gen 3', 'Built-in S Pen']
+  },
+  {
     id: 'amz-kindle11',
     name: 'Kindle Paperwhite (16 GB) – 6.8” display with adjustable warm light',
     description: 'Purpose-built for reading — With a flush-front design and 300 ppi glare-free display that reads like real paper, even in bright sunlight. Now with up to 10 weeks of battery life.',
@@ -74,6 +89,21 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: true,
     brand: 'Amazon',
     features: ['300 ppi Display', 'Waterproof (IPX8)', 'USB-C', 'Adjustable Warm Light']
+  },
+  {
+    id: 'amz-boat141',
+    name: 'boAt Airdopes 141 Bluetooth Truly Wireless in Ear Earbuds',
+    description: 'Enjoy an extended break on weekends with your favourite episodes on stream, virtue of a playback time of up to 42 hours including the 6 hours nonstop playtime for earbuds.',
+    price: 1299,
+    originalPrice: 4490,
+    category: 'Electronics',
+    stock: 1000,
+    imageUrl: 'https://picsum.photos/seed/boatair/600/600',
+    rating: 4.1,
+    reviews: 185000,
+    isDeal: true,
+    brand: 'boAt',
+    features: ['42 Hours Playback', 'ENx Technology', 'IWP Technology', 'IPX4 Water Resistance']
   },
   {
     id: 'amz-sony-wh',
@@ -91,6 +121,21 @@ export const MOCK_PRODUCTS: Product[] = [
     features: ['30-hour Battery', 'Multipoint Connection', 'Touch Controls', 'Crystal Clear Calls']
   },
   {
+    id: 'amz-mamaface',
+    name: 'Mamaearth Vitamin C Face Wash with Vitamin C and Turmeric',
+    description: 'Brighten your skin with the natural goodness of Vitamin C and Turmeric. Mamaearth Vitamin C Face Wash helps in skin illumination and promotes even skin tone.',
+    price: 249,
+    originalPrice: 399,
+    category: 'Beauty',
+    stock: 500,
+    imageUrl: 'https://picsum.photos/seed/mamaface/600/600',
+    rating: 4.3,
+    reviews: 45000,
+    isDeal: true,
+    brand: 'Mamaearth',
+    features: ['Paraben Free', 'Dermatologically Tested', 'Suit All Skin Types', 'Natural Ingredients']
+  },
+  {
     id: 'amz-kettle',
     name: 'Pigeon Amaze Plus Electric Kettle (1.5L) - Stainless Steel',
     description: 'Classic Design: The classical mirror polish of the appearance makes your electric kettle unique and aesthetic, which can match any type of kitchen design.',
@@ -105,6 +150,21 @@ export const MOCK_PRODUCTS: Product[] = [
     isBestSeller: true,
     brand: 'Pigeon',
     features: ['1500 Watts', 'Stainless Steel Body', 'Auto Shut-off', '360 Swivel Base']
+  },
+  {
+    id: 'amz-noisewatch',
+    name: 'Noise ColorFit Pulse Smartwatch with 1.4" Full Touch Display',
+    description: 'Get the perfect companion for your health with Noise ColorFit Pulse. Monitor your heart rate, sleep, and blood oxygen levels in real-time.',
+    price: 1499,
+    originalPrice: 4999,
+    category: 'Electronics',
+    stock: 300,
+    imageUrl: 'https://picsum.photos/seed/noisewatch/600/600',
+    rating: 4.0,
+    reviews: 95000,
+    isDeal: true,
+    brand: 'Noise',
+    features: ['10-day Battery', 'IP68 Waterproof', '60+ Watch Faces', 'SPO2 Monitoring']
   },
   {
     id: 'amz-macm2',
@@ -124,8 +184,8 @@ export const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 'amz-shoes',
-    name: 'Adidas Men\'s Response Runner Shoes - Cloud White/Core Black',
-    description: 'Keep the pace in these men\'s Adidas running shoes. They feature a full-length Response Foam midsole for energized cushioning and a durable rubber outsole.',
+    name: "Adidas Men's Response Runner Shoes - Cloud White/Core Black",
+    description: "Keep the pace in these men's Adidas running shoes. They feature a full-length Response Foam midsole for energized cushioning and a durable rubber outsole.",
     price: 3599,
     originalPrice: 4599,
     category: 'Fashion',

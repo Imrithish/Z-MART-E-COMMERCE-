@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
@@ -66,12 +65,12 @@ export default function Home() {
   const amazonGridItems = [
     { title: "Gaming accessories", items: ["Headsets", "Keyboards", "Mice", "Chairs"], type: "quad" },
     { title: "Deal of the Day", item: MOCK_PRODUCTS[0], type: "single" },
-    { title: "Shop activity trackers", items: ["Smartwatches", "Bands", "Trackers", "Accessories"], type: "quad" },
+    { title: "Health & Personal Care", items: ["Skincare", "Oral Care", "Haircare", "Grooming"], type: "quad" },
     { title: "Sign in for the best experience", type: "auth" },
-    { title: "Personal Care under ₹999", items: ["Grooming", "Oral Care", "Hair Care", "Skin Care"], type: "quad" },
-    { title: "Laptops for every need", item: MOCK_PRODUCTS[1], type: "single" },
+    { title: "Explore Best Sellers", item: MOCK_PRODUCTS[7], type: "single" },
+    { title: "Laptops for every need", item: MOCK_PRODUCTS[9], type: "single" },
     { title: "Refresh your space", items: ["Kitchen", "Dining", "Bedroom", "Living"], type: "quad" },
-    { title: "Deals on top brands", item: MOCK_PRODUCTS[3], type: "single" }
+    { title: "Latest Smartphone Deals", item: MOCK_PRODUCTS[2], type: "single" }
   ];
 
   return (
@@ -105,10 +104,10 @@ export default function Home() {
         <div className="max-w-[1500px] mx-auto px-4 -mt-[320px] relative z-30 pb-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr">
             {amazonGridItems.map((gridItem, idx) => (
-              <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px]">
+              <div key={idx} className="bg-white p-5 shadow-sm border border-slate-100 flex flex-col min-h-[420px] relative">
                 <h2 className="text-xl font-bold mb-4 text-slate-900 leading-tight h-[56px] flex items-center">{gridItem.title}</h2>
                 
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1 flex flex-col mb-10">
                   {gridItem.type === 'quad' && (
                     <div className="grid grid-cols-2 gap-3 flex-1">
                       {gridItem.items?.map((sub, i) => (
@@ -168,7 +167,7 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className="mt-4">
+                <div className="absolute bottom-5 left-5">
                    <Link href="/products" className="text-xs font-bold text-[#007185] hover:text-[#c45500] hover:underline block">
                     {gridItem.type === 'auth' ? 'See more' : 'Shop now'}
                   </Link>
@@ -177,7 +176,7 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Horizontal Scroller Section (Today's Deals) */}
+          {/* Today's Deals Scroller */}
           <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
             <div className="flex items-center gap-4 mb-6">
               <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Today's Deals</h2>
@@ -216,6 +215,36 @@ export default function Home() {
                       Add to Cart
                     </button>
                   </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Secondary Carousel - Best Sellers */}
+          <section className="bg-white p-6 mt-6 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-4 mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Best Sellers in Electronics</h2>
+              <Link href="/products?category=Electronics" className="text-sm font-bold text-[#007185] hover:text-[#c45500] hover:underline">
+                See more
+              </Link>
+            </div>
+            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6">
+              {MOCK_PRODUCTS.filter(p => p.category === 'Electronics').map((product) => (
+                <div 
+                  key={product.id} 
+                  className="min-w-[180px] group cursor-pointer"
+                  onClick={() => handleProductClick(product)}
+                >
+                  <div className="relative aspect-square bg-white rounded-sm mb-3">
+                    <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-2 group-hover:scale-105 transition-transform" />
+                  </div>
+                  <div className="flex items-center gap-1 mb-1">
+                    <div className="flex">
+                      {[1,2,3,4,5].map(i => <Star key={i} className={`h-2.5 w-2.5 ${i <= Math.floor(product.rating) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-gray-200'}`} />)}
+                    </div>
+                    <span className="text-[10px] text-[#007185]">{product.reviews.toLocaleString()}</span>
+                  </div>
+                  <p className="text-sm font-bold text-slate-900">{formatCurrency(product.price)}</p>
                 </div>
               ))}
             </div>

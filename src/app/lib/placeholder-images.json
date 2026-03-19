@@ -1,4 +1,3 @@
-
 {
   "placeholderImages": [
     {
@@ -48,6 +47,30 @@
       "description": "Atomic Habits Book Cover",
       "imageUrl": "https://picsum.photos/seed/atomichabits/600/600",
       "imageHint": "atomic habits"
+    },
+    {
+      "id": "galaxy-s24",
+      "description": "Samsung Galaxy S24 Ultra",
+      "imageUrl": "https://picsum.photos/seed/s24ultra/600/600",
+      "imageHint": "samsung galaxy"
+    },
+    {
+      "id": "noise-watch",
+      "description": "Noise ColorFit Smartwatch",
+      "imageUrl": "https://picsum.photos/seed/noisewatch/600/600",
+      "imageHint": "smartwatch"
+    },
+    {
+      "id": "boat-airdopes",
+      "description": "boAt Airdopes 141",
+      "imageUrl": "https://picsum.photos/seed/boatair/600/600",
+      "imageHint": "wireless earbuds"
+    },
+    {
+      "id": "mamaearth-facewash",
+      "description": "Mamaearth Vitamin C Face Wash",
+      "imageUrl": "https://picsum.photos/seed/mamaface/600/600",
+      "imageHint": "face wash"
     }
   ]
 }
