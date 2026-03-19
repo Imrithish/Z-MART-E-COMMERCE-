@@ -5,15 +5,23 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingBag, Search, Filter, Loader2, MoreVertical, ExternalLink } from "lucide-react";
+import { ShoppingBag, Search, Filter, Loader2, MoreVertical, ExternalLink, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, orderBy } from "firebase/firestore";
+import { collection, query, orderBy, deleteDoc, doc } from "firebase/firestore";
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
+import { errorEmitter } from "@/firebase/error-emitter";
+import { FirestorePermissionError } from "@/firebase/errors";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -34,6 +42,19 @@ export default function AdminOrders() {
   }, [db]);
 
   const { data: orders, loading } = useCollection(ordersQuery);
+
+  const handleDeleteOrder = (orderId: string) => {
+    if (!db) return;
+    
+    deleteDoc(doc(db, 'orders', orderId))
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: `orders/${orderId}`,
+          operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      });
+  };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
@@ -141,9 +162,22 @@ export default function AdminOrders() {
                           {formatCurrency(order.totalAmount)}
                         </TableCell>
                         <TableCell className="text-right px-8">
-                           <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10">
-                             <MoreVertical className="h-4 w-4" />
-                           </Button>
+                           <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="rounded-xl h-10 w-10 hover:bg-slate-100 transition-colors">
+                                <MoreVertical className="h-4 w-4 text-slate-400" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="rounded-2xl p-2 border-none shadow-2xl bg-white">
+                              <DropdownMenuItem 
+                                onClick={() => handleDeleteOrder(order.id)}
+                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 focus:text-red-600 focus:bg-red-50 cursor-pointer font-black uppercase tracking-widest text-[10px]"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                                Delete Order
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                           </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))}
