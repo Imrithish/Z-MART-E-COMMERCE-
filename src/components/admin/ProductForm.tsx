@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,8 +29,19 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     category: '',
     stock: '',
     features: '',
-    imageUrl: 'https://picsum.photos/seed/' + Math.random() + '/600/600',
+    imageUrl: 'https://picsum.photos/seed/placeholder/600/600',
   });
+
+  // Defer random seed generation to avoid hydration mismatch
+  useEffect(() => {
+    if (!initialData && formData.imageUrl === 'https://picsum.photos/seed/placeholder/600/600') {
+      const seed = Math.floor(Math.random() * 1000000);
+      setFormData(prev => ({
+        ...prev,
+        imageUrl: `https://picsum.photos/seed/${seed}/600/600`
+      }));
+    }
+  }, [initialData, formData.imageUrl]);
 
   const generateDescription = async () => {
     if (!formData.name) {
