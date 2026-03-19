@@ -33,9 +33,12 @@ export function useCollection<T = DocumentData>(query: Query<T> | null) {
         setData(items);
         setLoading(false);
       },
-      async (serverError) => {
+      async (serverError: any) => {
+        // Log the actual server error to the console for debugging index issues
+        console.error("Firestore Error:", serverError);
+        
         const permissionError = new FirestorePermissionError({
-          path: (query as any).path || 'collection',
+          path: 'collection/query',
           operation: 'list',
         });
         errorEmitter.emit('permission-error', permissionError);

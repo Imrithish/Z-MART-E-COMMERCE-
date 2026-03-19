@@ -1,15 +1,14 @@
-
 "use client"
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { useUser, useCollection, useFirestore } from "@/firebase";
-import { collection, query, where, orderBy } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 import { useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ShoppingBag, User as UserIcon, Package, ShieldCheck, MapPin, Loader2, ArrowRight } from "lucide-react";
+import { ShoppingBag, Package, ShieldCheck, MapPin, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -36,15 +35,24 @@ export default function UserDashboard() {
 
   const userOrdersQuery = useMemo(() => {
     if (!db || !user?.email) return null;
-    // Query orders specifically for this customer
+    // Removed orderBy to avoid requiring a composite index
     return query(
       collection(db, 'orders'),
-      where('customerEmail', '==', user.email),
-      orderBy('createdAt', 'desc')
+      where('customerEmail', '==', user.email)
     );
   }, [db, user?.email]);
 
-  const { data: orders, loading: ordersLoading } = useCollection(userOrdersQuery);
+  const { data: rawOrders, loading: ordersLoading } = useCollection(userOrdersQuery);
+
+  // Sort orders in-memory to avoid index requirement
+  const orders = useMemo(() => {
+    if (!rawOrders) return [];
+    return [...rawOrders].sort((a: any, b: any) => {
+      const dateA = a.createdAt?.toDate?.() || 0;
+      const dateB = b.createdAt?.toDate?.() || 0;
+      return dateB - dateA;
+    });
+  }, [rawOrders]);
 
   if (authLoading) {
     return (

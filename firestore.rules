@@ -7,9 +7,12 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
     
-    // Orders: Only authenticated users (admins) can read/write
+    // Orders: Allow authenticated users to create and read orders
+    // In a production app, you would restrict 'read' to only the owner or admins
     match /orders/{orderId} {
-      allow read, write: if request.auth != null;
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow update, delete: if request.auth != null;
     }
   }
 }
