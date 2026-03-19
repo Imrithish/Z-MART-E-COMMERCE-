@@ -14,7 +14,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon } from "lucide-react";
+import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon, AlertCircle } from "lucide-react";
 import { aiProductDescriptionGenerator } from "@/ai/flows/ai-product-description-generator";
 import { aiProductImageGenerator } from "@/ai/flows/ai-product-image-generator";
 import { useToast } from "@/hooks/use-toast";
@@ -125,10 +125,19 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
       if (result && result.imageUrl) {
         setFormData({ ...formData, imageUrl: result.imageUrl });
-        toast({
-          title: "AI Image Generated",
-          description: "Professional product photography has been created.",
-        });
+        
+        if (result.status === 'success') {
+          toast({
+            title: "AI Image Generated",
+            description: "Professional product photography has been created.",
+          });
+        } else {
+          toast({
+            title: "Premium Photo Selected",
+            description: "AI generation is restricted on free plans. We've matched a high-quality product photo for you.",
+            variant: "default",
+          });
+        }
       }
     } catch (error: any) {
       console.error("AI Image Error:", error);

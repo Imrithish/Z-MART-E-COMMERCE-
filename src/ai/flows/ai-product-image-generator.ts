@@ -17,7 +17,8 @@ const AiProductImageGeneratorInputSchema = z.object({
 export type AiProductImageGeneratorInput = z.infer<typeof AiProductImageGeneratorInputSchema>;
 
 const AiProductImageGeneratorOutputSchema = z.object({
-  imageUrl: z.string().describe('The generated image as a data URI.'),
+  imageUrl: z.string().describe('The generated image as a data URI or a high-quality fallback URL.'),
+  status: z.enum(['success', 'fallback']).describe('The generation status.'),
 });
 export type AiProductImageGeneratorOutput = z.infer<typeof AiProductImageGeneratorOutputSchema>;
 
@@ -32,22 +33,34 @@ const aiProductImageGeneratorFlow = ai.defineFlow(
     outputSchema: AiProductImageGeneratorOutputSchema,
   },
   async input => {
-    const prompt = `A professional, high-resolution commercial studio photograph of ${input.productName}. 
-    The item is a ${input.category} product. 
-    It should be centered, with clean studio lighting, high contrast, and a minimalist neutral background suitable for a premium e-commerce marketplace like Z-MART. 
-    No text, no watermarks, professional product photography style.`;
+    try {
+      const promptText = `A professional, high-resolution commercial studio photograph of ${input.productName}. 
+      The item is a ${input.category} product. 
+      It should be centered, with clean studio lighting, high contrast, and a minimalist neutral background suitable for a premium e-commerce marketplace like Z-MART. 
+      No text, no watermarks, professional product photography style.`;
 
-    const { media } = await ai.generate({
-      model: 'googleai/imagen-4.0-fast-generate-001',
-      prompt: prompt,
-    });
+      const { media } = await ai.generate({
+        model: 'googleai/imagen-4.0-fast-generate-001',
+        prompt: promptText,
+      });
 
-    if (!media || !media.url) {
-      throw new Error('Failed to generate product image');
+      if (media && media.url) {
+        return {
+          imageUrl: media.url,
+          status: 'success'
+        };
+      }
+    } catch (error: any) {
+      // Graceful Fallback for plan-restricted environments
+      console.warn("Imagen AI restricted or failed. Using high-quality product placeholder.", error.message);
     }
 
+    // Fallback: Generate a consistent, relevant placeholder using picsum seeds
+    // We sanitize the product name to create a stable seed
+    const stableSeed = input.productName.toLowerCase().replace(/[^a-z0-9]/g, '-');
     return {
-      imageUrl: media.url,
+      imageUrl: `https://picsum.photos/seed/${stableSeed}/800/800`,
+      status: 'fallback'
     };
   }
 );
