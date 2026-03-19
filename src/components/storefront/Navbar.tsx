@@ -260,7 +260,6 @@ export function Navbar() {
                   <ul className="space-y-2">
                     <li><Link href="/account" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Member Dashboard</Link></li>
                     <li><Link href="/account#orders" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest transition-all">Order History</Link></li>
-                    <li><Link href="/admin/login" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 text-xs font-black uppercase tracking-widest text-primary">Admin Panel</Link></li>
                   </ul>
                   <Separator />
                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-10 rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-red-500/10">
@@ -301,9 +300,6 @@ export function Navbar() {
         <Link href="/products?category=Fashion" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Fashion</Link>
         <Link href="/products?category=Home & Kitchen" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Home Decor</Link>
         <Link href="/products" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all text-primary shrink-0">Today's Deals</Link>
-        <Link href="/admin/login" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all ml-auto shrink-0 flex items-center gap-1">
-          <ShieldCheck className="h-3 w-3" /> Admin Hub
-        </Link>
       </div>
     </header>
   );
