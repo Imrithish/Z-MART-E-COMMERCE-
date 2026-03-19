@@ -70,6 +70,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '**.staticflickr.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.ssl-images-amazon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.media-amazon.com',
       }
     ],
   },
