@@ -15,6 +15,7 @@ import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -22,6 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -110,12 +116,6 @@ function ProductList() {
     addItem(product);
   }, [addItem]);
 
-  const categories = useMemo(() => {
-    if (!allProducts) return ["All Categories"];
-    const cats = Array.from(new Set(allProducts.map((p: any) => p.category))).filter(Boolean);
-    return ["All Categories", ...cats];
-  }, [allProducts]);
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-4">
@@ -141,56 +141,80 @@ function ProductList() {
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
                 {categoryFilter === "All Categories" ? (searchQuery ? `Results for: ${searchQuery}` : "All Products") : categoryFilter}
               </h1>
-              <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4" />
+              <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4 shrink-0" />
+              <Badge variant="outline" className="hidden sm:flex h-6 rounded-full border-slate-200 text-slate-400 font-black text-[8px] uppercase tracking-widest mt-2 md:mt-4">
+                {displayProducts.length} Items
+              </Badge>
             </div>
             <p className="text-slate-500 font-medium text-sm md:text-lg">
-              {displayProducts.length} Premium items curated for your collection.
+              Premium essentials curated for your collection.
             </p>
           </div>
 
-          {/* Filter & Sort Controls */}
-          <div className="flex flex-wrap items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
-            <div className="flex items-center gap-2 px-3 border-r border-slate-100">
-              <Filter className="h-3.5 w-3.5 text-slate-400" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Refine</span>
-            </div>
-            
-            <Select value={categoryFilter} onValueChange={(val) => router.push(`/products?category=${val}`)}>
-              <SelectTrigger className="h-10 w-[140px] md:w-[180px] border-none bg-slate-50 rounded-xl font-bold text-[10px] uppercase tracking-wider focus:ring-0">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                {categories.map((cat) => (
-                  <SelectItem key={cat} value={cat} className="text-[10px] font-black uppercase tracking-widest py-3">{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex items-center gap-3">
+            {/* Filter Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
+                  <Filter className="h-4 w-4 text-slate-600 group-hover:text-primary" />
+                  {priceRange !== "All Prices" && (
+                    <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Price Range</label>
+                    <Select value={priceRange} onValueChange={setPriceRange}>
+                      <SelectTrigger className="h-11 border-none bg-slate-50 rounded-xl font-bold text-xs focus:ring-0">
+                        <SelectValue placeholder="Price Range" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
+                        {PRICE_RANGES.map((range) => (
+                          <SelectItem key={range.label} value={range.label} className="text-[10px] font-black uppercase tracking-widest py-3">{range.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setPriceRange("All Prices")}
+                    className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-8"
+                  >
+                    Clear Filter
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
 
-            <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger className="h-10 w-[140px] md:w-[180px] border-none bg-slate-50 rounded-xl font-bold text-[10px] uppercase tracking-wider focus:ring-0">
-                <SelectValue placeholder="Price Range" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                {PRICE_RANGES.map((range) => (
-                  <SelectItem key={range.label} value={range.label} className="text-[10px] font-black uppercase tracking-widest py-3">{range.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <div className="h-6 w-px bg-slate-100 mx-1 hidden md:block" />
-
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="h-10 w-[140px] md:w-[180px] border-none bg-slate-900 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest focus:ring-0 group">
-                <ArrowUpDown className="h-3 w-3 mr-2 text-primary" />
-                <SelectValue placeholder="Sort By" />
-              </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                <SelectItem value="newest" className="text-[10px] font-black uppercase tracking-widest py-3">Newest Arrivals</SelectItem>
-                <SelectItem value="price-asc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: High to Low</SelectItem>
-                <SelectItem value="rating" className="text-[10px] font-black uppercase tracking-widest py-3">Avg. Customer Rating</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Sort Popover */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon" className="h-10 w-10 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
+                  <ArrowUpDown className="h-4 w-4 text-slate-600 group-hover:text-primary" />
+                  {sortBy !== "newest" && (
+                    <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-4 rounded-2xl shadow-2xl border-slate-100" align="end">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Sort By</label>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="h-11 border-none bg-slate-900 text-white rounded-xl font-bold text-xs focus:ring-0">
+                      <SelectValue placeholder="Sort By" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
+                      <SelectItem value="newest" className="text-[10px] font-black uppercase tracking-widest py-3">Newest Arrivals</SelectItem>
+                      <SelectItem value="price-asc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: Low to High</SelectItem>
+                      <SelectItem value="price-desc" className="text-[10px] font-black uppercase tracking-widest py-3">Price: High to Low</SelectItem>
+                      <SelectItem value="rating" className="text-[10px] font-black uppercase tracking-widest py-3">Avg. Customer Rating</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>
@@ -263,7 +287,7 @@ function ProductList() {
              </div>
             <h3 className="text-xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter">No items found</h3>
             <p className="text-xs md:text-base text-slate-400 mt-3 font-medium max-w-sm mx-auto">
-              We couldn't find anything matching your current filters. Try adjusting your price range or exploring other categories.
+              We couldn't find anything matching your current filters.
             </p>
             <Button 
               variant="outline" 
