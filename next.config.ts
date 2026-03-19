@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -45,6 +46,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '**.amazon.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.shein.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.shein.in',
       },
       {
         protocol: 'https',
