@@ -7,23 +7,37 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useUser, useAuth } from "@/firebase";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 
-const SEARCH_CATEGORIES = [
-  "All Categories",
-  "Electronics",
-  "Fashion",
-  "Home & Kitchen",
-  "Beauty",
-  "Books"
+const CATEGORY_STRUCTURE = [
+  {
+    label: "Electronics",
+    items: ["Laptops", "Mobiles", "Audio", "Wearables", "Cameras", "Gaming"]
+  },
+  {
+    label: "Fashion",
+    items: ["Men's Clothing", "Women's Clothing", "Accessories", "Footwear", "Watches"]
+  },
+  {
+    label: "Home & Kitchen",
+    items: ["Appliances", "Furniture", "Decor", "Cookware", "Garden"]
+  },
+  {
+    label: "Beauty & Health",
+    items: ["Skincare", "Makeup", "Haircare", "Supplements", "Personal Care"]
+  },
+  {
+    label: "Books",
+    items: ["Fiction", "Non-Fiction", "Educational", "Children's Books"]
+  }
 ];
 
 export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const { totalItems } = useCart();
   const router = useRouter();
   const { user } = useUser();
@@ -33,7 +47,7 @@ export function Navbar() {
     e.preventDefault();
     const params = new URLSearchParams();
     if (searchQuery.trim()) params.append("q", searchQuery.trim());
-    if (selectedCategory !== "All Categories") params.append("category", selectedCategory);
+    if (selectedCategory !== "all") params.append("category", selectedCategory);
     router.push(`/products?${params.toString()}`);
   };
 
@@ -53,7 +67,7 @@ export function Navbar() {
           <div className="h-1.5 w-1.5 bg-primary rounded-full mt-3 ml-1" />
         </Link>
 
-        {/* Location (Amazon Style) */}
+        {/* Location */}
         <div className="hidden lg:flex flex-col items-start leading-tight hover:ring-1 hover:ring-white p-2 rounded-sm cursor-pointer transition-all">
           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Deliver to</span>
           <div className="flex items-center gap-1">
@@ -69,14 +83,26 @@ export function Navbar() {
         >
           <div className="h-full border-r border-slate-200 hidden md:block">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="h-full border-none bg-slate-50 focus:ring-0 text-[10px] text-slate-600 px-4 gap-2 rounded-none shadow-none font-black uppercase tracking-widest">
+              <SelectTrigger className="h-full border-none bg-slate-50 focus:ring-0 text-[10px] text-slate-600 px-4 gap-2 rounded-none shadow-none font-black uppercase tracking-widest min-w-[140px]">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100 shadow-2xl p-2">
-                {SEARCH_CATEGORIES.map((cat) => (
-                  <SelectItem key={cat} value={cat} className="text-[10px] py-3 cursor-pointer font-black uppercase tracking-widest rounded-lg">
-                    {cat}
-                  </SelectItem>
+              <SelectContent className="rounded-xl border-slate-100 shadow-2xl p-2 max-h-[400px]">
+                <SelectItem value="all" className="text-[10px] py-2 cursor-pointer font-black uppercase tracking-widest rounded-lg">All Categories</SelectItem>
+                {CATEGORY_STRUCTURE.map((group) => (
+                  <SelectGroup key={group.label}>
+                    <SelectLabel className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] px-3 pt-4 pb-1">
+                      {group.label}
+                    </SelectLabel>
+                    {group.items.map((item) => (
+                      <SelectItem 
+                        key={item} 
+                        value={item} 
+                        className="text-[10px] py-2 cursor-pointer font-black uppercase tracking-widest rounded-lg"
+                      >
+                        {item}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 ))}
               </SelectContent>
             </Select>
@@ -106,7 +132,6 @@ export function Navbar() {
               </div>
             </button>
             
-            {/* Dropdown Menu */}
             <div className="absolute top-[calc(100%+0px)] right-0 w-64 bg-white text-slate-900 shadow-2xl rounded-none p-6 hidden group-hover:block border border-slate-100 z-50 animate-in fade-in zoom-in duration-150 origin-top-right">
               {user ? (
                 <div className="space-y-6">
