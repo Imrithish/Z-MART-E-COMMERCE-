@@ -30,7 +30,9 @@ const prompt = ai.definePrompt({
   name: 'aiProductDescriptionGeneratorPrompt',
   input: {schema: AiProductDescriptionGeneratorInputSchema},
   output: {schema: AiProductDescriptionGeneratorOutputSchema},
-  prompt: `You are an expert copywriter specializing in creating compelling and descriptive product descriptions for e-commerce. Your goal is to write a product description that highlights key features and entices customers.
+  prompt: `You are an expert e-commerce copywriter specializing in creating compelling, high-converting product descriptions for Z-MART, a premium global marketplace. 
+
+Your goal is to write a product description that highlights key features, emphasizes user benefits, and entices customers to make a purchase.
 
 Product Name: {{{productName}}}
 
@@ -39,10 +41,17 @@ Key Features:
 {{/each}}
 
 {{#if additionalNotes}}
-Additional Notes: {{{additionalNotes}}}
+Additional Style/Context Notes: {{{additionalNotes}}}
 {{/if}}
 
-Write a compelling and descriptive product description based on the information provided. Focus on benefits and engaging language.`,
+Guidelines:
+1. Start with a hook that grabs attention.
+2. Focus on the benefits (how it improves the user's life) rather than just the features.
+3. Use a tone that is professional, authoritative, yet inviting.
+4. Ensure the description is at least 3-4 sentences long.
+5. End with a subtle call to value.
+
+Write a compelling and descriptive product description:`,
 });
 
 const aiProductDescriptionGeneratorFlow = ai.defineFlow(
@@ -53,6 +62,9 @@ const aiProductDescriptionGeneratorFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('Failed to generate product description');
+    }
+    return output;
   }
 );

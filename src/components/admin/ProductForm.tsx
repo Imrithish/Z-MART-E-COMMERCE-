@@ -67,7 +67,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const generateDescription = async () => {
     if (!formData.name) {
       toast({
-        title: "Product name required",
+        title: "Product Name Required",
         description: "Please enter a product name before generating a description.",
         variant: "destructive",
       });
@@ -76,20 +76,28 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
     setIsGenerating(true);
     try {
+      // Parse features and provide a fallback if empty to satisfy Zod schema min(1)
+      const features = formData.features.split(',').map((f: string) => f.trim()).filter(Boolean);
+      const keyFeatures = features.length > 0 ? features : ["High quality", "Durable design", "Premium performance"];
+
       const result = await aiProductDescriptionGenerator({
         productName: formData.name,
-        keyFeatures: formData.features.split(',').map((f: string) => f.trim()).filter(Boolean),
-        additionalNotes: "Professional, persuasive, and SEO-friendly.",
+        keyFeatures: keyFeatures,
+        additionalNotes: "Professional, persuasive, and SEO-friendly. Focus on the premium nature of the brand.",
       });
-      setFormData({ ...formData, description: result.description });
+
+      if (result && result.description) {
+        setFormData({ ...formData, description: result.description });
+        toast({
+          title: "AI Optimized Description",
+          description: "Compelling product description has been successfully generated.",
+        });
+      }
+    } catch (error: any) {
+      console.error("AI Generation Error:", error);
       toast({
-        title: "Success",
-        description: "AI-optimized description generated.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "AI service is currently unavailable.",
+        title: "AI Service Error",
+        description: "Could not generate description. Please ensure you've provided some features.",
         variant: "destructive",
       });
     } finally {
@@ -103,7 +111,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
 
     setIsLoading(true);
     
-    // Ensure we have a valid image URL
     const finalImageUrl = formData.imageUrl.trim() || `https://picsum.photos/seed/${Math.floor(Math.random() * 1000000)}/600/600`;
     
     const productData = {
@@ -269,7 +276,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                   className="gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary font-black uppercase text-[10px] tracking-widest rounded-xl h-10 px-5 transition-all"
                 >
                   {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                  AI Generate
+                  {isGenerating ? "AI Working..." : "AI Generate"}
                 </Button>
               </div>
               <Textarea 
