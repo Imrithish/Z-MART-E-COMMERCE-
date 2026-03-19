@@ -121,9 +121,6 @@ export default function Home() {
                 <Button asChild className="h-20 px-12 rounded-[2rem] amazon-btn-primary text-sm shadow-2xl shadow-primary/40">
                   <Link href="/products">Shop The Collection <ArrowRight className="ml-2 h-5 w-5" /></Link>
                 </Button>
-                <Button variant="outline" asChild className="h-20 px-12 rounded-[2rem] border-white/20 text-white hover:bg-white/10 font-black uppercase tracking-widest text-[10px] backdrop-blur-md">
-                   <Link href="/products">Discover All</Link>
-                </Button>
               </div>
             </div>
           </div>

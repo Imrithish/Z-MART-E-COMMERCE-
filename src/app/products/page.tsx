@@ -179,23 +179,6 @@ export default function StorefrontProducts() {
     <div className="min-h-screen bg-[#eaeded]">
       <Navbar />
       <main className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 bg-white p-6 shadow-sm rounded-sm">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">
-              {q ? `Results for "${q}"` : "Premium Catalog"}
-            </h1>
-            <p className="text-sm text-gray-500">Explore our curated collection.</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" className="gap-2 h-9 text-xs">
-              <SlidersHorizontal className="h-4 w-4" /> Sort By
-            </Button>
-            <Button variant="outline" className="gap-2 h-9 text-xs">
-              <Filter className="h-4 w-4" /> Filter
-            </Button>
-          </div>
-        </div>
-
         <Suspense fallback={<div className="flex justify-center py-20"><Loader2 className="animate-spin h-10 w-10 text-primary" /></div>}>
           <ProductList />
         </Suspense>
