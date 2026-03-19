@@ -19,7 +19,7 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("m.rithish1882007@gmail.com");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState("Rithish.m@2");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
