@@ -1,4 +1,3 @@
-
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -6,16 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { User, Bell, Shield, Save, Loader2, Database, Sparkles, AlertCircle } from "lucide-react";
+import { User, Bell, Shield, Save, Loader2, Database, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
 import { useUser, useFirestore } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { MOCK_PRODUCTS } from "@/lib/mock-data";
-import { collection, addDoc, serverTimestamp, query, getDocs, writeBatch, doc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, getDocs, writeBatch } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { syncKaggleData } from "@/ai/flows/kaggle-import-flow";
 
 export default function AdminSettings() {
   const { user, loading: authLoading } = useUser();
@@ -62,15 +60,17 @@ export default function AdminSettings() {
     }
   };
 
-  const seedDatabase = async () => {
+  const syncWithKaggle = async () => {
     if (!db) return;
     setIsSeeding(true);
     
     try {
-      const seedPromises = MOCK_PRODUCTS.map(product => {
-        const { id, ...productData } = product;
+      // Fetch AI-generated Kaggle style data
+      const result = await syncKaggleData();
+      
+      const seedPromises = result.products.map(product => {
         return addDoc(collection(db, 'products'), {
-          ...productData,
+          ...product,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         });
@@ -79,8 +79,8 @@ export default function AdminSettings() {
       await Promise.all(seedPromises);
       
       toast({
-        title: "Store Seeded",
-        description: `${MOCK_PRODUCTS.length} products have been added from the global dataset.`,
+        title: "Kaggle Sync Complete",
+        description: `${result.products.length} products mapped and imported from Kaggle-style dataset.`,
       });
       router.push('/admin/products');
     } catch (error: any) {
@@ -89,6 +89,11 @@ export default function AdminSettings() {
         operation: 'create',
       });
       errorEmitter.emit('permission-error', permissionError);
+      toast({
+        variant: "destructive",
+        title: "Sync Failed",
+        description: "Could not connect to Kaggle AI Flow."
+      });
     } finally {
       setIsSeeding(false);
     }
@@ -150,19 +155,19 @@ export default function AdminSettings() {
               <CardContent className="p-8 space-y-8">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-xs font-black text-slate-900 uppercase tracking-widest">
-                    <Sparkles className="h-4 w-4 text-primary" /> Dataset Synchronization
+                    <RefreshCw className="h-4 w-4 text-primary" /> Kaggle API Integration
                   </div>
                   <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
-                    Populate your store with the Kaggle-inspired e-commerce dataset (Fashion, Tech, Home, Beauty).
+                    Synchronize your store with real-world e-commerce data modeled after Kaggle (Shein, Amazon, Fashion).
                   </p>
                   <Button 
-                    onClick={seedDatabase} 
+                    onClick={syncWithKaggle} 
                     disabled={isSeeding || isCleaning}
                     variant="outline"
                     className="h-16 px-8 rounded-2xl border-primary/20 bg-primary/5 hover:bg-primary/10 text-primary font-black uppercase tracking-widest transition-all w-full md:w-auto"
                   >
-                    {isSeeding ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <Database className="h-5 w-5 mr-3" />}
-                    {isSeeding ? "Syncing Dataset..." : "Seed Store with Dataset"}
+                    {isSeeding ? <Loader2 className="h-5 w-5 animate-spin mr-3" /> : <RefreshCw className="h-5 w-5 mr-3" />}
+                    {isSeeding ? "Syncing Kaggle Data..." : "Sync with Kaggle (AI)"}
                   </Button>
                 </div>
 
