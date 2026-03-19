@@ -56,6 +56,32 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
   }
+
+  /* --- Custom Premium Scrollbar --- */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1; /* slate-300 */
+    border-radius: 20px;
+    transition: background 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+  }
+
+  /* Firefox Support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
 }
 
 .amazon-header-bg {
@@ -70,15 +96,14 @@
   @apply bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
+/* Hide scrollbar utility for specific containers */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @keyframes float {
