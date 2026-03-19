@@ -1,4 +1,3 @@
-
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -8,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Edit2, Trash2, Search, Filter, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "image";
 import { useCollection, useFirestore, useUser } from "@/firebase";
 import { collection, deleteDoc, doc, query, orderBy } from "firebase/firestore";
 import { useMemo, useEffect } from "react";
@@ -50,7 +49,7 @@ export default function AdminProducts() {
     
     deleteDoc(doc(db, 'products', productId))
       .then(() => {
-        toast({ title: "Product Deleted", description: "The item has been removed from the catalog." });
+        toast({ title: "Product Deleted", description: "The item has been removed from the products list." });
       })
       .catch(async (error) => {
         const permissionError = new FirestorePermissionError({
@@ -78,7 +77,7 @@ export default function AdminProducts() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-black tracking-tight mb-2 text-slate-900">Products</h1>
-            <p className="text-slate-500 text-lg font-medium">Manage your catalog, stock, and descriptions.</p>
+            <p className="text-slate-500 text-lg font-medium">Manage your products, stock, and descriptions.</p>
           </div>
           <Button asChild className="h-14 px-8 rounded-2xl shadow-xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest text-xs transition-all active:scale-95">
             <Link href="/admin/products/new" className="text-white flex items-center">
@@ -101,7 +100,7 @@ export default function AdminProducts() {
             {dataLoading ? (
               <div className="flex flex-col items-center justify-center py-32 gap-4">
                 <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Synchronizing Catalog...</p>
+                <p className="text-slate-400 font-black uppercase tracking-widest text-[10px]">Synchronizing Products...</p>
               </div>
             ) : products && products.length > 0 ? (
               <Table>
@@ -162,7 +161,7 @@ export default function AdminProducts() {
                    <Plus className="h-10 w-10 text-slate-200" />
                 </div>
                 <h3 className="font-black text-2xl text-slate-900 uppercase tracking-tight">No Products Found</h3>
-                <p className="text-slate-500 mb-10 font-medium">Start building your catalog by adding your first product.</p>
+                <p className="text-slate-500 mb-10 font-medium">Start adding your first product to your store.</p>
                 <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary text-white font-black uppercase tracking-widest">
                   <Link href="/admin/products/new" className="text-white">Create First Listing</Link>
                 </Button>

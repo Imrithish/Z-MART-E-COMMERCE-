@@ -11,7 +11,7 @@ import { signOut } from "firebase/auth";
 
 const NAV_ITEMS = [
   { label: 'Overview', icon: LayoutDashboard, href: '/admin/dashboard' },
-  { label: 'Catalog', icon: Box, href: '/admin/products' },
+  { label: 'Products', icon: Box, href: '/admin/products' },
   { label: 'Orders', icon: ShoppingCart, href: '/admin/orders' },
   { label: 'Settings', icon: Settings, href: '/admin/settings' },
 ];
