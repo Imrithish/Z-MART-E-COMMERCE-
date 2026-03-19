@@ -60,6 +60,8 @@ export default function Home() {
     }, {});
   }, [products]);
 
+  const categoryEntries = useMemo(() => Object.entries(productsByCategory).slice(0, 4), [productsByCategory]);
+
   const handleProductClick = useCallback((product: any) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -208,7 +210,7 @@ export default function Home() {
 
         <div className="max-w-[1450px] mx-auto px-4 md:px-8 py-20 space-y-32">
           
-          {/* New Arrivals Section */}
+          {/* Section 1: New Arrivals */}
           {curatedSections.newArrivals.length > 0 && (
             <section className="space-y-10">
               <div className="flex items-end justify-between border-b border-slate-200 pb-6">
@@ -226,7 +228,27 @@ export default function Home() {
             </section>
           )}
 
-          {/* Best Sellers Section */}
+          {/* Section 2: First Category */}
+          {categoryEntries[0] && (
+            <section className="space-y-10">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-6">
+                <div className="space-y-1">
+                  <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[0][0]}</h2>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Curated {categoryEntries[0][0]} Essentials</p>
+                </div>
+                <Link href={`/products?category=${categoryEntries[0][0]}`} className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
+                  View All <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {categoryEntries[0][1].slice(0, 12).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Section 3: Best Sellers */}
           {curatedSections.bestSellers.length > 0 && (
             <section className="space-y-10">
               <div className="flex items-end justify-between border-b border-slate-200 pb-6">
@@ -244,7 +266,27 @@ export default function Home() {
             </section>
           )}
 
-          {/* Popular Now Section */}
+          {/* Section 4: Second Category */}
+          {categoryEntries[1] && (
+            <section className="space-y-10">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-6">
+                <div className="space-y-1">
+                  <h2 className="text-4xl font-black text-slate-900 uppercase tracking-tighter">{categoryEntries[1][0]}</h2>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Curated {categoryEntries[1][0]} Essentials</p>
+                </div>
+                <Link href={`/products?category=${categoryEntries[1][0]}`} className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
+                  View All <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-8">
+                {categoryEntries[1][1].slice(0, 12).map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Section 5: Popular Now */}
           {curatedSections.popular.length > 0 && (
             <section className="space-y-10">
               <div className="flex items-end justify-between border-b border-slate-200 pb-6">
@@ -262,8 +304,8 @@ export default function Home() {
             </section>
           )}
 
-          {/* Main Category Sections (Showing exactly 4) */}
-          {Object.entries(productsByCategory).slice(0, 4).map(([category, catProducts]: [string, any[]]) => (
+          {/* Section 6 & 7: Remaining Categories */}
+          {categoryEntries.slice(2, 4).map(([category, catProducts]) => (
             <section key={category} className="space-y-10">
               <div className="flex items-end justify-between border-b border-slate-200 pb-6">
                 <div className="space-y-1">
