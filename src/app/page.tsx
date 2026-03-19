@@ -2,7 +2,7 @@
 
 import { Navbar } from "@/components/storefront/Navbar";
 import { Product } from "@/lib/mock-data";
-import { Star, ChevronRight, ChevronLeft, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
+import { Star, ChevronRight, CheckCircle2, Loader2, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
@@ -104,7 +104,7 @@ export default function Home() {
           <div className="absolute inset-0 flex items-center px-6 md:px-20">
             <div className="max-w-2xl space-y-6 md:space-y-10">
               <div className="space-y-4">
-                <span className="inline-block px-4 py-1.5 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
+                <span className="inline-block px-4 py-1.5 bg-primary text-slate-900 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
                   New Collection 2024
                 </span>
                 <h1 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter">

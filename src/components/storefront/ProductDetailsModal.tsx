@@ -1,4 +1,3 @@
-
 "use client"
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -57,7 +56,7 @@ export function ProductDetailsModal({ product, isOpen, onClose }: ProductDetails
       ) as any,
       action: (
         <ToastAction altText="View Cart" asChild>
-          <Link href="/cart" className="bg-primary hover:bg-primary/90 text-black font-black text-[10px] px-4 py-2 rounded-xl uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20">
+          <Link href="/cart" className="amazon-btn-primary text-[10px] px-4 py-2 rounded-xl">
             View Cart
           </Link>
         </ToastAction>

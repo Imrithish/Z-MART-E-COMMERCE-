@@ -23,7 +23,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 38 100% 50%;
-    --radius: 1rem;
+    --radius: 1.5rem;
   }
 
   .dark {
@@ -67,7 +67,7 @@
 }
 
 .amazon-btn-primary {
-  @apply bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20;
+  @apply bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-primary/20;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

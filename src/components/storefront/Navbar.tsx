@@ -1,12 +1,10 @@
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight, Home, LogOut, ShieldCheck } from "lucide-react";
+import { ShoppingCart, User, Search, Home, LogOut, ShieldCheck, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -24,7 +22,6 @@ const SEARCH_CATEGORIES = [
 ];
 
 export function Navbar() {
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const { totalItems } = useCart();
@@ -74,7 +71,7 @@ export function Navbar() {
           onSubmit={handleSearch}
           className={`hidden md:flex flex-1 items-center h-12 rounded-2xl overflow-hidden bg-white/10 border border-white/10 focus-within:bg-white transition-all focus-within:border-primary focus-within:shadow-2xl focus-within:shadow-primary/20`}
         >
-          <div className="h-full border-r border-white/10 focus-within:border-slate-200">
+          <div className="h-full border-r border-white/10">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="h-full border-none bg-transparent focus:ring-0 text-[10px] text-white group-focus-within:text-slate-900 px-5 gap-2 rounded-none shadow-none font-black uppercase tracking-widest">
                 <SelectValue placeholder="All" />
