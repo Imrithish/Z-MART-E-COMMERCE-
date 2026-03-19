@@ -69,7 +69,7 @@ function ProductList() {
     if (!allProducts) return [];
     let filtered = [...allProducts];
 
-    // Category Filter
+    // Category Filter (from URL)
     if (categoryFilter !== "All Categories") {
       filtered = filtered.filter((p: any) => p.category?.toLowerCase() === categoryFilter.toLowerCase());
     }
