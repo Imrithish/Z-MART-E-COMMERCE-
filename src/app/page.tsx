@@ -75,18 +75,11 @@ export default function Home() {
     });
   }, [addItem, toast]);
 
-  const handleBuyNow = useCallback((e: React.MouseEvent, product: any) => {
+  const handleBuyNowClick = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    if (!user) {
-      toast({
-        title: "Sign in required",
-        description: "Please sign in to use Buy Now.",
-      });
-      router.push('/login');
-      return;
-    }
-    router.push(`/checkout?productId=${product.id}`);
-  }, [user, router, toast]);
+    // Instead of going to checkout, we open the details as requested
+    handleProductClick(product);
+  }, [handleProductClick]);
 
   if (loading) {
     return (
@@ -196,7 +189,7 @@ export default function Home() {
                       </h3>
                       <div className="pt-2">
                         <Button 
-                          onClick={(e) => handleBuyNow(e, product)}
+                          onClick={(e) => handleBuyNowClick(e, product)}
                           className="w-full h-8 bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest text-[9px] rounded-lg shadow-sm"
                         >
                           <Zap className="h-3 w-3 mr-1 fill-current" /> Buy Now
@@ -256,7 +249,7 @@ export default function Home() {
                       </Button>
                     </div>
                     <Button 
-                      onClick={(e) => handleBuyNow(e, product)}
+                      onClick={(e) => handleBuyNowClick(e, product)}
                       className="w-full h-9 bg-primary hover:bg-primary/90 text-slate-900 font-black uppercase tracking-widest text-[9px] rounded-xl shadow-sm group-hover:shadow-primary/20 transition-all"
                     >
                       <Zap className="h-3 w-3 mr-1 fill-current" /> Buy Now
