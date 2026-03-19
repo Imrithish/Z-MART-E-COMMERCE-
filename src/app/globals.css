@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 210 10% 95%; /* #F0F2F4 */
+    --background: 0 0% 98%; /* Light grey background like marketplaces */
     --foreground: 221 70% 10%;
     --card: 0 0% 100%;
     --card-foreground: 221 70% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 221 70% 10%;
-    --primary: 221 70% 30%; /* #173B82 */
-    --primary-foreground: 210 10% 98%;
-    --secondary: 223 9% 75%; /* #B9BDC6 */
+    --primary: 215 90% 35%; /* Professional marketplace blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 35 100% 55%; /* Attention-grabbing orange for CTA */
     --secondary-foreground: 221 70% 10%;
     --muted: 210 10% 90%;
     --muted-foreground: 221 20% 40%;
-    --accent: 223 9% 75%;
-    --accent-foreground: 221 70% 10%;
+    --accent: 215 90% 95%;
+    --accent-foreground: 215 90% 35%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 223 9% 85%;
-    --input: 223 9% 85%;
-    --ring: 221 70% 30%;
-    --radius: 0.75rem;
+    --border: 223 9% 88%;
+    --input: 223 9% 88%;
+    --ring: 215 90% 35%;
+    --radius: 0.5rem;
   }
   .dark {
     --background: 221 70% 5%;
@@ -32,10 +32,10 @@
     --card-foreground: 210 10% 98%;
     --popover: 221 70% 7%;
     --popover-foreground: 210 10% 98%;
-    --primary: 221 70% 40%;
-    --primary-foreground: 210 10% 98%;
-    --secondary: 221 20% 20%;
-    --secondary-foreground: 210 10% 98%;
+    --primary: 215 90% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 35 100% 50%;
+    --secondary-foreground: 221 70% 10%;
     --muted: 221 20% 15%;
     --muted-foreground: 221 20% 60%;
     --accent: 221 20% 20%;
@@ -44,7 +44,7 @@
     --destructive-foreground: 210 10% 98%;
     --border: 221 20% 20%;
     --input: 221 20% 20%;
-    --ring: 221 70% 40%;
+    --ring: 215 90% 50%;
   }
 }
 
