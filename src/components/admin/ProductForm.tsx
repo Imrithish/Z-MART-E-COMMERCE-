@@ -21,6 +21,8 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const db = useFirestore();
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Initialize with a static placeholder to avoid hydration mismatch
   const [formData, setFormData] = useState(initialData || {
     name: '',
     description: '',
@@ -32,7 +34,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     imageUrl: 'https://picsum.photos/seed/placeholder/600/600',
   });
 
-  // Defer random seed generation to avoid hydration mismatch
+  // Generate random seed only on the client after mounting
   useEffect(() => {
     if (!initialData && formData.imageUrl === 'https://picsum.photos/seed/placeholder/600/600') {
       const seed = Math.floor(Math.random() * 1000000);

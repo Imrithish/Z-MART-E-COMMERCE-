@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -9,6 +8,7 @@ import { Firestore } from 'firebase/firestore';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 
 export function FirebaseClientProvider({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
   const [firebaseData, setFirebaseData] = useState<{
     app: FirebaseApp;
     auth: Auth;
@@ -16,19 +16,23 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
   } | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     const { app, auth, db } = initializeFirebase();
     setFirebaseData({ app, auth, db });
   }, []);
 
-  if (!firebaseData) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center bg-slate-50">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-12 w-12 bg-slate-200 rounded-2xl" />
-          <div className="h-4 w-32 bg-slate-200 rounded-full" />
-        </div>
+  // Standard fallback to match server render and initial client mount
+  const LoadingFallback = () => (
+    <div className="h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="animate-pulse flex flex-col items-center gap-4">
+        <div className="h-12 w-12 bg-slate-200 rounded-2xl" />
+        <div className="h-4 w-32 bg-slate-200 rounded-full" />
       </div>
-    );
+    </div>
+  );
+
+  if (!mounted || !firebaseData) {
+    return <LoadingFallback />;
   }
 
   return (
