@@ -1,11 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  Select, 
+  SelectContent, 
+  SelectGroup, 
+  SelectItem, 
+  SelectLabel, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon } from "lucide-react";
 import { aiProductDescriptionGenerator } from "@/ai/flows/ai-product-description-generator";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +22,29 @@ import { useFirestore } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
+
+const CATEGORY_GROUPS = [
+  {
+    label: "Digital & Tech",
+    items: ["Laptops", "Mobiles", "Audio", "Gaming", "Electronics"]
+  },
+  {
+    label: "Style & Trend",
+    items: ["Men's Clothing", "Women's Clothing", "Accessories", "Watches", "Fashion"]
+  },
+  {
+    label: "Home & Life",
+    items: ["Appliances", "Furniture", "Decor", "Garden", "Home & Kitchen"]
+  },
+  {
+    label: "Beauty & Wellness",
+    items: ["Skincare", "Makeup", "Haircare", "Personal Care", "Beauty"]
+  },
+  {
+    label: "Media",
+    items: ["Books", "Movies", "Music"]
+  }
+];
 
 export function ProductForm({ initialData }: { initialData?: any }) {
   const { toast } = useToast();
@@ -176,11 +207,16 @@ export function ProductForm({ initialData }: { initialData?: any }) {
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-slate-100 shadow-2xl">
-                  <SelectItem value="Electronics" className="font-bold py-3">Electronics & Computing</SelectItem>
-                  <SelectItem value="Home & Kitchen" className="font-bold py-3">Home & Kitchen</SelectItem>
-                  <SelectItem value="Fashion" className="font-bold py-3">Fashion & Apparel</SelectItem>
-                  <SelectItem value="Beauty" className="font-bold py-3">Beauty & Personal Care</SelectItem>
-                  <SelectItem value="Books" className="font-bold py-3">Books & Media</SelectItem>
+                  {CATEGORY_GROUPS.map((group) => (
+                    <SelectGroup key={group.label}>
+                      <SelectLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-6 py-2 border-b border-slate-50 mb-1">{group.label}</SelectLabel>
+                      {group.items.map((item) => (
+                        <SelectItem key={item} value={item} className="font-bold py-3 pl-8">
+                          {item}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
