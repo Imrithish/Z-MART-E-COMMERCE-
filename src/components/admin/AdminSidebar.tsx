@@ -85,7 +85,7 @@ export function AdminSidebar() {
           )}
         >
           <Store className="h-6 w-6 shrink-0 transition-transform group-hover:scale-110" />
-          {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest">Go To Store</span>}
+          {!isCollapsed && <span className="text-[11px] font-black uppercase tracking-widest">View Home</span>}
         </Link>
         <button 
           onClick={handleLogout}

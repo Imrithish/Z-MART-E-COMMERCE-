@@ -1,4 +1,3 @@
-
 "use client"
 
 import Link from "next/link";
@@ -153,8 +152,8 @@ export function Navbar() {
 
       {/* Amazon-Style Sub-navigation */}
       <div className="amazon-subnav-bg text-white h-[40px] flex items-center px-4 md:px-6 gap-6 overflow-x-auto no-scrollbar text-[11px] font-black uppercase tracking-widest">
-        <Link href="/products" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all flex items-center gap-2 shrink-0">
-          <Home className="h-3 w-3" /> Store
+        <Link href="/" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all flex items-center gap-2 shrink-0">
+          <Home className="h-3 w-3" /> Home
         </Link>
         <Link href="/products?category=Electronics" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all shrink-0">Electronics</Link>
         <Link href="/products?category=Fashion" className="hover:ring-1 hover:ring-white py-1 px-3 transition-all shrink-0">Fashion</Link>

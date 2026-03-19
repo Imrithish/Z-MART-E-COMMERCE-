@@ -32,7 +32,6 @@ export default function Home() {
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
-    // Removed orderBy to avoid requiring index for simple dev cycles
     return query(collection(db, 'products'), limit(24));
   }, [db]);
 
@@ -116,7 +115,7 @@ export default function Home() {
               { title: "Electronics", hint: "modern tech", href: "/products?category=Electronics", seed: "tech" },
               { title: "Home & Kitchen", hint: "minimalist kitchen", href: "/products?category=Home & Kitchen", seed: "kitchen" },
               { title: "Fashion", hint: "model pose", href: "/products?category=Fashion", seed: "style" },
-              { title: "Latest Collection", hint: "new drop", href: "/products", seed: "new" }
+              { title: "New Arrivals", hint: "new drop", href: "/products", seed: "new" }
             ].map((cat, idx) => (
               <Link key={idx} href={cat.href}>
                 <Card className="bg-white p-6 rounded-none shadow-sm flex flex-col h-full group cursor-pointer hover:shadow-2xl transition-all duration-500 border-none">
@@ -195,7 +194,7 @@ export default function Home() {
                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">The latest additions to our store</p>
               </div>
               <Link href="/products" className="text-[10px] font-black text-slate-400 hover:text-primary transition-colors uppercase tracking-widest">
-                Browse Full Catalog
+                Browse Full Collection
               </Link>
             </div>
 
@@ -254,8 +253,9 @@ export default function Home() {
             </p>
           </div>
           <div className="space-y-4">
-            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Storefront</h4>
+            <h4 className="font-bold text-xs text-slate-200 uppercase tracking-widest">Navigation</h4>
             <ul className="space-y-2 text-xs font-medium text-slate-400">
+              <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
               <li><Link href="/products" className="hover:text-primary transition-colors">Digital Catalog</Link></li>
               <li><Link href="/account" className="hover:text-primary transition-colors">Member Dashboard</Link></li>
               <li><Link href="/cart" className="hover:text-primary transition-colors">Shopping Basket</Link></li>
