@@ -5,13 +5,9 @@ import { Navbar } from "@/components/storefront/Navbar";
 import { useCart } from "@/context/CartContext";
 import { 
   Trash2, 
-  CheckCircle2, 
   ShoppingBag, 
   ArrowRight, 
-  Gift, 
   Truck,
-  Heart,
-  Tag,
   Star,
   Loader2
 } from "lucide-react";
@@ -21,8 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { useFirestore } from "@/firebase";
+import { useFirestore, useUser } from "@/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -42,6 +37,7 @@ export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal, totalItems, clearCart } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const db = useFirestore();
+  const { user } = useUser();
   const { toast } = useToast();
   const router = useRouter();
   
@@ -52,10 +48,19 @@ export default function CartPage() {
   const handleCheckout = async () => {
     if (!db || items.length === 0) return;
     
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to complete your purchase.",
+      });
+      router.push('/login');
+      return;
+    }
+
     setIsCheckingOut(true);
     const orderData = {
-      customerName: "Guest User", // In a real app, this would come from the auth profile
-      customerEmail: "guest@example.com",
+      customerName: user.displayName || "Anonymous User",
+      customerEmail: user.email || "guest@example.com",
       items: items.map(item => ({
         productId: item.product.id,
         name: item.product.name,
@@ -71,7 +76,7 @@ export default function CartPage() {
       .then(() => {
         toast({
           title: "Order Placed Successfully!",
-          description: "Thank you for shopping with Z-Mart. Your order is being processed.",
+          description: "Thank you for shopping with Z-Mart.",
         });
         clearCart();
         router.push('/');
@@ -229,6 +234,12 @@ export default function CartPage() {
                   </div>
                 </div>
 
+                {!user && (
+                   <p className="text-[10px] font-bold text-primary text-center uppercase tracking-widest mt-4">
+                     Sign in to unlock faster checkout
+                   </p>
+                )}
+
                 <div className="space-y-3 pt-4">
                   <Button 
                     onClick={handleCheckout}
@@ -236,7 +247,7 @@ export default function CartPage() {
                     className="w-full h-16 bg-primary hover:bg-primary/90 text-black font-black uppercase tracking-widest rounded-2xl shadow-xl active:scale-95 transition-all group"
                   >
                     {isCheckingOut ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
-                    {isCheckingOut ? "Processing..." : "Place Your Order"}
+                    {isCheckingOut ? "Processing..." : user ? "Place Your Order" : "Sign in to Order"}
                     {!isCheckingOut && <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />}
                   </Button>
                 </div>

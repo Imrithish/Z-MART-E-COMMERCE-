@@ -1,7 +1,8 @@
+
 "use client"
 
 import Link from "next/link";
-import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight, Home } from "lucide-react";
+import { ShoppingCart, User, Menu, Search, MapPin, ChevronDown, Globe, X, ChevronRight, Home, LogOut } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
@@ -10,6 +11,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useUser, useAuth } from "@/firebase";
+import { signOut } from "firebase/auth";
+import { Button } from "@/components/ui/button";
 
 const CATEGORIES = [
   {
@@ -26,7 +30,7 @@ const CATEGORIES = [
   },
   {
     title: "Help & Settings",
-    items: ["Your Account", "Customer Service", "Sign Out"]
+    items: ["Your Account", "Customer Service"]
   }
 ];
 
@@ -47,23 +51,21 @@ export function Navbar() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const { totalItems } = useCart();
   const router = useRouter();
+  const { user } = useUser();
+  const auth = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    let url = "/products?";
     const params = new URLSearchParams();
-    
-    if (searchQuery.trim()) {
-      params.append("q", searchQuery.trim());
-    }
-    
-    if (selectedCategory !== "All Categories") {
-      params.append("category", selectedCategory);
-    }
+    if (searchQuery.trim()) params.append("q", searchQuery.trim());
+    if (selectedCategory !== "All Categories") params.append("category", selectedCategory);
+    router.push(`/products?${params.toString()}`);
+  };
 
-    if (params.toString()) {
-      router.push(`/products?${params.toString()}`);
-    }
+  const handleSignOut = async () => {
+    if (!auth) return;
+    await signOut(auth);
+    router.push('/login');
   };
 
   return (
@@ -118,21 +120,32 @@ export function Navbar() {
           </button>
         </form>
 
-        {/* Language/Flag */}
-        <button className="hidden xl:flex items-center gap-1 px-2 py-2 border border-transparent hover:border-white rounded-sm transition-all">
-          <Globe className="h-5 w-5" />
-          <span className="text-sm font-bold">EN</span>
-          <ChevronDown className="h-3 w-3 mt-1" />
-        </button>
-
         {/* Account & Lists */}
-        <Link href="/admin/login" className="hidden md:flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
-          <span className="text-[11px] font-medium">Hello, sign in</span>
-          <div className="flex items-center gap-1">
-            <span className="text-sm font-bold">Account & Lists</span>
-            <ChevronDown className="h-3 w-3" />
-          </div>
-        </Link>
+        <div className="group relative">
+          <Link href={user ? "#" : "/login"} className="flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
+            <span className="text-[11px] font-medium">Hello, {user?.displayName?.split(' ')[0] || 'sign in'}</span>
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold">Account & Lists</span>
+              <ChevronDown className="h-3 w-3" />
+            </div>
+          </Link>
+          {user && (
+            <div className="absolute top-full right-0 w-48 bg-white text-slate-900 shadow-xl rounded-sm p-4 hidden group-hover:block border border-slate-200 z-50">
+              <div className="text-xs font-bold mb-3">Your Account</div>
+              <ul className="text-[11px] space-y-2 mb-4">
+                <li><Link href="/cart" className="hover:text-[#c45500] hover:underline">Your Orders</Link></li>
+                <li><Link href="/admin/dashboard" className="hover:text-[#c45500] hover:underline">Seller Central</Link></li>
+              </ul>
+              <Separator className="my-3" />
+              <button 
+                onClick={handleSignOut}
+                className="flex items-center gap-2 text-[11px] font-bold text-red-600 hover:text-red-700 w-full"
+              >
+                <LogOut className="h-3 w-3" /> Sign Out
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Returns & Orders */}
         <button className="hidden md:flex flex-col items-start px-2 py-1 border border-transparent hover:border-white rounded-sm transition-all leading-tight">
@@ -165,7 +178,7 @@ export function Navbar() {
               <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
                 <User className="h-5 w-5 text-[#232f3e]" />
               </div>
-              <SheetTitle className="text-white text-lg font-bold">Hello, sign in</SheetTitle>
+              <SheetTitle className="text-white text-lg font-bold">Hello, {user?.displayName || 'sign in'}</SheetTitle>
             </SheetHeader>
             <ScrollArea className="h-[calc(100vh-64px)] py-4">
               {CATEGORIES.map((cat, idx) => (
@@ -189,11 +202,17 @@ export function Navbar() {
                   {idx < CATEGORIES.length - 1 && <Separator className="my-4 mx-0" />}
                 </div>
               ))}
+              {user && (
+                <div className="px-8 py-4">
+                   <Button onClick={handleSignOut} variant="destructive" className="w-full h-8 rounded-sm text-xs font-bold uppercase tracking-widest">
+                     Sign Out
+                   </Button>
+                </div>
+              )}
             </ScrollArea>
           </SheetContent>
         </Sheet>
         
-        {/* Explicit Home Button */}
         <Link href="/" className="px-2 py-1 border border-transparent hover:border-white rounded-sm flex items-center gap-1.5">
           <Home className="h-4 w-4" /> Home
         </Link>
@@ -204,8 +223,6 @@ export function Navbar() {
         <Link href="/products?category=Home%20%26%20Kitchen" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Home & Kitchen</Link>
         <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Customer Service</Link>
         <Link href="/products" className="px-2 py-1 border border-transparent hover:border-white rounded-sm">Sell</Link>
-        <div className="flex-1" />
-        <span className="hidden lg:block text-sm font-bold px-2 py-1">Shop great deals now</span>
       </div>
     </header>
   );
