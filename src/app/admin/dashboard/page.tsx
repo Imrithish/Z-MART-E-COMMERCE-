@@ -111,74 +111,76 @@ export default function AdminDashboard() {
               {ordersLoading ? (
                 <div className="p-20 text-center"><Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" /></div>
               ) : recentOrders && recentOrders.length > 0 ? (
-                <Table>
-                  <TableHeader className="bg-slate-50/50">
-                    <TableRow className="hover:bg-transparent border-none">
-                      <TableHead className="px-6 md:px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest min-w-[200px]">Items</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest min-w-[150px]">Customer</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Status</TableHead>
-                      <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-6 md:px-10">Amount</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {recentOrders.map((order: any) => (
-                      <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50">
-                        <TableCell className="px-6 md:px-10 py-6">
-                           {order.items && order.items.length > 0 && (
-                            <div 
-                              className="flex items-center gap-4 cursor-pointer group"
-                              onClick={() => {
-                                const displayProduct = {
-                                  id: order.items[0].productId,
-                                  description: "Transaction preview item.",
-                                  rating: 5,
-                                  reviews: 0,
-                                  category: "Order Item",
-                                  features: [],
-                                  ...order.items[0]
-                                };
-                                setSelectedProduct(displayProduct);
-                                setIsModalOpen(true);
-                              }}
-                            >
-                              <div className="relative h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0 shadow-sm">
-                                <Image 
-                                  src={order.items[0].imageUrl || 'https://placehold.co/100x100?text=No+Image'} 
-                                  alt={order.items[0].name} 
-                                  fill 
-                                  className="object-contain p-1 group-hover:scale-110 transition-transform duration-500" 
-                                />
-                              </div>
-                              <div className="flex flex-col min-w-0">
-                                <span className="text-[11px] font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
-                                  {order.items[0].name}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                        </TableCell>
-                        <TableCell className="py-6">
-                          <div className="font-black text-slate-900">{order.customerName}</div>
-                          <div className="text-[10px] text-slate-400 font-bold uppercase">{order.customerEmail}</div>
-                        </TableCell>
-                        <TableCell className="text-center">
-                          <Badge 
-                            className={`rounded-lg font-black px-4 py-1 text-[9px] uppercase tracking-widest border-none ${
-                              order.status === 'Shipped' ? 'bg-green-100 text-green-700' : 
-                              order.status === 'Pending' ? 'bg-orange-100 text-orange-700' : 
-                              'bg-slate-100 text-slate-600'
-                            }`}
-                          >
-                            {order.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right px-6 md:px-10 font-black text-slate-900 text-base md:text-lg">
-                          {formatCurrency(order.totalAmount)}
-                        </TableCell>
+                <div className="overflow-x-auto">
+                  <Table className="min-w-[800px]">
+                    <TableHeader className="bg-slate-50/50">
+                      <TableRow className="hover:bg-transparent border-none">
+                        <TableHead className="px-6 md:px-10 h-16 font-black text-slate-400 uppercase text-[10px] tracking-widest">Items</TableHead>
+                        <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest">Customer</TableHead>
+                        <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-center">Status</TableHead>
+                        <TableHead className="font-black text-slate-400 uppercase text-[10px] tracking-widest text-right px-6 md:px-10">Amount</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {recentOrders.map((order: any) => (
+                        <TableRow key={order.id} className="cursor-pointer hover:bg-slate-50/50 transition-colors border-slate-50">
+                          <TableCell className="px-6 md:px-10 py-6">
+                            {order.items && order.items.length > 0 && (
+                              <div 
+                                className="flex items-center gap-4 cursor-pointer group"
+                                onClick={() => {
+                                  const displayProduct = {
+                                    id: order.items[0].productId,
+                                    description: "Transaction preview item.",
+                                    rating: 5,
+                                    reviews: 0,
+                                    category: "Order Item",
+                                    features: [],
+                                    ...order.items[0]
+                                  };
+                                  setSelectedProduct(displayProduct);
+                                  setIsModalOpen(true);
+                                }}
+                              >
+                                <div className="relative h-12 w-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0 shadow-sm">
+                                  <Image 
+                                    src={order.items[0].imageUrl || 'https://placehold.co/100x100?text=No+Image'} 
+                                    alt={order.items[0].name} 
+                                    fill 
+                                    className="object-contain p-1 group-hover:scale-110 transition-transform duration-500" 
+                                  />
+                                </div>
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-[11px] font-black text-slate-900 line-clamp-1 group-hover:text-primary transition-colors uppercase tracking-tight">
+                                    {order.items[0].name}
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="py-6">
+                            <div className="font-black text-slate-900">{order.customerName}</div>
+                            <div className="text-[10px] text-slate-400 font-bold uppercase">{order.customerEmail}</div>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge 
+                              className={`rounded-lg font-black px-4 py-1 text-[9px] uppercase tracking-widest border-none ${
+                                order.status === 'Shipped' ? 'bg-green-100 text-green-700' : 
+                                order.status === 'Pending' ? 'bg-orange-100 text-orange-700' : 
+                                'bg-slate-100 text-slate-600'
+                              }`}
+                            >
+                              {order.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right px-6 md:px-10 font-black text-slate-900 text-base md:text-lg">
+                            {formatCurrency(order.totalAmount)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               ) : (
                 <div className="p-20 text-center text-slate-400 font-black uppercase tracking-widest text-xs">No active transactions</div>
               )}

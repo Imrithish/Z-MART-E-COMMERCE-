@@ -1,3 +1,4 @@
+
 "use client"
 
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -5,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { User, Bell, Shield, Save, Loader2, Database, Sparkles, AlertCircle, RefreshCw } from "lucide-react";
+import { User, Bell, Shield, Save, Loader2, Database, AlertCircle, RefreshCw } from "lucide-react";
 import { useUser, useFirestore } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -65,7 +66,6 @@ export default function AdminSettings() {
     setIsSeeding(true);
     
     try {
-      // Fetch AI-generated Kaggle style data
       const result = await syncKaggleData();
       
       const seedPromises = result.products.map(product => {
@@ -110,27 +110,27 @@ export default function AdminSettings() {
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-slate-50">
       <AdminSidebar />
-      <main className="flex-1 p-6 md:p-10 lg:p-14 space-y-12">
+      <main className="flex-1 p-4 md:p-8 lg:p-14 space-y-12 overflow-x-hidden">
         <header className="flex flex-col gap-2">
-          <h1 className="text-4xl font-black tracking-tight text-slate-900 uppercase">Settings</h1>
-          <p className="text-slate-600 text-lg font-medium">Manage your admin account and global data.</p>
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 uppercase">Settings</h1>
+          <p className="text-slate-600 text-sm md:text-lg font-medium">Manage your admin account and global data.</p>
         </header>
 
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <div className="lg:col-span-2 space-y-8">
             <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
-              <CardHeader className="p-8 border-b border-slate-50">
+              <CardHeader className="p-6 md:p-8 border-b border-slate-50">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-slate-100 rounded-xl">
                     <User className="h-5 w-5 text-slate-600" />
                   </div>
-                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Admin Profile</CardTitle>
+                  <CardTitle className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-widest">Admin Profile</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="p-8 space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              <CardContent className="p-6 md:p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Display Name</Label>
                     <Input defaultValue={user.displayName || "Admin User"} className="h-12 rounded-xl bg-slate-50 border-none font-bold" />
@@ -144,21 +144,21 @@ export default function AdminSettings() {
             </Card>
 
             <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
-              <CardHeader className="p-8 border-b border-slate-50">
+              <CardHeader className="p-6 md:p-8 border-b border-slate-50">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-slate-100 rounded-xl text-primary">
                     <Database className="h-5 w-5" />
                   </div>
-                  <CardTitle className="text-xl font-black text-slate-900 uppercase tracking-widest">Global Data Operations</CardTitle>
+                  <CardTitle className="text-lg md:text-xl font-black text-slate-900 uppercase tracking-widest">Global Data Operations</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="p-8 space-y-8">
+              <CardContent className="p-6 md:p-8 space-y-8">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-xs font-black text-slate-900 uppercase tracking-widest">
                     <RefreshCw className="h-4 w-4 text-primary" /> Kaggle API Integration
                   </div>
                   <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
-                    Synchronize your store with real-world e-commerce data modeled after Kaggle (Shein, Amazon, Fashion).
+                    Synchronize your store with real-world e-commerce data modeled after Kaggle.
                   </p>
                   <Button 
                     onClick={syncWithKaggle} 
@@ -176,7 +176,7 @@ export default function AdminSettings() {
                     <AlertCircle className="h-4 w-4" /> Danger Zone
                   </div>
                   <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-tight">
-                    Remove all products currently in the database. This action is irreversible.
+                    Remove all products currently in the database.
                   </p>
                   <Button 
                     onClick={cleanDatabase} 
@@ -193,7 +193,7 @@ export default function AdminSettings() {
           </div>
 
           <aside className="space-y-8">
-            <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white p-8">
+            <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white p-6 md:p-8">
               <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6">Security</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
