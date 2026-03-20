@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Package, ShieldCheck, MapPin, LogOut, ChevronLeft, ChevronRight, Store, User, Menu } from "lucide-react";
+import { Package, ShieldCheck, MapPin, LogOut, ChevronLeft, ChevronRight, Store, User, Menu, Heart, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -14,8 +14,10 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 
 const NAV_ITEMS = [
   { label: 'Orders', icon: Package, href: '/account#orders' },
-  { label: 'Security', icon: ShieldCheck, href: '/account#security' },
+  { label: 'Wishlist', icon: Heart, href: '/account#wishlist' },
   { label: 'Addresses', icon: MapPin, href: '/account#addresses' },
+  { label: 'Preferences', icon: Settings, href: '/account#preferences' },
+  { label: 'Security', icon: ShieldCheck, href: '/account#security' },
 ];
 
 export function UserSidebar() {
@@ -56,7 +58,7 @@ export function UserSidebar() {
 
       <nav className="flex-1 px-4 space-y-3 mt-8">
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href || (pathname === '/account' && item.label === 'Orders');
+          const isActive = typeof window !== 'undefined' && window.location.hash === item.href.split('#')[1];
           return (
             <Link
               key={item.href}
@@ -144,7 +146,7 @@ export function UserSidebar() {
 
       <nav className="flex-1 px-4 space-y-3 mt-8">
         {NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href || (pathname === '/account' && item.label === 'Orders');
+          const isActive = typeof window !== 'undefined' && window.location.hash === item.href.split('#')[1];
           return (
             <Link
               key={item.href}

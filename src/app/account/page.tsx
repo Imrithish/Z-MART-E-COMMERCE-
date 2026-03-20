@@ -24,7 +24,13 @@ import {
   Trash2,
   Home as HomeIcon,
   Briefcase,
-  Globe
+  Heart,
+  Settings as SettingsIcon,
+  Bell,
+  Mail,
+  Smartphone,
+  Eye,
+  ShoppingCart
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -39,6 +45,8 @@ import { useToast } from "@/hooks/use-toast";
 import { errorEmitter } from "@/firebase/error-emitter";
 import { FirestorePermissionError } from "@/firebase/errors";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -48,12 +56,14 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
+type AccountTab = 'overview' | 'orders' | 'wishlist' | 'addresses' | 'preferences' | 'security';
+
 export default function UserDashboard() {
   const { user, loading: authLoading } = useUser();
   const db = useFirestore();
   const router = useRouter();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'security' | 'addresses'>('overview');
+  const [activeTab, setActiveTab] = useState<AccountTab>('overview');
   const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
@@ -74,8 +84,10 @@ export default function UserDashboard() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['orders', 'security', 'addresses'].includes(hash)) {
+      if (['orders', 'wishlist', 'addresses', 'preferences', 'security'].includes(hash)) {
         setActiveTab(hash as any);
+      } else {
+        setActiveTab('overview');
       }
     };
     handleHash();
@@ -101,6 +113,14 @@ export default function UserDashboard() {
   }, [db, user?.uid]);
 
   const { data: addresses, loading: addressesLoading } = useCollection(addressesQuery);
+
+  // Fetch User Wishlist
+  const wishlistQuery = useMemo(() => {
+    if (!db || !user?.uid) return null;
+    return collection(db, 'users', user.uid, 'wishlist');
+  }, [db, user?.uid]);
+
+  const { data: wishlistItems, loading: wishlistLoading } = useCollection(wishlistQuery);
 
   // Client-side sorting of orders by creation date
   const orders = useMemo(() => {
@@ -173,6 +193,21 @@ export default function UserDashboard() {
       });
   };
 
+  const handleRemoveFromWishlist = (wishlistId: string) => {
+    if (!db || !user) return;
+    deleteDoc(doc(db, 'users', user.uid, 'wishlist', wishlistId))
+      .then(() => {
+        toast({ title: "Item Removed", description: "Removed from your saved items." });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: `users/${user.uid}/wishlist/${wishlistId}`,
+          operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      });
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
@@ -199,14 +234,18 @@ export default function UserDashboard() {
           <header className="space-y-2 md:space-y-4">
             <div className="flex items-center gap-3 md:gap-4">
                <h1 className="text-2xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
-                {activeTab === 'overview' ? 'Dashboard' : activeTab === 'orders' ? 'My Orders' : activeTab === 'addresses' ? 'Saved Addresses' : 'Security'}
+                {activeTab === 'overview' ? 'Dashboard' : 
+                 activeTab === 'orders' ? 'My Orders' : 
+                 activeTab === 'wishlist' ? 'Your Wishlist' : 
+                 activeTab === 'addresses' ? 'Saved Addresses' : 
+                 activeTab === 'preferences' ? 'Preferences' : 'Security'}
                </h1>
                <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4" />
             </div>
             <p className="text-slate-500 font-medium text-sm md:text-lg">
               {activeTab === 'overview' 
                 ? `Welcome back, ${user.displayName || user.email}`
-                : `Manage your ${activeTab} and preferences.`
+                : `Manage your ${activeTab} and account details.`
               }
             </p>
           </header>
@@ -217,7 +256,7 @@ export default function UserDashboard() {
                 <Card className="lg:col-span-2 bg-white border-none shadow-sm rounded-[2rem] overflow-hidden">
                   <CardHeader className="p-8 border-b border-slate-50 flex flex-row items-center justify-between">
                     <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400">Latest Activity</CardTitle>
-                    <Link href="#orders" onClick={() => setActiveTab('orders')} className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline flex items-center gap-1">
+                    <Link href="#orders" className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline flex items-center gap-1">
                       View All <ChevronRight className="h-3 w-3" />
                     </Link>
                   </CardHeader>
@@ -287,13 +326,14 @@ export default function UserDashboard() {
                 </Card>
               </section>
 
-              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+              <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
                 {[
-                  { title: "My Orders", desc: "Track and manage your purchases", icon: Package, tab: 'orders' },
-                  { title: "Privacy", desc: "Update security and passwords", icon: ShieldCheck, tab: 'security' },
-                  { title: "Addresses", desc: "Manage delivery locations", icon: MapPin, tab: 'addresses' },
+                  { title: "My Orders", desc: "Track and manage purchases", icon: Package, href: '#orders' },
+                  { title: "Wishlist", desc: "Items saved for later", icon: Heart, href: '#wishlist' },
+                  { title: "Addresses", desc: "Manage delivery spots", icon: MapPin, href: '#addresses' },
+                  { title: "Settings", desc: "Account preferences", icon: SettingsIcon, href: '#preferences' },
                 ].map((card, idx) => (
-                  <button key={idx} onClick={() => setActiveTab(card.tab as any)}>
+                  <Link key={idx} href={card.href}>
                     <Card className="hover:shadow-2xl transition-all duration-500 border-none rounded-[1.5rem] md:rounded-[2.5rem] cursor-pointer group h-full bg-white shadow-sm overflow-hidden border-slate-100 text-left w-full">
                       <CardContent className="p-6 md:p-8 flex flex-col gap-4 md:gap-6">
                         <div className="h-12 w-12 md:h-16 md:w-16 rounded-xl md:rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-slate-900 transition-all duration-500 shadow-inner">
@@ -308,7 +348,7 @@ export default function UserDashboard() {
                         </div>
                       </CardContent>
                     </Card>
-                  </button>
+                  </Link>
                 ))}
               </section>
             </div>
@@ -403,6 +443,62 @@ export default function UserDashboard() {
                     <p className="text-slate-500 max-w-xs mb-8 font-medium">Your order history is currently empty. Start exploring our premium collection.</p>
                     <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs text-white">
                       <Link href="/products">Browse Trending</Link>
+                    </Button>
+                 </div>
+               )}
+            </div>
+          )}
+
+          {activeTab === 'wishlist' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+               <div className="flex items-center justify-between mb-4">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">{wishlistItems?.length || 0} Saved Items</p>
+                  <Button variant="ghost" onClick={() => setActiveTab('overview')} className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-primary">
+                    Back to Overview
+                  </Button>
+               </div>
+
+               {wishlistLoading ? (
+                 <div className="flex justify-center py-20"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>
+               ) : wishlistItems && wishlistItems.length > 0 ? (
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {wishlistItems.map((item: any) => (
+                      <Card key={item.id} className="bg-white border-none shadow-sm rounded-[2rem] overflow-hidden group hover:shadow-xl transition-all">
+                        <div className="relative aspect-square w-full bg-slate-50 p-8 overflow-hidden">
+                           <Image src={item.imageUrl || 'https://placehold.co/400x400'} alt={item.name} fill className="object-contain p-4 group-hover:scale-110 transition-transform duration-500" />
+                           <button 
+                             onClick={() => handleRemoveFromWishlist(item.id)}
+                             className="absolute top-4 right-4 h-10 w-10 bg-white shadow-xl rounded-full flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all scale-0 group-hover:scale-100"
+                           >
+                             <Trash2 className="h-4 w-4" />
+                           </button>
+                        </div>
+                        <CardContent className="p-6 space-y-4">
+                           <div className="space-y-1">
+                             <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight line-clamp-1">{item.name}</h4>
+                             <p className="text-lg font-black text-primary">{formatCurrency(item.price)}</p>
+                           </div>
+                           <div className="flex gap-2">
+                             <Button asChild className="flex-1 bg-slate-900 text-white rounded-xl h-10 font-black uppercase text-[9px] tracking-widest border-none">
+                               <Link href={`/products?q=${item.name}`}>View Item</Link>
+                             </Button>
+                             <Button variant="outline" className="h-10 w-10 p-0 rounded-xl border-slate-100">
+                               <ShoppingCart className="h-4 w-4" />
+                             </Button>
+                           </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                 </div>
+               ) : (
+                 <div className="py-20 flex flex-col items-center text-center">
+                    <div className="bg-white h-32 w-32 rounded-[3rem] flex items-center justify-center mb-8 shadow-xl">
+                      <Heart className="h-12 w-12 text-slate-200" />
+                    </div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-2">Wishlist Empty</h2>
+                    <p className="text-slate-500 max-w-xs mb-8 font-medium">Save your favorite premium items here to track their price and availability.</p>
+                    <Button asChild className="h-14 px-10 rounded-2xl bg-slate-900 hover:bg-primary font-black uppercase tracking-widest text-xs text-white">
+                      <Link href="/products">Explore Catalog</Link>
                     </Button>
                  </div>
                )}
@@ -516,6 +612,73 @@ export default function UserDashboard() {
                     <p className="text-slate-500 max-w-xs mb-8 font-medium">Add your preferred delivery addresses for a faster checkout experience.</p>
                  </div>
                )}
+            </div>
+          )}
+
+          {activeTab === 'preferences' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+               <Card className="bg-white border-none shadow-sm rounded-[3rem] overflow-hidden">
+                  <CardHeader className="p-8 md:p-12 border-b border-slate-50">
+                    <div className="flex items-center gap-4">
+                       <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                          <SettingsIcon className="h-6 w-6" />
+                       </div>
+                       <div>
+                          <CardTitle className="text-xl font-black uppercase tracking-widest text-slate-900">Account Preferences</CardTitle>
+                          <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mt-1">Customize your Z-MART experience</p>
+                       </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8 md:p-12 space-y-12">
+                     <div className="space-y-8">
+                        <div className="flex items-center justify-between group">
+                           <div className="space-y-1">
+                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                                <Bell className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> Order Notifications
+                              </h4>
+                              <p className="text-xs text-slate-500 font-medium">Receive real-time updates on your shipment status.</p>
+                           </div>
+                           <Switch defaultChecked />
+                        </div>
+                        <Separator className="bg-slate-50" />
+                        <div className="flex items-center justify-between group">
+                           <div className="space-y-1">
+                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                                <Mail className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> Marketing Emails
+                              </h4>
+                              <p className="text-xs text-slate-500 font-medium">Get early access to flash deals and seasonal sales.</p>
+                           </div>
+                           <Switch defaultChecked />
+                        </div>
+                        <Separator className="bg-slate-50" />
+                        <div className="flex items-center justify-between group">
+                           <div className="space-y-1">
+                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                                <Smartphone className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> SMS Alerts
+                              </h4>
+                              <p className="text-xs text-slate-500 font-medium">Important account security and delivery notifications via text.</p>
+                           </div>
+                           <Switch />
+                        </div>
+                        <Separator className="bg-slate-50" />
+                        <div className="flex items-center justify-between group">
+                           <div className="space-y-1">
+                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
+                                <Eye className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> Public Profile
+                              </h4>
+                              <p className="text-xs text-slate-500 font-medium">Allow others to see your product reviews and ratings.</p>
+                           </div>
+                           <Switch defaultChecked />
+                        </div>
+                     </div>
+
+                     <div className="pt-8 flex justify-end">
+                        <Button className="h-12 px-8 rounded-xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] hover:bg-primary hover:text-slate-900 transition-all">
+                           Save Preferences
+                        </Button>
+                     </div>
+                  </CardContent>
+               </Card>
             </div>
           )}
 

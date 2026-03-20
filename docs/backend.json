@@ -76,6 +76,19 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["label", "houseNo", "street", "city", "state", "pincode"]
+    },
+    "WishlistItem": {
+      "title": "Wishlist Item",
+      "description": "A product saved by the user for later purchase.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "name"]
     }
   },
   "auth": {
@@ -93,6 +106,10 @@
     "/users/{userId}/addresses/{addressId}": {
       "schema": "Address",
       "description": "User saved delivery addresses."
+    },
+    "/users/{userId}/wishlist/{wishlistId}": {
+      "schema": "WishlistItem",
+      "description": "User saved wishlist items."
     }
   }
 }
