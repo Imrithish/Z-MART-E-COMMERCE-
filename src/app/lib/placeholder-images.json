@@ -1,0 +1,101 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "headphones",
+      "description": "Premium Wireless Headphones",
+      "imageUrl": "https://picsum.photos/seed/headphones/600/600",
+      "imageHint": "headphones audiophile"
+    },
+    {
+      "id": "monitor",
+      "description": "Professional 4K Monitor",
+      "imageUrl": "https://picsum.photos/seed/monitor/600/600",
+      "imageHint": "monitor computer"
+    },
+    {
+      "id": "watch",
+      "description": "Advanced Smartwatch",
+      "imageUrl": "https://picsum.photos/seed/watch/600/600",
+      "imageHint": "smartwatch fitness"
+    },
+    {
+      "id": "drone",
+      "description": "4K Aerial Drone",
+      "imageUrl": "https://picsum.photos/seed/drone/600/600",
+      "imageHint": "drone camera"
+    },
+    {
+      "id": "ebike",
+      "description": "Urban Electric Bike",
+      "imageUrl": "https://picsum.photos/seed/ebike/600/600",
+      "imageHint": "ebike bicycle"
+    },
+    {
+      "id": "blender",
+      "description": "High-Power Kitchen Blender",
+      "imageUrl": "https://picsum.photos/seed/blender/600/600",
+      "imageHint": "blender kitchen"
+    },
+    {
+      "id": "speaker",
+      "description": "Smart Home Speaker",
+      "imageUrl": "https://picsum.photos/seed/speaker/600/600",
+      "imageHint": "speaker smart"
+    },
+    {
+      "id": "yoga",
+      "description": "Eco-Friendly Yoga Mat",
+      "imageUrl": "https://picsum.photos/seed/yoga/600/600",
+      "imageHint": "yoga fitness"
+    },
+    {
+      "id": "lamp",
+      "description": "Smart Ambient Lamp",
+      "imageUrl": "https://picsum.photos/seed/lamp/600/600",
+      "imageHint": "lamp smart"
+    },
+    {
+      "id": "vr",
+      "description": "VR Gaming Headset",
+      "imageUrl": "https://picsum.photos/seed/vr/600/600",
+      "imageHint": "vr gaming"
+    },
+    {
+      "id": "backpack",
+      "description": "Urban Travel Backpack",
+      "imageUrl": "https://picsum.photos/seed/backpack/600/600",
+      "imageHint": "backpack travel"
+    },
+    {
+      "id": "bottle",
+      "description": "Insulated Water Bottle",
+      "imageUrl": "https://picsum.photos/seed/bottle/600/600",
+      "imageHint": "bottle water"
+    },
+    {
+      "id": "laptop-pro",
+      "description": "Ultra-Slim Pro Laptop",
+      "imageUrl": "https://picsum.photos/seed/laptop/600/600",
+      "imageHint": "laptop computer"
+    },
+    {
+      "id": "smartphone-z",
+      "description": "Z-Phone Flagship",
+      "imageUrl": "https://picsum.photos/seed/phone/600/600",
+      "imageHint": "smartphone mobile"
+    },
+    {
+      "id": "serum-face",
+      "description": "Organic Vitamin C Serum",
+      "imageUrl": "https://picsum.photos/seed/serum/600/600",
+      "imageHint": "skincare serum"
+    },
+    {
+      "id": "chair-office",
+      "description": "Ergonomic Mesh Chair",
+      "imageUrl": "https://picsum.photos/seed/chair/600/600",
+      "imageHint": "office chair"
+    }
+  ]
+}

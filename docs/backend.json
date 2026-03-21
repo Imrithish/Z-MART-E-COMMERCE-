@@ -1,0 +1,115 @@
+
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A commercial item listed on the Z-MART marketplace.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Commercial name of the product" },
+        "description": { "type": "string", "description": "Marketing description" },
+        "price": { "type": "number", "description": "Current listing price" },
+        "originalPrice": { "type": "number", "description": "Price before discount" },
+        "category": { "type": "string", "description": "Marketplace category" },
+        "stock": { "type": "number", "description": "Inventory units available" },
+        "imageUrl": { "type": "string", "format": "uri", "description": "Product image URL" },
+        "rating": { "type": "number", "description": "Average customer rating" },
+        "reviews": { "type": "number", "description": "Total review count" },
+        "isDeal": { "type": "boolean", "description": "Whether the product is a featured deal" },
+        "features": { "type": "array", "items": { "type": "string" }, "description": "Key selling points" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price", "category", "stock"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A customer transaction record.",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string", "format": "email" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"] },
+        "shippingAddress": {
+          "type": "object",
+          "properties": {
+            "houseNo": { "type": "string" },
+            "street": { "type": "string" },
+            "city": { "type": "string" },
+            "state": { "type": "string" },
+            "pincode": { "type": "string" },
+            "landmark": { "type": "string" }
+          },
+          "required": ["houseNo", "street", "city", "state", "pincode"]
+        },
+        "phoneNumber": { "type": "string" },
+        "paymentMethod": { "type": "string", "enum": ["COD", "Online"] },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "quantity": { "type": "number" },
+              "price": { "type": "number" }
+            }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "customerEmail", "totalAmount", "status", "phoneNumber", "paymentMethod"]
+    },
+    "Address": {
+      "title": "Address",
+      "description": "A saved delivery location for a user.",
+      "type": "object",
+      "properties": {
+        "label": { "type": "string", "enum": ["Home", "Office", "Work", "Other"] },
+        "houseNo": { "type": "string" },
+        "street": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "pincode": { "type": "string" },
+        "landmark": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["label", "houseNo", "street", "city", "state", "pincode"]
+    },
+    "WishlistItem": {
+      "title": "Wishlist Item",
+      "description": "A product saved by the user for later purchase.",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "name"]
+    }
+  },
+  "auth": {
+    "providers": ["google.com", "password"]
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Collection of marketplace products."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of customer orders."
+    },
+    "/users/{userId}/addresses/{addressId}": {
+      "schema": "Address",
+      "description": "User saved delivery addresses."
+    },
+    "/users/{userId}/wishlist/{wishlistId}": {
+      "schema": "WishlistItem",
+      "description": "User saved wishlist items."
+    }
+  }
+}
