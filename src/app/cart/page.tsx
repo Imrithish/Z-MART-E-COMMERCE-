@@ -1,7 +1,6 @@
 
 "use client"
 
-import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { useCart } from "@/context/CartContext";
 import { 
@@ -57,8 +56,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-body">
-      <Navbar />
-
       <main className="flex-1 max-w-[1400px] mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">

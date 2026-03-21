@@ -1,0 +1,501 @@
+   ▲ Next.js 15.5.9
+   - Local:        http://localhost:9003
+   - Network:      http://10.140.155.191:9003
+
+ ✓ Starting...
+ ✓ Ready in 4.7s
+ ○ Compiling / ...
+ ✓ Compiled / in 16s (1194 modules)
+ GET / 200 in 17835ms
+ GET / 200 in 587ms
+ ✓ Compiled in 2.4s (438 modules)
+ GET / 200 in 197ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 2.4s (773 modules)
+ GET /favicon.ico 200 in 2759ms
+ ○ Compiling /products ...
+ ✓ Compiled /products in 1568ms (1220 modules)
+ GET /products?category=Laptops 200 in 1921ms
+ ○ Compiling /products/[id] ...
+ ✓ Compiled /products/[id] in 1071ms (1231 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 2692ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 103ms
+ ✓ Compiled in 1007ms (1168 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 583ms
+ GET / 200 in 87ms
+ ✓ Compiled in 1986ms (1215 modules)
+ GET / 200 in 277ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 721ms
+ ✓ Compiled /favicon.ico in 493ms (780 modules)
+ GET /favicon.ico 200 in 800ms
+ ✓ Compiled in 1143ms (1215 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 524ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 624ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 572ms (780 modules)
+ GET /favicon.ico 200 in 874ms
+ ✓ Compiled in 1188ms (1215 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 552ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 694ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 574ms (780 modules)
+ GET /favicon.ico 200 in 861ms
+ ✓ Compiled in 1317ms (1215 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 456ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 706ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 529ms (780 modules)
+ GET /favicon.ico 200 in 813ms
+ ✓ Compiled in 1211ms (1215 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 524ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 534ms
+ ✓ Compiled /favicon.ico in 490ms (780 modules)
+ GET /favicon.ico 200 in 861ms
+ ✓ Compiled in 1117ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 282ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 461ms
+ GET /favicon.ico 200 in 46ms
+ ✓ Compiled in 1266ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 449ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 464ms
+ GET /favicon.ico 200 in 53ms
+ ✓ Compiled in 1282ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 468ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 661ms
+ GET /favicon.ico 200 in 94ms
+ ✓ Compiled in 1247ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 289ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 435ms
+ GET /favicon.ico 200 in 52ms
+ ✓ Compiled in 1774ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 311ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 652ms
+ GET /favicon.ico 200 in 84ms
+ ✓ Compiled in 1235ms (1215 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 449ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 561ms
+ ✓ Compiled /favicon.ico in 502ms (780 modules)
+ GET /favicon.ico 200 in 773ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 624ms
+ GET /favicon.ico 200 in 60ms
+ ✓ Compiled in 1318ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 406ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 429ms
+ GET /favicon.ico 200 in 95ms
+ ✓ Compiled in 1404ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 319ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 402ms
+ GET /favicon.ico 200 in 45ms
+ ✓ Compiled in 1638ms (1232 modules)
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 241ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 356ms
+ GET /favicon.ico 200 in 71ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 197ms
+ GET /favicon.ico 200 in 49ms
+ GET / 200 in 105ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 153ms
+ GET /favicon.ico 200 in 53ms
+ GET / 200 in 67ms
+ ✓ Compiled in 1991ms (1232 modules)
+ GET / 200 in 329ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 824ms
+ GET /favicon.ico 200 in 72ms
+ GET / 200 in 76ms
+ ✓ Compiled in 1250ms (1232 modules)
+ GET / 200 in 299ms
+ ○ Compiling /products ...
+ ✓ Compiled /products in 1296ms (776 modules)
+ GET /products?category=Mobiles 200 in 1888ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 127ms
+ ✓ Compiled in 2.3s (1228 modules)
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 429ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 721ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 532ms (793 modules)
+ GET /favicon.ico 200 in 960ms
+ ✓ Compiled in 1240ms (1245 modules)
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 293ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 952ms
+ GET /favicon.ico 200 in 81ms
+ GET / 200 in 117ms
+ ✓ Compiled in 2.1s (1245 modules)
+ GET / 200 in 351ms
+ GET / 200 in 623ms
+ GET /favicon.ico 200 in 79ms
+ GET /products?category=Electronics 200 in 106ms
+ GET /products?category=Laptops 200 in 75ms
+ GET /products/40LW5KnkpOxFvRCPJGLb 200 in 122ms
+ GET / 200 in 88ms
+ ✓ Compiled in 1282ms (1168 modules)
+ GET / 200 in 500ms
+ GET / 200 in 789ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 554ms (763 modules)
+ GET /favicon.ico 200 in 846ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 239ms
+ ✓ Compiled in 1124ms (1185 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 359ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 706ms
+ GET /favicon.ico 200 in 76ms
+ ✓ Compiled in 1630ms (1185 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 212ms
+ ✓ Compiled in 908ms (1168 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 554ms
+ ✓ Compiled in 853ms (1168 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 274ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 790ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 540ms (763 modules)
+ GET /favicon.ico 200 in 817ms
+ ✓ Compiled in 3.6s (1187 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 340ms
+ ✓ Compiled in 1302ms (1187 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 210ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 617ms
+ GET /favicon.ico 200 in 76ms
+ ✓ Compiled in 1720ms (1170 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 413ms
+ ✓ Compiled in 1035ms (1170 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 302ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 820ms
+ ✓ Compiled /favicon.ico in 499ms (764 modules)
+ GET /favicon.ico 200 in 790ms
+ ✓ Compiled in 906ms (1187 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 236ms
+ ✓ Compiled in 897ms (1187 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 236ms
+ ✓ Compiled in 1788ms (1170 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 429ms
+ ✓ Compiled in 1730ms (1170 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 321ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 732ms
+ ✓ Compiled /favicon.ico in 480ms (764 modules)
+ GET /favicon.ico 200 in 769ms
+ ✓ Compiled in 959ms (1187 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 398ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 116ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 131ms
+ GET /products/8w0eDZxicRk77cvIm996 200 in 88ms
+ ✓ Compiled in 1818ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 506ms
+ ✓ Compiled in 850ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 366ms
+ GET /products/8w0eDZxicRk77cvIm996 200 in 667ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 518ms (764 modules)
+ GET /favicon.ico 200 in 801ms
+ ✓ Compiled in 1164ms (1187 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 305ms
+ ✓ Compiled in 2.2s (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 647ms
+ ✓ Compiled in 1142ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 331ms
+ ✓ Compiled in 1783ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 214ms
+ ✓ Compiled in 934ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 192ms
+ ✓ Compiled in 1130ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 228ms
+ ✓ Compiled in 1106ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 247ms
+ ✓ Compiled in 1111ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 232ms
+ ✓ Compiled in 2.1s (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 318ms
+ ✓ Compiled in 1359ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 276ms
+ ✓ Compiled in 1113ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 219ms
+ ✓ Compiled in 1386ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 254ms
+ ✓ Compiled in 807ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 246ms
+ ✓ Compiled in 2.4s (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 316ms
+ ✓ Compiled in 3.1s (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 220ms
+ ✓ Compiled in 1507ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 381ms
+ ✓ Compiled in 979ms (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 226ms
+ ✓ Compiled in 4.3s (1170 modules)
+ GET /products/8w0eDZxicRk77cvIm996 200 in 226ms
+ GET /products 200 in 112ms
+ GET / 200 in 91ms
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 96ms
+ GET /products 200 in 78ms
+ ✓ Compiled in 1388ms (1170 modules)
+ GET /products 200 in 167ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 115ms
+ GET / 200 in 84ms
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 115ms
+ GET /products?category=Mobiles 200 in 79ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 85ms
+ GET / 200 in 68ms
+ ○ Compiling /account ...
+ ✓ Compiled /account in 7.2s (1353 modules)
+ GET /account 200 in 7621ms
+ GET /account 200 in 127ms
+ GET /account 200 in 68ms
+ GET / 200 in 116ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 139ms
+ ○ Compiling /checkout ...
+ ✓ Compiled /checkout in 3.4s (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 3975ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 94ms
+ ✓ Compiled in 1421ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 192ms
+ ✓ Compiled in 1039ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 133ms
+ ✓ Compiled in 1383ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 215ms
+ ✓ Compiled in 1127ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 175ms
+ ✓ Compiled in 1672ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 218ms
+ ✓ Compiled in 1234ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 153ms
+ ✓ Compiled in 1999ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 189ms
+ ✓ Compiled in 1623ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 150ms
+ ✓ Compiled in 1099ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 215ms
+ ✓ Compiled in 2.3s (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 153ms
+ ✓ Compiled in 2.2s (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 172ms
+ ✓ Compiled in 1222ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 232ms
+ ✓ Compiled in 1862ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 161ms
+ ✓ Compiled in 1200ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 125ms
+ ✓ Compiled in 1782ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 164ms
+ ✓ Compiled in 2.1s (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 219ms
+ ✓ Compiled in 1033ms (1380 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 120ms
+ ○ Compiling /_error ...
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 12236ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 3676ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 2070ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 1137ms
+ ✓ Compiled /_not-found in 7.1s (1742 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 5824ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 1374ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 320ms
+ ✓ Compiled (1728 modules)
+ ✓ Compiled in 1199ms (1742 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 247ms
+ ✓ Compiled in 1872ms (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 427ms
+ ✓ Compiled in 3.7s (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 307ms
+ ✓ Compiled in 1351ms (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 268ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 1136ms
+ ✓ Compiled in 2.2s (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 163ms
+ ✓ Compiled in 905ms (676 modules)
+ ✓ Compiled in 2.2s (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 2314ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 69ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 880ms
+ ✓ Compiled in 1127ms (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 127ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 82ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 57ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 611ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 686ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 551ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 500 in 962ms
+ ✓ Compiled in 5s (1706 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 3907ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 1026ms
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 354ms
+ ✓ Compiled in 2.6s (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 310ms
+ ✓ Compiled in 2.1s (1720 modules)
+ GET /checkout?productId=GDLINKEP7ihXgwPjKJ7i 200 in 153ms
+ GET /account 200 in 135ms
+ GET /account 200 in 157ms
+ ✓ Compiled in 5.1s (1720 modules)
+ GET /account 200 in 235ms
+ ✓ Compiled in 1004ms (1720 modules)
+ GET /account 200 in 163ms
+ ✓ Compiled in 1349ms (1720 modules)
+ GET /account 200 in 191ms
+ ✓ Compiled in 1335ms (1720 modules)
+ GET /account 200 in 214ms
+ ✓ Compiled in 2.3s (1720 modules)
+ GET /account 200 in 244ms
+ ✓ Compiled in 4.2s (1720 modules)
+ GET /account 200 in 334ms
+ ✓ Compiled in 1410ms (1720 modules)
+ GET /account 200 in 267ms
+ ✓ Compiled in 1314ms (1720 modules)
+ GET /account 200 in 184ms
+ ✓ Compiled in 959ms (1720 modules)
+ GET /account 200 in 150ms
+ ✓ Compiled in 3.5s (1720 modules)
+ GET /account 200 in 430ms
+ ✓ Compiled in 1553ms (1720 modules)
+ GET /account 200 in 171ms
+ ✓ Compiled in 1910ms (1720 modules)
+ GET /account 200 in 281ms
+ ✓ Compiled in 970ms (1720 modules)
+ GET /account 200 in 247ms
+ ✓ Compiled in 983ms (1720 modules)
+ GET /account 200 in 135ms
+ ✓ Compiled in 897ms (1720 modules)
+ GET /account 200 in 167ms
+ ✓ Compiled in 1518ms (1720 modules)
+ GET /account 200 in 134ms
+ ✓ Compiled in 849ms (1720 modules)
+ GET /account 200 in 151ms
+ ✓ Compiled in 789ms (1720 modules)
+ GET /account 200 in 184ms
+ ✓ Compiled in 875ms (1720 modules)
+ GET /account 200 in 188ms
+ ✓ Compiled in 1183ms (1720 modules)
+ GET /account 200 in 204ms
+ ✓ Compiled in 1059ms (1720 modules)
+ GET /account 200 in 218ms
+ ✓ Compiled in 1093ms (1720 modules)
+ GET /account 200 in 231ms
+ GET / 200 in 155ms
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 149ms
+ ○ Compiling /cart ...
+ ✓ Compiled /cart in 4.9s (1719 modules)
+ GET /cart 200 in 5149ms
+ GET /checkout 200 in 147ms
+ GET / 200 in 105ms
+ GET /cart 200 in 73ms
+ GET /checkout 200 in 82ms
+ ✓ Compiled in 3.1s (1724 modules)
+ GET /checkout 200 in 325ms
+ GET /account 200 in 107ms
+ GET /account 200 in 77ms
+ ✓ Compiled in 2.5s (1724 modules)
+ GET /account 200 in 689ms
+ ✓ Compiled in 3.4s (1724 modules)
+ GET /account 200 in 278ms
+ GET / 200 in 107ms
+ GET /cart 200 in 102ms
+ GET /checkout 200 in 116ms
+ GET /account 200 in 81ms
+ GET /account 200 in 75ms
+ ✓ Compiled in 2.6s (1724 modules)
+ GET /account 200 in 358ms
+ ✓ Compiled in 2.5s (1724 modules)
+ GET /account 200 in 385ms
+ ○ Compiling /products/[id] ...
+ ✓ Compiled /products/[id] in 4.7s (1052 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 4960ms
+ ✓ Compiled in 2.3s (1722 modules)
+ GET /products/GDLINKEP7ihXgwPjKJ7i 200 in 258ms
+ GET /account 200 in 142ms
+ ✓ Compiled in 1609ms (1722 modules)
+ GET /account 200 in 239ms
+ ✓ Compiled in 1176ms (1722 modules)
+ GET /account 200 in 130ms
+ ✓ Compiled in 1664ms (1722 modules)
+ GET /account 200 in 133ms
+ ✓ Compiled in 1220ms (1722 modules)
+ GET /account 200 in 122ms
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 106ms
+ ✓ Compiled in 2.3s (1722 modules)
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 183ms
+ ✓ Compiled in 1698ms (1722 modules)
+ GET /products/uWJ7A356B5M2nGvj3iJM 200 in 266ms
+ GET /account 200 in 149ms
+ ✓ Compiled in 2.9s (1722 modules)
+ GET /account 200 in 246ms
+ GET /account 200 in 1241ms
+ ✓ Compiled in 1135ms (1722 modules)
+ GET /account 200 in 197ms
+ ✓ Compiled in 1378ms (1722 modules)
+ GET /account 200 in 268ms
+ ✓ Compiled in 1539ms (1722 modules)
+ GET /account 200 in 157ms
+ ✓ Compiled in 2.6s (1722 modules)
+ GET /account 200 in 453ms
+ GET /account 200 in 805ms
+ ✓ Compiled in 3.6s (1722 modules)
+ GET /account 200 in 245ms
+ GET /account 200 in 518ms
+ ✓ Compiled in 1486ms (1722 modules)
+ GET /account 200 in 237ms
+ ✓ Compiled in 1323ms (1722 modules)
+ GET /account 200 in 243ms
+ ✓ Compiled in 6s (1722 modules)
+ GET /account 200 in 306ms
+ GET /account 200 in 491ms
+ ✓ Compiled in 2.2s (1722 modules)
+ GET /account 200 in 199ms
+ ✓ Compiled in 1344ms (1722 modules)
+ GET /account 200 in 206ms
+ ✓ Compiled in 5.3s (1722 modules)
+ ✓ Compiled in 8.7s (1722 modules)
+ GET /account 200 in 9025ms
+ GET /account 200 in 48ms
+ ✓ Compiled in 1381ms (1722 modules)
+ GET /account 200 in 413ms
+ GET / 200 in 108ms
+ GET /cart 200 in 100ms
+ GET / 200 in 78ms
+ GET /checkout?productId=JWzQud6waMYMk4AaiF8j 200 in 99ms
+ GET / 200 in 74ms
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 146ms
+ ✓ Compiled in 4.7s (1722 modules)
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 276ms
+ ✓ Compiled in 1451ms (1722 modules)
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 358ms
+ ✓ Compiled in 2.3s (1722 modules)
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 204ms
+ ✓ Compiled in 1059ms (1722 modules)
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 203ms
+ ✓ Compiled in 4.2s (1722 modules)
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 208ms
+ ✓ Compiled in 951ms (1722 modules)
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 138ms
+ ○ Compiling /admin/login ...
+ ✓ Compiled /admin/login in 5.9s (1735 modules)
+ GET /admin/login 200 in 6832ms
+ GET /admin/login 200 in 87ms
+ ○ Compiling /admin/dashboard ...
+ ✓ Compiled /admin/dashboard in 4.6s (1770 modules)
+ GET /admin/dashboard 200 in 4878ms
+ GET /admin/dashboard 200 in 81ms
+ GET /admin/dashboard 200 in 75ms
+ ○ Compiling /admin/products ...
+ ✓ Compiled /admin/products in 2.8s (1706 modules)
+ GET /admin/products 200 in 3119ms
+ GET /admin/products 200 in 1102ms
+ GET /admin/products 200 in 1090ms
+ ○ Compiling /admin/products/new ...
+ ✓ Compiled /admin/products/new in 6.2s (1748 modules)
+ GET /admin/products/new 200 in 6434ms
+ GET /admin/products/new 200 in 87ms
+ GET /admin/products 200 in 92ms
+ GET / 200 in 98ms
+ GET /products/BGGuRFrwUqcBF4GLC4cL 200 in 112ms
+ GET /cart 200 in 103ms
+ ○ Compiling /checkout ...
+ ✓ Compiled /checkout in 1811ms (1046 modules)
+ GET /checkout 200 in 2077ms
+ ○ Compiling /account ...
+ ✓ Compiled /account in 1766ms (1090 modules)
+ GET /account 200 in 2013ms
+ GET /account 200 in 88ms
+ ✓ Compiled in 2.7s (1771 modules)
+ GET /account 200 in 198ms
+ ✓ Compiled in 1448ms (1771 modules)
+ GET /account 200 in 199ms
+ GET /products/JWzQud6waMYMk4AaiF8j 200 in 130ms
+ GET /products/BGGuRFrwUqcBF4GLC4cL 200 in 70ms
+ ✓ Compiled in 7s (1771 modules)
+ GET /account 200 in 365ms
+ ✓ Compiled in 1471ms (1757 modules)

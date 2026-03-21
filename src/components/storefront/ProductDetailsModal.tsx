@@ -87,14 +87,6 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-screen h-[calc(100dvh-105px)] !top-[105px] !translate-y-0 max-w-none m-0 p-0 overflow-hidden border-none rounded-none bg-white gap-0 flex flex-col [&>button]:hidden duration-300">
-        
-        {/* Full-page Header with Back Button */}
-        <div className="w-full flex items-center px-4 py-3 border-b border-t border-slate-100 bg-white shrink-0 shadow-sm z-50">
-          <Button variant="ghost" onClick={onClose} className="gap-2 font-black uppercase tracking-widest text-xs hover:bg-slate-100 rounded-2xl text-slate-500 hover:text-slate-900 transition-colors">
-            <ChevronLeft className="h-4 w-4" /> Back to Store
-          </Button>
-        </div>
-
         <div className="flex flex-col md:flex-row h-full flex-1 overflow-hidden">
           {/* Left: Image Section */}
           <div className="w-full md:w-1/2 bg-[#f7f8f8] p-8 flex items-center justify-center relative">
@@ -108,7 +100,7 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
               />
             </div>
             {product.isDeal && (
-              <Badge className="absolute top-6 left-6 bg-[#cc0c39] text-white font-black uppercase text-[10px] tracking-widest px-3 py-1.5 border-none rounded-sm">
+              <Badge className="absolute top-6 left-6 bg-[#cc0c39] text-white font-black uppercase text-[10px] tracking-widest px-3 py-1.5 border-none rounded-none">
                 Limited Time Deal
               </Badge>
             )}
@@ -116,6 +108,12 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
 
           {/* Right: Details Section */}
           <div className="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto bg-white no-scrollbar">
+            {/* Header (non-fixed) */}
+            <div className="w-full flex items-center pb-4 mb-4 border-b border-slate-100 bg-white">
+              <Button variant="ghost" onClick={onClose} className="gap-2 font-black uppercase tracking-widest text-xs hover:bg-slate-100 rounded-none text-slate-500 hover:text-slate-900 transition-colors">
+                <ChevronLeft className="h-4 w-4" /> Back to Store
+              </Button>
+            </div>
             <DialogHeader className="mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer text-sm font-bold uppercase tracking-wider">

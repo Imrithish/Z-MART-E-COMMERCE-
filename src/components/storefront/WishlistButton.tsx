@@ -60,11 +60,11 @@ export function WishlistButton({ product, className }: { product: any, className
     <Button 
       variant="outline" 
       size="icon" 
-      className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-white/10 hover:bg-white shadow-sm border-none hover:scale-110 transition-all z-10", className)}
+      className={cn("h-8 w-8 sm:h-10 sm:w-10 rounded-full bg-[#0a2a5e] hover:bg-[#0a2a5e] shadow-sm border-none hover:scale-110 transition-all z-10 text-white", className)}
       onClick={toggleWishlist}
       disabled={isUpdating}
     >
-      <Heart className={cn("h-4 w-4 md:h-5 md:w-5 transition-colors", isWishlisted ? "fill-red-500 text-red-500 border-red-500" : "text-slate-400 hover:text-red-500")} />
+      <Heart className={cn("h-4 w-4 md:h-5 md:w-5 transition-colors", isWishlisted ? "fill-red-500 text-red-500 border-red-500" : "text-white")} />
     </Button>
   );
 }

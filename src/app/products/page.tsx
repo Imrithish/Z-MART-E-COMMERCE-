@@ -1,7 +1,6 @@
 
 "use client"
 
-import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { Card, CardTitle } from "@/components/ui/card";
 import { Product } from "@/lib/mock-data";
@@ -339,7 +338,6 @@ function ProductList() {
 export default function StorefrontProducts() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-body">
-      <Navbar />
       <main className="container mx-auto px-4 md:px-8 py-4 md:py-8 flex-1 max-w-[1450px]">
         <Suspense fallback={
           <div className="flex flex-col items-center justify-center py-40 gap-4">

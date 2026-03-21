@@ -1,17 +1,15 @@
 
 "use client"
 
-import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { Loader2, ShoppingBag, Search, Zap, ArrowRight, Star, TrendingUp, Sparkles, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useState, useMemo, useCallback, memo } from "react";
-import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
 import { WishlistButton } from "@/components/storefront/WishlistButton";
 import { useCollection, useFirestore } from "@/firebase";
-import { collection, query, limit, orderBy } from "firebase/firestore";
+import { collection, query, orderBy } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -102,13 +100,11 @@ export default function Home() {
   const { addItem } = useCart();
   const db = useFirestore();
   const router = useRouter();
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
-    return query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(40));
+    return query(collection(db, 'products'), orderBy('createdAt', 'desc'));
   }, [db]);
 
   const { data: products, loading } = useCollection(productsQuery);
@@ -135,9 +131,8 @@ export default function Home() {
   }, [products]);
 
   const handleProductClick = useCallback((product: any) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  }, []);
+    router.push(`/products/${product.id}`);
+  }, [router]);
 
   const handleAddToCart = useCallback((product: any) => {
     addItem(product);
@@ -145,8 +140,8 @@ export default function Home() {
 
   const handleBuyNowClick = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
-    handleProductClick(product);
-  }, [handleProductClick]);
+    router.push(`/checkout?productId=${product.id}`);
+  }, [router]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -168,8 +163,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-body">
-      <Navbar />
-
       <main className="flex-1">
         {/* Compact Hero Section - Reduced padding */}
         <section className="bg-slate-900 py-6 md:py-8 lg:py-10 px-4 md:px-8 relative overflow-hidden">
@@ -277,16 +270,33 @@ export default function Home() {
               </div>
             </section>
           ))}
+
+          {products && products.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-end justify-between border-b border-slate-200 pb-3">
+                <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">All Products</h2>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  {products.length} items
+                </span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                {products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    onProductClick={handleProductClick}
+                    onAddToCart={handleAddToCart}
+                    onBuyNow={handleBuyNowClick}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </main>
 
       <Footer />
 
-      <ProductDetailsModal 
-        product={selectedProduct}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </div>
   );
 }

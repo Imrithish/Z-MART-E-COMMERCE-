@@ -1,7 +1,6 @@
 
 "use client"
 
-import { Navbar } from "@/components/storefront/Navbar";
 import { Footer } from "@/components/storefront/Footer";
 import { UserSidebar } from "@/components/storefront/UserSidebar";
 import { useUser, useCollection, useFirestore } from "@/firebase";
@@ -67,6 +66,7 @@ export default function UserDashboard() {
   const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
+  const [openItemsOrderId, setOpenItemsOrderId] = useState<string | null>(null);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
 
   // Address Form State
@@ -94,6 +94,13 @@ export default function UserDashboard() {
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
+
+  useEffect(() => {
+    if (!openItemsOrderId) return;
+    const handleOutside = () => setOpenItemsOrderId(null);
+    window.addEventListener('click', handleOutside);
+    return () => window.removeEventListener('click', handleOutside);
+  }, [openItemsOrderId]);
 
   // Fetch User Orders
   const ordersQuery = useMemo(() => {
@@ -243,8 +250,6 @@ export default function UserDashboard() {
       <UserSidebar />
       
       <div className="flex-1 flex flex-col overflow-x-hidden">
-        <Navbar />
-
         <main className="flex-1 max-w-[1200px] mx-auto w-full p-4 md:p-10 lg:p-14 space-y-8 md:space-y-12 mb-24">
           <header className="space-y-2 md:space-y-4">
             <div className="flex items-center gap-3 md:gap-4">
@@ -384,17 +389,67 @@ export default function UserDashboard() {
                ) : orders && orders.length > 0 ? (
                  <div className="grid grid-cols-1 gap-6">
                    {orders.map((order: any) => (
-                     <Card key={order.id} className="bg-white border-none shadow-sm rounded-[2rem] overflow-hidden hover:shadow-lg transition-all border border-transparent hover:border-slate-100 group">
+                     <Card key={order.id} className="bg-white border-none shadow-sm rounded-[2rem] overflow-visible hover:shadow-lg transition-all border border-transparent hover:border-slate-100 group">
                         <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start">
-                          <div className="flex -space-x-6 shrink-0">
-                            {order.items?.slice(0, 3).map((item: any, i: number) => (
-                              <div key={i} className="relative h-24 w-24 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-2 group-hover:scale-105 transition-transform duration-500" style={{ zIndex: 10 - i }}>
-                                <Image src={item.imageUrl || 'https://placehold.co/100x100'} alt={item.name} fill className="object-contain p-1" />
-                              </div>
-                            ))}
-                            {order.items?.length > 3 && (
-                              <div className="h-24 w-24 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-xs border-2 border-white shadow-xl relative z-0">
-                                +{order.items.length - 3}
+                          <div className="flex items-center gap-4 shrink-0">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const pid = order.items?.[0]?.productId;
+                                if (pid) router.push(`/products/${pid}`);
+                              }}
+                              className="relative h-24 w-24 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden p-2 group-hover:scale-105 transition-transform duration-500"
+                            >
+                              <Image src={order.items?.[0]?.imageUrl || 'https://placehold.co/100x100'} alt={order.items?.[0]?.name || 'Order item'} fill className="object-contain p-1" />
+                            </button>
+                            {order.items?.length > 1 && (
+                              <div
+                                className="relative"
+                                onMouseEnter={() => setOpenItemsOrderId(order.id)}
+                                onMouseLeave={() => setOpenItemsOrderId(null)}
+                              >
+                                <button
+                                  type="button"
+                                  className="h-12 min-w-12 px-3 bg-slate-900 text-white rounded-xl flex items-center justify-center font-black text-xs border-2 border-white shadow-xl"
+                                >
+                                  +{order.items.length - 1}
+                                </button>
+                                {openItemsOrderId === order.id && (
+                                  <div
+                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-64 sm:w-72 bg-white/50 backdrop-blur-3xl border border-white/50 shadow-[0_20px_50px_rgba(15,23,42,0.25)] ring-1 ring-white/60 rounded-2xl p-4 z-20 animate-in fade-in zoom-in-95 md:left-full md:top-0 md:mt-0 md:ml-2 md:translate-x-0 before:absolute before:-left-4 before:top-0 before:h-full before:w-4 before:content-['']"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    <div className="flex items-center justify-between mb-3">
+                                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">Other Items</p>
+                                      <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{order.items.length - 1}</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                      {order.items?.slice(1).map((item: any, i: number) => (
+                                        <button
+                                          key={i}
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            if (item.productId) {
+                                              router.push(`/products/${item.productId}`);
+                                            }
+                                          }}
+                                          className="w-full flex flex-col items-center gap-2 text-center bg-white/60 backdrop-blur border border-white/60 rounded-xl p-2 hover:shadow-xl hover:-translate-y-0.5 transition-all animate-in fade-in zoom-in-95"
+                                          style={{ animationDelay: `${i * 60}ms` }}
+                                        >
+                                          <div className="relative h-12 w-12 bg-white/80 rounded-lg border border-white/70 overflow-hidden p-1 shrink-0 shadow-inner">
+                                            <Image src={item.imageUrl || 'https://placehold.co/100x100'} alt={item.name} fill className="object-contain p-1" />
+                                          </div>
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-[9px] font-black text-slate-900 uppercase tracking-tight line-clamp-1">{item.name}</p>
+                                            <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Qty: {item.quantity}</p>
+                                          </div>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
@@ -403,6 +458,17 @@ export default function UserDashboard() {
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                               <div className="space-y-1">
                                 <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Order #{order.id.slice(-8).toUpperCase()}</h3>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    const pid = order.items?.[0]?.productId;
+                                    if (pid) router.push(`/products/${pid}`);
+                                  }}
+                                  className="text-[11px] font-black text-primary uppercase tracking-widest hover:underline line-clamp-1 text-left"
+                                >
+                                  {order.items?.[0]?.name || "View Item"}
+                                </button>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                   <Clock className="h-3 w-3" /> {order.createdAt?.toDate ? format(order.createdAt.toDate(), 'MMM dd, yyyy') : 'Recently'}
                                 </p>
@@ -435,15 +501,12 @@ export default function UserDashboard() {
                             </div>
                           </div>
 
-                          <div className="shrink-0 flex md:flex-col gap-3 w-full md:w-auto">
-                            <Button onClick={() => toast({ title: "Tracking Update", description: "Your package is securely in transit and will arrive soon." })} className="flex-1 md:flex-none h-12 px-8 rounded-xl bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[9px] transition-all">
-                              Track Pack
-                            </Button>
-                            <Button onClick={() => handleViewReceipt(order)} variant="outline" className="flex-1 md:flex-none h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-slate-100">
+                          <div className="shrink-0 flex md:flex-col gap-3 w-full md:w-auto items-stretch md:items-end">
+                            <Button onClick={() => handleViewReceipt(order)} className="w-full md:w-44 h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] bg-[#0a2a5e] hover:bg-[#071f46] text-white border-none">
                               View Receipt
                             </Button>
                             {order.status === 'Pending' && (
-                              <Button onClick={() => handleCancelOrder(order.id)} variant="outline" className="flex-1 md:flex-none h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-red-100 text-red-500 hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-all">
+                              <Button onClick={() => handleCancelOrder(order.id)} variant="outline" className="w-full md:w-44 h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-red-100 text-red-500 hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-all">
                                 Cancel Order
                               </Button>
                             )}

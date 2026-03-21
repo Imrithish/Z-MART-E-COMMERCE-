@@ -112,7 +112,7 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full flex flex-col shadow-xl">
+    <header className="w-full flex flex-col shadow-xl">
       <div className="amazon-header-bg text-white h-[65px] flex items-center px-2 md:px-6 gap-2 md:gap-8 justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center group shrink-0">

@@ -1,0 +1,167 @@
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:411:1]
+ [2m408[0m |                   </CardContent>
+ [2m409[0m |                 </Card>
+ [2m410[0m |                 </div>
+ [2m411[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m           </form>
+ [2m412[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m413[0m |     
+ [2m414[0m |           </main>
+ [2m414[0m |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:411:1]
+ [2m408[0m |                   </CardContent>
+ [2m409[0m |                 </Card>
+ [2m410[0m |                 </div>
+ [2m411[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m           </form>
+ [2m412[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m413[0m |     
+ [2m414[0m |           </main>
+ [2m414[0m |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:411:1]
+ [2m408[0m |                   </CardContent>
+ [2m409[0m |                 </Card>
+ [2m410[0m |                 </div>
+ [2m411[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m           </form>
+ [2m412[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m413[0m |     
+ [2m414[0m |           </main>
+ [2m414[0m |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:411:1]
+ [2m408[0m |                   </CardContent>
+ [2m409[0m |                 </Card>
+ [2m410[0m |                 </div>
+ [2m411[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m           </form>
+ [2m412[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m413[0m |     
+ [2m414[0m |           </main>
+ [2m414[0m |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:411:1]
+ [2m408[0m |                   </CardContent>
+ [2m409[0m |                 </Card>
+ [2m410[0m |                 </div>
+ [2m411[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m           </form>
+ [2m412[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m413[0m |     
+ [2m414[0m |           </main>
+ [2m414[0m |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:411:1]
+ [2m408[0m |                   </CardContent>
+ [2m409[0m |                 </Card>
+ [2m410[0m |                 </div>
+ [2m411[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m           </form>
+ [2m412[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m413[0m |     
+ [2m414[0m |           </main>
+ [2m414[0m |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:347:1]
+ [2m344[0m |                   </CardContent>
+ [2m345[0m |                 </Card>
+ [2m346[0m |               </form>
+ [2m347[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m348[0m | [35;1m|[0m   
+ [2m349[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         {/* Sidebar: Order Summary */}
+ [2m350[0m |             <div className="lg:col-span-5">
+ [2m351[0m |                <Card className="border-none shadow-xl rounded-3xl overflow-hidden sticky top-28 bg-slate-900 text-white">
+ [2m351[0m |                   <CardHeader className="p-8 border-b border-white/10">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⨯ ./src/app/checkout/page.tsx
+Error:   [31mx[0m Expected '</', got 'jsx text (
+  [31m|[0m
+  [31m|[0m         )'
+     ,-[[36;1;4mC:\Users\mrith\OneDrive\Documents\z-mart\src\app\checkout\page.tsx[0m:409:1]
+ [2m406[0m |                   </CardContent>
+ [2m407[0m |                 </Card>
+ [2m408[0m |               </form>
+ [2m409[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m         </div>
+ [2m410[0m | [35;1m|[0m   
+ [2m411[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m         {/* Sidebar: Order Summary */}
+ [2m412[0m |             <div className="lg:col-span-5">
+ [2m413[0m |                <Card className="border-none shadow-xl rounded-3xl overflow-hidden sticky top-28 bg-slate-900 text-white">
+ [2m413[0m |                   <CardHeader className="p-8 border-b border-white/10">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./src/app/checkout/page.tsx
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
