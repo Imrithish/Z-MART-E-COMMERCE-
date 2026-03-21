@@ -56,7 +56,7 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-type AccountTab = 'overview' | 'orders' | 'wishlist' | 'addresses' | 'preferences' | 'security';
+type AccountTab = 'overview' | 'orders' | 'wishlist' | 'addresses';
 
 export default function UserDashboard() {
   const { user, loading: authLoading } = useUser();
@@ -84,7 +84,7 @@ export default function UserDashboard() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['orders', 'wishlist', 'addresses', 'preferences', 'security'].includes(hash)) {
+      if (['orders', 'wishlist', 'addresses'].includes(hash)) {
         setActiveTab(hash as any);
       } else {
         setActiveTab('overview');
@@ -141,6 +141,21 @@ export default function UserDashboard() {
   const handleViewReceipt = (order: any) => {
     setSelectedReceipt(order);
     setIsReceiptOpen(true);
+  };
+
+  const handleCancelOrder = (orderId: string) => {
+    if (!db || !user) return;
+    deleteDoc(doc(db, 'orders', orderId))
+      .then(() => {
+        toast({ title: "Order Cancelled", description: "Your order has been completely removed." });
+      })
+      .catch(async (error) => {
+        const permissionError = new FirestorePermissionError({
+          path: `orders/${orderId}`,
+          operation: 'delete',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+      });
   };
 
   const handleAddAddress = async (e: React.FormEvent) => {
@@ -237,8 +252,7 @@ export default function UserDashboard() {
                 {activeTab === 'overview' ? 'Dashboard' : 
                  activeTab === 'orders' ? 'My Orders' : 
                  activeTab === 'wishlist' ? 'Your Wishlist' : 
-                 activeTab === 'addresses' ? 'Saved Addresses' : 
-                 activeTab === 'preferences' ? 'Preferences' : 'Security'}
+                 activeTab === 'addresses' ? 'Saved Addresses' : ''}
                </h1>
                <div className="h-2 w-2 bg-primary rounded-full mt-2 md:mt-4" />
             </div>
@@ -331,7 +345,6 @@ export default function UserDashboard() {
                   { title: "My Orders", desc: "Track and manage purchases", icon: Package, href: '#orders' },
                   { title: "Wishlist", desc: "Items saved for later", icon: Heart, href: '#wishlist' },
                   { title: "Addresses", desc: "Manage delivery spots", icon: MapPin, href: '#addresses' },
-                  { title: "Settings", desc: "Account preferences", icon: SettingsIcon, href: '#preferences' },
                 ].map((card, idx) => (
                   <Link key={idx} href={card.href}>
                     <Card className="hover:shadow-2xl transition-all duration-500 border-none rounded-[1.5rem] md:rounded-[2.5rem] cursor-pointer group h-full bg-white shadow-sm overflow-hidden border-slate-100 text-left w-full">
@@ -423,12 +436,17 @@ export default function UserDashboard() {
                           </div>
 
                           <div className="shrink-0 flex md:flex-col gap-3 w-full md:w-auto">
-                            <Button className="flex-1 md:flex-none h-12 px-8 rounded-xl bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[9px] transition-all">
+                            <Button onClick={() => toast({ title: "Tracking Update", description: "Your package is securely in transit and will arrive soon." })} className="flex-1 md:flex-none h-12 px-8 rounded-xl bg-slate-900 hover:bg-primary text-white hover:text-slate-900 font-black uppercase tracking-widest text-[9px] transition-all">
                               Track Pack
                             </Button>
                             <Button onClick={() => handleViewReceipt(order)} variant="outline" className="flex-1 md:flex-none h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-slate-100">
                               View Receipt
                             </Button>
+                            {order.status === 'Pending' && (
+                              <Button onClick={() => handleCancelOrder(order.id)} variant="outline" className="flex-1 md:flex-none h-12 px-8 rounded-xl font-black uppercase tracking-widest text-[9px] border-red-100 text-red-500 hover:bg-red-50 hover:text-red-700 hover:border-red-200 transition-all">
+                                Cancel Order
+                              </Button>
+                            )}
                           </div>
                         </div>
                      </Card>
@@ -615,87 +633,7 @@ export default function UserDashboard() {
             </div>
           )}
 
-          {activeTab === 'preferences' && (
-            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-               <Card className="bg-white border-none shadow-sm rounded-[3rem] overflow-hidden">
-                  <CardHeader className="p-8 md:p-12 border-b border-slate-50">
-                    <div className="flex items-center gap-4">
-                       <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                          <SettingsIcon className="h-6 w-6" />
-                       </div>
-                       <div>
-                          <CardTitle className="text-xl font-black uppercase tracking-widest text-slate-900">Account Preferences</CardTitle>
-                          <p className="text-xs font-medium text-slate-400 uppercase tracking-widest mt-1">Customize your Z-MART experience</p>
-                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-8 md:p-12 space-y-12">
-                     <div className="space-y-8">
-                        <div className="flex items-center justify-between group">
-                           <div className="space-y-1">
-                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                                <Bell className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> Order Notifications
-                              </h4>
-                              <p className="text-xs text-slate-500 font-medium">Receive real-time updates on your shipment status.</p>
-                           </div>
-                           <Switch defaultChecked />
-                        </div>
-                        <Separator className="bg-slate-50" />
-                        <div className="flex items-center justify-between group">
-                           <div className="space-y-1">
-                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                                <Mail className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> Marketing Emails
-                              </h4>
-                              <p className="text-xs text-slate-500 font-medium">Get early access to flash deals and seasonal sales.</p>
-                           </div>
-                           <Switch defaultChecked />
-                        </div>
-                        <Separator className="bg-slate-50" />
-                        <div className="flex items-center justify-between group">
-                           <div className="space-y-1">
-                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                                <Smartphone className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> SMS Alerts
-                              </h4>
-                              <p className="text-xs text-slate-500 font-medium">Important account security and delivery notifications via text.</p>
-                           </div>
-                           <Switch />
-                        </div>
-                        <Separator className="bg-slate-50" />
-                        <div className="flex items-center justify-between group">
-                           <div className="space-y-1">
-                              <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight flex items-center gap-2">
-                                <Eye className="h-4 w-4 text-slate-400 group-hover:text-primary transition-colors" /> Public Profile
-                              </h4>
-                              <p className="text-xs text-slate-500 font-medium">Allow others to see your product reviews and ratings.</p>
-                           </div>
-                           <Switch defaultChecked />
-                        </div>
-                     </div>
 
-                     <div className="pt-8 flex justify-end">
-                        <Button className="h-12 px-8 rounded-xl bg-slate-900 text-white font-black uppercase tracking-widest text-[10px] hover:bg-primary hover:text-slate-900 transition-all">
-                           Save Preferences
-                        </Button>
-                     </div>
-                  </CardContent>
-               </Card>
-            </div>
-          )}
-
-          {activeTab === 'security' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-              <Card className="bg-white border-none shadow-sm rounded-[3rem] p-12 text-center max-w-2xl mx-auto">
-                 <div className="bg-slate-50 h-24 w-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
-                    <ShieldCheck className="h-10 w-10 text-slate-200" />
-                 </div>
-                 <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-4">Security Terminal</h2>
-                 <p className="text-slate-500 font-medium mb-10">This section is currently being encrypted for your security. Please check back shortly to manage your login credentials.</p>
-                 <Button onClick={() => setActiveTab('overview')} variant="outline" className="rounded-xl h-12 px-8 font-black uppercase tracking-widest text-[10px]">
-                   Return to Dashboard
-                 </Button>
-              </Card>
-            </div>
-          )}
 
           {activeTab === 'overview' && (
             <section className="pt-10 md:pt-20 border-t border-slate-100">

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useState, useMemo, useCallback, memo } from "react";
 import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
+import { WishlistButton } from "@/components/storefront/WishlistButton";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, limit, orderBy } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,9 @@ const ProductCard = memo(({ product, onProductClick, onAddToCart, onBuyNow }: {
             DEAL
           </Badge>
         )}
+        <div className="absolute top-2 right-2 z-10 transition-transform hover:scale-105">
+          <WishlistButton product={product} />
+        </div>
       </div>
       
       <div className="flex flex-col flex-1 min-w-0">

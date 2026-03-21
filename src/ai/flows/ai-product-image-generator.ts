@@ -40,14 +40,14 @@ const aiProductImageGeneratorFlow = ai.defineFlow(
       No text, no watermarks, professional product photography style.`;
 
       const { media } = await ai.generate({
-        model: 'googleai/imagen-4.0-fast-generate-001',
+        model: 'googleai/imagen-3.0-generate-001',
         prompt: promptText,
       });
 
       if (media && media.url) {
         return {
           imageUrl: media.url,
-          status: 'success'
+          status: 'success' as const
         };
       }
     } catch (error: any) {
@@ -60,7 +60,7 @@ const aiProductImageGeneratorFlow = ai.defineFlow(
     const stableSeed = input.productName.toLowerCase().replace(/[^a-z0-9]/g, '-');
     return {
       imageUrl: `https://picsum.photos/seed/${stableSeed}/800/800`,
-      status: 'fallback'
+      status: 'fallback' as const
     };
   }
 );

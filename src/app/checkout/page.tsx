@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2, ArrowRight, MapPin, Phone, CreditCard, ShoppingBag, Truck, Home as HomeIcon, Briefcase } from "lucide-react";
 import Image from "next/image";
 import { OrderSuccessModal } from "@/components/storefront/OrderSuccessModal";
-
+import { PaymentGatewayModal } from "@/components/storefront/PaymentGatewayModal";
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
     style: 'currency',
@@ -39,6 +39,7 @@ function CheckoutContent() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isPaymentGatewayOpen, setIsPaymentGatewayOpen] = useState(false);
   const [confirmedTotal, setConfirmedTotal] = useState(0);
 
   // Form State
@@ -114,20 +115,8 @@ function CheckoutContent() {
     });
   };
 
-  const handlePlaceOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const executeOrderPlacement = async () => {
     if (!db || !user || orderItems.length === 0) return;
-
-    // Basic Validation
-    if (!address.houseNo || !address.street || !address.city || !address.state || !address.pincode || !phone) {
-      toast({
-        variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in all required address and contact fields.",
-      });
-      return;
-    }
-
     setIsProcessing(true);
 
     const orderData = {
@@ -141,11 +130,6 @@ function CheckoutContent() {
       status: 'Pending',
       createdAt: serverTimestamp(),
     };
-
-    // Simulate processing delay
-    if (paymentMethod === 'Online') {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-    }
 
     addDoc(collection(db, 'orders'), orderData)
       .then(() => {
@@ -161,7 +145,30 @@ function CheckoutContent() {
         });
         errorEmitter.emit('permission-error', permissionError);
       })
-      .finally(() => setIsProcessing(false));
+      .finally(() => {
+        setIsProcessing(false);
+        setIsPaymentGatewayOpen(false);
+      });
+  };
+
+  const handlePlaceOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!db || !user || orderItems.length === 0) return;
+
+    if (!address.houseNo || !address.street || !address.city || !address.state || !address.pincode || !phone) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Please fill in all required address and contact fields.",
+      });
+      return;
+    }
+
+    if (paymentMethod === 'Online') {
+      setIsPaymentGatewayOpen(true);
+    } else {
+      executeOrderPlacement();
+    }
   };
 
   if (userLoading || (productId && productLoading)) {
@@ -414,6 +421,12 @@ function CheckoutContent() {
           router.push('/account#orders');
         }}
         orderTotal={confirmedTotal}
+      />
+      <PaymentGatewayModal
+        isOpen={isPaymentGatewayOpen}
+        onClose={() => setIsPaymentGatewayOpen(false)}
+        amount={grandTotal}
+        onSuccess={executeOrderPlacement}
       />
     </div>
   );

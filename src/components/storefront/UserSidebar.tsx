@@ -16,8 +16,6 @@ const NAV_ITEMS = [
   { label: 'Orders', icon: Package, href: '/account#orders' },
   { label: 'Wishlist', icon: Heart, href: '/account#wishlist' },
   { label: 'Addresses', icon: MapPin, href: '/account#addresses' },
-  { label: 'Preferences', icon: Settings, href: '/account#preferences' },
-  { label: 'Security', icon: ShieldCheck, href: '/account#security' },
 ];
 
 export function UserSidebar() {
@@ -60,9 +58,9 @@ export function UserSidebar() {
         {NAV_ITEMS.map((item) => {
           const isActive = typeof window !== 'undefined' && window.location.hash === item.href.split('#')[1];
           return (
-            <Link
+            <a
               key={item.href}
-              href={item.href}
+              href={`#${item.href.split('#')[1]}`}
               onClick={() => isMobile && setIsOpen(false)}
               className={cn(
                 "flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden",
@@ -73,7 +71,7 @@ export function UserSidebar() {
             >
               <item.icon className={cn("h-6 w-6 shrink-0 transition-transform duration-500 group-hover:scale-110", isActive && "scale-110")} />
               <span className="font-black uppercase tracking-widest text-[11px] leading-none truncate">{item.label}</span>
-            </Link>
+            </a>
           );
         })}
       </nav>
@@ -148,9 +146,9 @@ export function UserSidebar() {
         {NAV_ITEMS.map((item) => {
           const isActive = typeof window !== 'undefined' && window.location.hash === item.href.split('#')[1];
           return (
-            <Link
+            <a
               key={item.href}
-              href={item.href}
+              href={`#${item.href.split('#')[1]}`}
               className={cn(
                 "flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300 group relative overflow-hidden",
                 isActive 
@@ -160,7 +158,7 @@ export function UserSidebar() {
             >
               <item.icon className={cn("h-6 w-6 shrink-0 transition-transform duration-500 group-hover:scale-110", isActive && "scale-110")} />
               {!isCollapsed && <span className="font-black uppercase tracking-widest text-[11px] leading-none truncate">{item.label}</span>}
-            </Link>
+            </a>
           );
         })}
       </nav>

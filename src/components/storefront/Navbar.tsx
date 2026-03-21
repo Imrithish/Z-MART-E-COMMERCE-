@@ -16,14 +16,16 @@ import {
   Sparkles, 
   Menu,
   Package,
-  UserCircle
+  UserCircle,
+  Heart
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
-import { useUser, useAuth } from "@/firebase";
+import { useUser, useAuth, useFirestore, useCollection } from "@/firebase";
+import { collection } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -80,6 +82,14 @@ export function Navbar() {
   const router = useRouter();
   const { user } = useUser();
   const auth = useAuth();
+  const db = useFirestore();
+
+  const wishlistQuery = useMemo(() => {
+    if (!db || !user?.uid) return null;
+    return collection(db, 'users', user.uid, 'wishlist');
+  }, [db, user?.uid]);
+
+  const { data: wishlistItems } = useCollection(wishlistQuery);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +180,7 @@ export function Navbar() {
               <UserCircle className="h-6 w-6 md:h-7 md:w-7 text-white" />
               <div className="hidden lg:flex flex-col items-start leading-tight">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  {user ? `Hi, ${user.displayName?.split(' ')[0]}` : 'Account'}
+                  {user ? `Hi, ${(user.displayName || user.email?.split('@')[0] || 'User').split(' ')[0]}` : 'Account'}
                 </span>
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-black uppercase tracking-tight">Profile</span>
@@ -195,11 +205,17 @@ export function Navbar() {
                           <Package className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" /> Your Orders
                         </Link>
                       </li>
+
                       <li>
-                        <Link href="/account#security" className="flex items-center gap-3 p-2 md:p-3 rounded-xl hover:bg-slate-50 text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all">
-                          <ShieldCheck className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" /> Login & Security
+                        <Link href="/account#wishlist" className="flex items-center gap-3 p-2 md:p-3 rounded-xl hover:bg-slate-50 text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all">
+                          <Heart className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" /> 
+                          <span className="flex-1 text-left">Your Wishlist</span>
+                          {wishlistItems && wishlistItems.length > 0 && (
+                            <span className="bg-red-500 text-white px-2 py-0.5 rounded-full text-[8px]">{wishlistItems.length}</span>
+                          )}
                         </Link>
                       </li>
+
                       <li>
                         <Link href="/account#addresses" className="flex items-center gap-3 p-2 md:p-3 rounded-xl hover:bg-slate-50 text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all">
                           <MapPin className="h-3.5 w-3.5 md:h-4 md:w-4 text-primary" /> Your Addresses
@@ -224,6 +240,8 @@ export function Navbar() {
               )}
             </div>
           </div>
+
+
 
           <Link href="/cart" className="flex items-center gap-1 hover:bg-white/10 p-1.5 rounded-xl transition-all group relative">
             <div className="relative">

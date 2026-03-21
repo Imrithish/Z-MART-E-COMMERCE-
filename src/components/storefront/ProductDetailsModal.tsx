@@ -4,7 +4,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2, Zap, AlignLeft } from "lucide-react";
+import { Star, ShoppingCart, ShieldCheck, Truck, RotateCcw, Info, CheckCircle2, Zap, AlignLeft, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/mock-data";
@@ -47,7 +47,7 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
       ) as any,
       description: (
         <div className="flex items-center gap-3 mt-2">
-          <div className="relative h-12 w-12 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
+          <div className="relative h-12 w-12 rounded-none bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
             <Image src={product.imageUrl} alt={product.name} fill className="object-contain p-1" />
           </div>
           <div className="flex flex-col gap-0.5">
@@ -58,7 +58,7 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
       ) as any,
       action: (
         <ToastAction altText="View Cart" asChild>
-          <Link href="/cart" className="amazon-btn-primary text-[10px] px-4 py-2 rounded-xl">
+          <Link href="/cart" className="amazon-btn-primary text-[10px] px-4 py-2 rounded-none">
             View Cart
           </Link>
         </ToastAction>
@@ -86,8 +86,16 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl p-0 overflow-hidden border-none rounded-[1.5rem] bg-white gap-0">
-        <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
+      <DialogContent className="w-screen h-[calc(100dvh-105px)] !top-[105px] !translate-y-0 max-w-none m-0 p-0 overflow-hidden border-none rounded-none bg-white gap-0 flex flex-col [&>button]:hidden duration-300">
+        
+        {/* Full-page Header with Back Button */}
+        <div className="w-full flex items-center px-4 py-3 border-b border-t border-slate-100 bg-white shrink-0 shadow-sm z-50">
+          <Button variant="ghost" onClick={onClose} className="gap-2 font-black uppercase tracking-widest text-xs hover:bg-slate-100 rounded-2xl text-slate-500 hover:text-slate-900 transition-colors">
+            <ChevronLeft className="h-4 w-4" /> Back to Store
+          </Button>
+        </div>
+
+        <div className="flex flex-col md:flex-row h-full flex-1 overflow-hidden">
           {/* Left: Image Section */}
           <div className="w-full md:w-1/2 bg-[#f7f8f8] p-8 flex items-center justify-center relative">
             <div className="relative w-full aspect-square max-w-[400px]">
@@ -107,7 +115,7 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
           </div>
 
           {/* Right: Details Section */}
-          <div className="w-full md:w-1/2 p-8 overflow-y-auto bg-white no-scrollbar">
+          <div className="w-full md:w-1/2 p-8 md:p-12 overflow-y-auto bg-white no-scrollbar">
             <DialogHeader className="mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer text-sm font-bold uppercase tracking-wider">
@@ -156,7 +164,7 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
 
               {/* Purchase Options - Only visible in storefront context */}
               {showActions && (
-                <div className="bg-[#fcfcfc] border border-slate-200 rounded-xl p-5 space-y-4">
+                <div className="bg-[#fcfcfc] border border-slate-200 rounded-none p-5 space-y-4">
                   <div className="flex items-center gap-3 text-sm text-slate-700">
                     <Truck className="h-5 w-5 text-slate-400" />
                     <p><span className="font-bold">FREE delivery</span> by Tomorrow, 11 AM</p>
@@ -172,13 +180,13 @@ export function ProductDetailsModal({ product, isOpen, onClose, showActions = tr
 
                   <Button 
                     onClick={handleAddToCart}
-                    className="w-full h-12 bg-[#ffd814] hover:bg-[#f7ca00] text-black border-[#fcd200] border shadow-sm rounded-full font-bold transition-all active:scale-95"
+                    className="w-full h-12 bg-[#ffd814] hover:bg-[#f7ca00] text-black border-[#fcd200] border shadow-sm rounded-none font-bold transition-all active:scale-95"
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" /> Add to Cart
                   </Button>
                   <Button 
                     onClick={handleBuyNow}
-                    className="w-full h-12 bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-sm rounded-full font-bold transition-all active:scale-95"
+                    className="w-full h-12 bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-sm rounded-none font-bold transition-all active:scale-95"
                   >
                     <Zap className="h-4 w-4 mr-2" /> Buy Now
                   </Button>

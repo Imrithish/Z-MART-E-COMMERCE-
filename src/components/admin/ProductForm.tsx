@@ -17,8 +17,6 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Sparkles, Loader2, Save, ShoppingBag, ListPlus, Image as ImageIcon, AlertCircle, X } from "lucide-react";
-import { aiProductDescriptionGenerator } from "@/ai/flows/ai-product-description-generator";
-import { aiProductImageGenerator } from "@/ai/flows/ai-product-image-generator";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useFirestore } from "@/firebase";
@@ -54,8 +52,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
   const router = useRouter();
   const db = useFirestore();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
-  const [isGeneratingImg, setIsGeneratingImg] = useState(false);
   
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -68,90 +64,7 @@ export function ProductForm({ initialData }: { initialData?: any }) {
     imageUrl: initialData?.imageUrl || '',
   });
 
-  const generateDescription = async () => {
-    if (!formData.name) {
-      toast({
-        title: "Product Name Required",
-        description: "Please enter a product name before generating a description.",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    setIsGeneratingDesc(true);
-    try {
-      const features = formData.features.split(',').map((f: string) => f.trim()).filter(Boolean);
-      const keyFeatures = features.length > 0 ? features : ["High quality", "Durable design", "Premium performance"];
-
-      const result = await aiProductDescriptionGenerator({
-        productName: formData.name,
-        keyFeatures: keyFeatures,
-        additionalNotes: "Professional, persuasive, and SEO-friendly. Focus on the premium nature of the brand.",
-      });
-
-      if (result && result.description) {
-        setFormData({ ...formData, description: result.description });
-        toast({
-          title: "AI Optimized Description",
-          description: "Compelling product description has been successfully generated.",
-        });
-      }
-    } catch (error: any) {
-      console.error("AI Generation Error:", error);
-      toast({
-        title: "AI Service Error",
-        description: "Could not generate description. Please ensure you've provided some features.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsGeneratingDesc(false);
-    }
-  };
-
-  const generateImage = async () => {
-    if (!formData.name || !formData.category) {
-      toast({
-        title: "Details Required",
-        description: "Please enter a product name and category before generating an image.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsGeneratingImg(true);
-    try {
-      const result = await aiProductImageGenerator({
-        productName: formData.name,
-        category: formData.category,
-      });
-
-      if (result && result.imageUrl) {
-        setFormData({ ...formData, imageUrl: result.imageUrl });
-        
-        if (result.status === 'success') {
-          toast({
-            title: "AI Image Generated",
-            description: "Professional product photography has been created.",
-          });
-        } else {
-          toast({
-            title: "Premium Photo Selected",
-            description: "AI generation is restricted on free plans. We've matched a high-quality product photo for you.",
-            variant: "default",
-          });
-        }
-      }
-    } catch (error: any) {
-      console.error("AI Image Error:", error);
-      toast({
-        title: "AI Service Error",
-        description: "Could not generate image. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsGeneratingImg(false);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -298,17 +211,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="imageUrl" className={fieldLabelClass}>Image URL</Label>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={generateImage}
-                  disabled={isGeneratingImg}
-                  className="gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary font-black uppercase text-[10px] tracking-widest rounded-xl h-10 px-5 transition-all"
-                >
-                  {isGeneratingImg ? <Loader2 className="h-3 w-3 animate-spin" /> : <ImageIcon className="h-3 w-3" />}
-                  {isGeneratingImg ? "AI Painting..." : "AI Generate Image"}
-                </Button>
               </div>
               <div className="relative group">
                 <Input 
@@ -372,17 +274,6 @@ export function ProductForm({ initialData }: { initialData?: any }) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="description" className={fieldLabelClass}>Full Description</Label>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={generateDescription}
-                  disabled={isGeneratingDesc}
-                  className="gap-2 bg-primary/5 border-primary/20 hover:bg-primary/10 text-primary font-black uppercase text-[10px] tracking-widest rounded-xl h-10 px-5 transition-all"
-                >
-                  {isGeneratingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-                  {isGeneratingDesc ? "AI Working..." : "AI Generate Desc"}
-                </Button>
               </div>
               <Textarea 
                 id="description" 

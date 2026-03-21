@@ -13,7 +13,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useState, Suspense, useMemo, useCallback, useEffect } from "react";
 import { useCollection, useFirestore } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
-import { ProductDetailsModal } from "@/components/storefront/ProductDetailsModal";
+import { WishlistButton } from "@/components/storefront/WishlistButton";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
@@ -41,8 +41,7 @@ function ProductList() {
   const searchQuery = searchParams.get('q');
   
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("price-desc");
   const [maxPriceFilter, setMaxPriceFilter] = useState<number | null>(null);
 
   const productsQuery = useMemo(() => {
@@ -79,9 +78,7 @@ function ProductList() {
 
   // Sync the filter when the dynamic ceiling changes
   useEffect(() => {
-    if (maxPriceFilter === null || maxPriceFilter > absoluteMaxPrice) {
-      setMaxPriceFilter(absoluteMaxPrice);
-    }
+    setMaxPriceFilter(absoluteMaxPrice);
   }, [absoluteMaxPrice]);
 
   const displayProducts = useMemo(() => {
@@ -125,9 +122,8 @@ function ProductList() {
   }, [allProducts, categoryFilter, searchQuery, sortBy, maxPriceFilter]);
 
   const handleProductClick = useCallback((product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
-  }, []);
+    router.push(`/products/${product.id}`);
+  }, [router]);
 
   const handleAddToCart = useCallback((e: React.MouseEvent, product: any) => {
     e.stopPropagation();
@@ -160,8 +156,8 @@ function ProductList() {
               <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
                 {categoryFilter === "All Categories" ? (searchQuery ? `Results for: ${searchQuery}` : "All Products") : categoryFilter}
               </h1>
-              <div className="h-2 w-2 bg-primary rounded-full shrink-0" />
-              <Badge variant="outline" className="hidden sm:flex h-6 rounded-full border-slate-200 text-slate-400 font-black text-[8px] uppercase tracking-widest">
+              <div className="h-2 w-2 bg-primary rounded-none shrink-0" />
+              <Badge variant="outline" className="hidden sm:flex h-6 rounded-none border-slate-200 text-slate-400 font-black text-[8px] uppercase tracking-widest">
                 {displayProducts.length} Items
               </Badge>
             </div>
@@ -169,14 +165,14 @@ function ProductList() {
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
+                  <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-2xl border-slate-200 hover:bg-slate-50 relative group transition-all">
                     <Filter className="h-4 w-4 md:h-5 md:w-5 text-slate-600 group-hover:text-primary" />
                     {maxPriceFilter !== null && maxPriceFilter < absoluteMaxPrice && (
-                      <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
+                      <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-none border-2 border-white" />
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-72 p-6 rounded-[2rem] shadow-2xl border-none bg-white" align="end" sideOffset={10}>
+                <PopoverContent className="w-72 p-6 rounded-none shadow-2xl border-none bg-white" align="end" sideOffset={10}>
                   <div className="space-y-6">
                     <div className="space-y-4">
                       <div className="flex justify-between items-end">
@@ -199,7 +195,7 @@ function ProductList() {
                     <Button 
                       variant="ghost" 
                       onClick={() => setMaxPriceFilter(absoluteMaxPrice)}
-                      className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-10 rounded-xl"
+                      className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-10 rounded-2xl"
                     >
                       Reset Price
                     </Button>
@@ -209,14 +205,14 @@ function ProductList() {
 
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-xl border-slate-200 hover:bg-slate-50 relative group transition-all">
+                  <Button variant="outline" size="icon" className="h-10 w-10 md:h-12 md:w-12 rounded-2xl border-slate-200 hover:bg-slate-50 relative group transition-all">
                     <ArrowUpDown className="h-4 w-4 md:h-5 md:w-5 text-slate-600 group-hover:text-primary" />
-                    {sortBy !== "newest" && (
-                      <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-full border-2 border-white" />
+                    {sortBy !== "price-desc" && (
+                      <span className="absolute top-0 right-0 h-2 w-2 bg-primary rounded-none border-2 border-white" />
                     )}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-2 rounded-[2rem] shadow-2xl border-none bg-white" align="end" sideOffset={10}>
+                <PopoverContent className="w-64 p-2 rounded-none shadow-2xl border-none bg-white" align="end" sideOffset={10}>
                   <div className="flex flex-col gap-1">
                     <div className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Sort By</div>
                     {[
@@ -230,7 +226,7 @@ function ProductList() {
                         variant="ghost"
                         onClick={() => setSortBy(option.value)}
                         className={cn(
-                          "w-full justify-start h-12 rounded-xl text-[10px] font-black uppercase tracking-widest px-4 transition-all",
+                          "w-full justify-start h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest px-4 transition-all",
                           sortBy === option.value ? "bg-slate-900 text-white hover:bg-slate-900 hover:text-white" : "text-slate-600 hover:bg-slate-50"
                         )}
                       >
@@ -254,7 +250,7 @@ function ProductList() {
           displayProducts.map((product: any) => (
             <Card 
               key={product.id} 
-              className="group overflow-hidden border border-slate-100 shadow-sm bg-white rounded-[1.5rem] flex flex-col cursor-pointer hover:shadow-xl transition-all duration-300 h-full"
+              className="group overflow-hidden border border-slate-100 shadow-sm bg-white rounded-none flex flex-col cursor-pointer hover:shadow-xl transition-all duration-300 h-full"
               onClick={() => handleProductClick(product)}
             >
               <div className="flex flex-col h-full">
@@ -266,10 +262,13 @@ function ProductList() {
                     className="object-contain p-4 md:p-6 transition-transform duration-500 group-hover:scale-105"
                   />
                   {product.isDeal && (
-                    <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-0.5 rounded-full text-[8px] font-black tracking-widest uppercase">
+                    <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-0.5 rounded-none text-[8px] font-black tracking-widest uppercase">
                       Deal
                     </div>
                   )}
+                  <div className="absolute top-2 right-2 z-10 transition-transform hover:scale-105">
+                    <WishlistButton product={product} />
+                  </div>
                 </div>
                 
                 <div className="flex flex-col flex-1 p-4 md:p-5">
@@ -293,7 +292,7 @@ function ProductList() {
                     <div className="flex gap-2">
                       <Button 
                         onClick={(e) => handleAddToCart(e, product)}
-                        className="bg-slate-900 hover:bg-primary text-white hover:text-slate-900 flex-1 h-10 md:h-11 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-xl transition-all"
+                        className="bg-slate-900 hover:bg-primary text-white hover:text-slate-900 flex-1 h-10 md:h-11 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all"
                       >
                         Add to Cart
                       </Button>
@@ -323,7 +322,7 @@ function ProductList() {
               variant="outline" 
               onClick={() => {
                 setMaxPriceFilter(absoluteMaxPrice);
-                setSortBy("newest");
+                setSortBy("price-desc");
                 router.push('/products');
               }}
               className="mt-10 rounded-xl h-12 px-8 font-black uppercase tracking-widest text-[10px]"
@@ -333,12 +332,6 @@ function ProductList() {
           </div>
         )}
       </div>
-
-      <ProductDetailsModal 
-        product={selectedProduct}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </>
   );
 }
