@@ -77,7 +77,7 @@ export function PaymentGatewayModal({ isOpen, onClose, amount, onSuccess }: Paym
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !isProcessing && !open && onClose()}>
       {/* Rectangular Page layout: wide, squared corners, grid layout on desktop */}
-      <DialogContent className="w-[95vw] md:w-[85vw] max-w-5xl min-h-[500px] p-0 bg-white border-none rounded-none shadow-2xl flex flex-col md:flex-row overflow-hidden">
+      <DialogContent className="w-[95vw] md:w-[85vw] max-w-5xl max-h-[95dvh] p-0 bg-white border-none rounded-none shadow-2xl flex flex-col md:flex-row overflow-y-auto overflow-x-hidden no-scrollbar">
         
         {/* LEFT COLUMN: Modern Invoice/Hero Section */}
         <div className="w-full md:w-5/12 bg-slate-900 border-r border-slate-800 p-8 md:p-12 text-white relative flex flex-col shrink-0 justify-center">

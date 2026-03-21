@@ -33,7 +33,7 @@ export function OrderSuccessModal({ isOpen, onClose, orderTotal }: OrderSuccessM
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[95vw] md:w-[80vw] max-w-4xl p-0 bg-white border-none rounded-none shadow-2xl flex flex-col md:flex-row overflow-hidden">
+      <DialogContent className="w-[95vw] md:w-[80vw] max-w-4xl max-h-[95dvh] p-0 bg-white border-none rounded-none shadow-2xl flex flex-col md:flex-row overflow-y-auto overflow-x-hidden no-scrollbar">
         
         {/* LEFT COLUMN: Success Hero */}
         <div className="w-full md:w-5/12 bg-green-500 border-r border-green-600 p-8 md:p-12 text-white relative flex flex-col shrink-0 justify-center overflow-hidden">

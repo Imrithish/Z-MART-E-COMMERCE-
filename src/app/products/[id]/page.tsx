@@ -12,8 +12,8 @@ import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { useUser, useDoc, useFirestore } from "@/firebase";
-import { doc } from "firebase/firestore";
+import { useUser, useDoc, useFirestore, useCollection } from "@/firebase";
+import { doc, collection, query, limit, orderBy } from "firebase/firestore";
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -32,6 +32,10 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
 
   const { data: productData, loading } = useDoc(db ? doc(db, 'products', params.id) : null);
   const product = productData as Product | undefined;
+
+  const suggestionsQuery = db ? query(collection(db, 'products'), orderBy('createdAt', 'desc'), limit(10)) : null;
+  const { data: suggestedProducts } = useCollection(suggestionsQuery);
+  const filteredSuggestions = suggestedProducts ? suggestedProducts.filter((p: any) => p.id !== product?.id).slice(0, 6) : [];
 
   if (loading) {
     return (
@@ -102,14 +106,14 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
     router.push(`/checkout?productId=${product.id}`);
   };
 
-  const discountPercentage = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+  const discountPercentage = product.originalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
   return (
     <main className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
-      
+
       {/* Back Navigation Bar */}
       <div className="w-full bg-white border-b border-t border-slate-200 px-4 md:px-12 py-3 flex items-center shadow-sm sticky top-[105px] z-40">
         <Link href="/products" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-colors">
@@ -118,14 +122,15 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
       </div>
 
       <div className="flex-1 w-full max-w-[1600px] mx-auto bg-white flex flex-col md:flex-row shadow-sm min-h-[calc(100vh-160px)]">
-        
+
         {/* Left: Image Section */}
         <div className="w-full md:w-1/2 bg-[#f7f8f8] p-8 md:p-16 flex items-center justify-center relative border-r border-slate-100">
           <div className="relative w-full aspect-square max-w-[600px]">
-            <Image 
-              src={product.imageUrl} 
-              alt={product.name} 
-              fill 
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain mix-blend-multiply"
               priority
             />
@@ -147,15 +152,15 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-900 mb-6 leading-tight">
             {product.name}
           </h1>
-          
+
           <div className="flex items-center gap-4 py-4 border-b border-t border-slate-100 mb-8">
             <div className="flex items-center gap-1">
               <span className="text-sm md:text-base font-bold mr-2">{product.rating || 0}</span>
               <div className="flex">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <Star 
-                    key={i} 
-                    className={`h-4 w-4 md:h-5 md:w-5 ${i <= Math.floor(product.rating || 0) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-slate-200'}`} 
+                  <Star
+                    key={i}
+                    className={`h-4 w-4 md:h-5 md:w-5 ${i <= Math.floor(product.rating || 0) ? 'text-[#ffa41c] fill-[#ffa41c]' : 'text-slate-200'}`}
                   />
                 ))}
               </div>
@@ -209,13 +214,13 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
               <div className="h-px bg-slate-200 w-full my-6" />
 
               <div className="space-y-4">
-                <Button 
+                <Button
                   onClick={handleAddToCart}
                   className="w-full h-14 md:h-16 text-sm md:text-base bg-[#ffd814] hover:bg-[#f7ca00] text-black border-[#fcd200] border shadow-md rounded-none font-black uppercase tracking-widest transition-all hover:-translate-y-1 active:scale-95 duration-300"
                 >
                   <ShoppingCart className="h-5 w-5 mr-3" /> Add to Cart
                 </Button>
-                <Button 
+                <Button
                   onClick={handleBuyNow}
                   className="w-full h-14 md:h-16 text-sm md:text-base bg-[#ffa41c] hover:bg-[#fa8900] text-black border-[#ff8f00] border shadow-md rounded-none font-black uppercase tracking-widest transition-all hover:-translate-y-1 active:scale-95 duration-300"
                 >
@@ -258,7 +263,45 @@ export default function ProductDetailsPage({ params }: { params: { id: string } 
           </div>
         </div>
       </div>
-      
+
+      {/* Similar Products Widget */}
+      {filteredSuggestions.length > 0 && (
+        <div className="w-full max-w-[1600px] mx-auto bg-white border-t border-slate-200 p-8 md:p-12 shadow-sm mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-xl md:text-2xl font-black text-[#c45500] uppercase tracking-tighter flex items-center gap-2">
+              <Sparkles className="h-5 w-5 md:h-6 md:w-6" />
+              Customers who viewed this item also viewed
+            </h2>
+          </div>
+
+          <div className="flex overflow-x-auto gap-6 pb-8 snap-x no-scrollbar">
+            {filteredSuggestions.map((item: any) => (
+              <div key={item.id} onClick={() => router.push(`/products/${item.id}`)} className="snap-start shrink-0 w-[180px] md:w-[220px] flex flex-col group cursor-pointer border border-transparent hover:border-slate-100 hover:shadow-lg p-3 transition-all duration-300">
+                <div className="relative aspect-square w-full bg-white mb-4 flex items-center justify-center">
+                  <Image src={item.imageUrl} alt={item.name} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-contain mix-blend-multiply p-2 transition-transform duration-500 group-hover:scale-105" />
+                </div>
+                <h3 className="text-[11px] md:text-xs font-extrabold text-[#007185] group-hover:text-[#c45500] line-clamp-3 leading-tight uppercase tracking-tight mb-2">
+                  {item.name}
+                </h3>
+                <div className="flex items-center gap-1 mb-2">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className={`h-2.5 w-2.5 ${i <= Math.floor(item.rating || 0) ? 'fill-[#ffa41c] text-[#ffa41c]' : 'text-slate-200'}`} />)}
+                  </div>
+                  <span className="text-[#007185] text-[9px] font-bold">{(item.reviews || 0).toLocaleString()}</span>
+                </div>
+                <div className="mt-auto flex items-start">
+                  <span className="text-[10px] font-medium mt-0.5">₹</span>
+                  <span className="text-lg md:text-xl font-black text-[#B12704]">{item.price.toLocaleString()}</span>
+                </div>
+                {item.isDeal && (
+                  <span className="mt-2 text-[9px] font-black uppercase text-white bg-[#cc0c39] px-2 py-0.5 self-start tracking-widest">Deal</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <Footer />
     </main>
   );
