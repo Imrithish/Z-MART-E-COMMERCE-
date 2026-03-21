@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { CartProvider } from '@/context/CartContext';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'Z-MART Merchant | Premium E-Commerce',
@@ -28,6 +29,7 @@ export default function RootLayout({
             <Toaster />
           </CartProvider>
         </FirebaseClientProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
