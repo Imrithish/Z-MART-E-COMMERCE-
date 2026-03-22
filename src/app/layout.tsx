@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { CartProvider } from '@/context/CartContext';
 import { HeaderShell } from "@/components/storefront/HeaderShell";
+import { SupportFloatShell } from "@/components/storefront/SupportFloatShell";
 
 export const metadata: Metadata = {
   title: 'Z-MART Merchant | Premium E-Commerce',
@@ -27,6 +28,7 @@ export default function RootLayout({
           <CartProvider>
             <HeaderShell />
             {children}
+            <SupportFloatShell />
             <Toaster />
           </CartProvider>
         </FirebaseClientProvider>

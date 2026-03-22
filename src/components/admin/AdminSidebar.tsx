@@ -1,7 +1,7 @@
 
 "use client"
 
-import { LayoutDashboard, Box, ShoppingCart, Settings, LogOut, ChevronLeft, ChevronRight, Store, ShieldCheck, Menu } from "lucide-react";
+import { LayoutDashboard, Box, ShoppingCart, Settings, LogOut, ChevronLeft, ChevronRight, Store, ShieldCheck, Menu, LifeBuoy } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { label: 'Overview', icon: LayoutDashboard, href: '/admin/dashboard' },
   { label: 'Products', icon: Box, href: '/admin/products' },
   { label: 'Orders', icon: ShoppingCart, href: '/admin/orders' },
+  { label: 'Support', icon: LifeBuoy, href: '/admin/support' },
   { label: 'Settings', icon: Settings, href: '/admin/settings' },
 ];
 

@@ -263,8 +263,8 @@ export function Navbar() {
         <Link href="/products?category=Fashion" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Fashion</Link>
         <Link href="/products?category=Home & Kitchen" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Home Decor</Link>
         <Link href="/products" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all text-primary shrink-0">Today's Deals</Link>
+        <Link href="/support" className="hover:bg-white/10 py-1.5 px-4 rounded-lg transition-all shrink-0">Support</Link>
       </div>
     </header>
   );
 }
-
