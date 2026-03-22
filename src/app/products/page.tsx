@@ -38,7 +38,7 @@ function ProductList() {
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get('category') || "All Categories";
   const searchQuery = searchParams.get('q');
-  
+
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [sortBy, setSortBy] = useState("price-desc");
   const [maxPriceFilter, setMaxPriceFilter] = useState<number | null>(null);
@@ -53,9 +53,9 @@ function ProductList() {
   // Calculate the "Base" maximum price for the current category/search context
   const absoluteMaxPrice = useMemo(() => {
     if (!allProducts || allProducts.length === 0) return 100000;
-    
+
     let baseItems = [...allProducts];
-    
+
     // Filter by category
     if (categoryFilter !== "All Categories") {
       baseItems = baseItems.filter((p: any) => p.category?.toLowerCase() === categoryFilter.toLowerCase());
@@ -64,9 +64,9 @@ function ProductList() {
     // Filter by search query
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      baseItems = baseItems.filter((p: any) => 
-        p.name?.toLowerCase().includes(q) || 
-        p.description?.toLowerCase().includes(q) || 
+      baseItems = baseItems.filter((p: any) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
         p.category?.toLowerCase().includes(q)
       );
     }
@@ -92,9 +92,9 @@ function ProductList() {
     // Search Query
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      filtered = filtered.filter((p: any) => 
-        p.name?.toLowerCase().includes(q) || 
-        p.description?.toLowerCase().includes(q) || 
+      filtered = filtered.filter((p: any) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
         p.category?.toLowerCase().includes(q)
       );
     }
@@ -142,14 +142,14 @@ function ProductList() {
     <>
       <div className="mb-8 space-y-4">
         <div className="flex flex-col gap-4">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors group"
           >
             <ChevronLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
             Back to Home
           </Link>
-          
+
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 md:gap-4">
               <h1 className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-slate-900 uppercase">
@@ -178,7 +178,7 @@ function ProductList() {
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Max Price</label>
                         <span className="text-xs font-black text-slate-900">{formatCurrency(maxPriceFilter || absoluteMaxPrice)}</span>
                       </div>
-                      <Slider 
+                      <Slider
                         value={[maxPriceFilter || absoluteMaxPrice]}
                         max={absoluteMaxPrice || 1000}
                         min={0}
@@ -191,8 +191,8 @@ function ProductList() {
                         <span>{formatCurrency(absoluteMaxPrice)}</span>
                       </div>
                     </div>
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       onClick={() => setMaxPriceFilter(absoluteMaxPrice)}
                       className="w-full text-[9px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 h-10 rounded-2xl"
                     >
@@ -237,7 +237,7 @@ function ProductList() {
               </Popover>
             </div>
           </div>
-          
+
           <p className="text-slate-500 font-medium text-sm md:text-lg">
             Premium essentials curated for your collection.
           </p>
@@ -247,14 +247,14 @@ function ProductList() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 items-stretch">
         {displayProducts.length > 0 ? (
           displayProducts.map((product: any) => (
-            <Card 
-              key={product.id} 
+            <Card
+              key={product.id}
               className="group overflow-hidden border border-slate-100 shadow-sm bg-white rounded-none flex flex-row md:flex-col cursor-pointer hover:shadow-xl transition-all duration-300 h-full"
               onClick={() => handleProductClick(product)}
             >
               <div className="flex flex-row md:flex-col h-full w-full">
                 <div className="relative w-28 h-28 md:aspect-square overflow-hidden bg-slate-50 p-2 md:p-6 shrink-0">
-                  <Image 
+                  <Image
                     src={product.imageUrl}
                     alt={product.name}
                     fill
@@ -269,7 +269,7 @@ function ProductList() {
                     <WishlistButton product={product} />
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col flex-1 p-3 md:p-5 min-w-0">
                   <div className="flex-1 space-y-2">
                     <div className="text-[9px] md:text-[10px] text-primary uppercase tracking-widest font-black">{product.category}</div>
@@ -278,7 +278,7 @@ function ProductList() {
                     </CardTitle>
                     <div className="flex items-center gap-1">
                       <div className="flex">
-                        {[1,2,3,4,5].map(i => (
+                        {[1, 2, 3, 4, 5].map(i => (
                           <Star key={i} className={`h-2.5 w-2.5 md:h-3 md:w-3 ${i <= Math.floor(product.rating || 5) ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
                         ))}
                       </div>
@@ -289,13 +289,13 @@ function ProductList() {
                   <div className="mt-auto pt-3 md:pt-6 border-t border-slate-50 space-y-2.5 md:space-y-3">
                     <span className="text-xl md:text-2xl font-black text-slate-900 tracking-tighter block">{formatCurrency(product.price)}</span>
                     <div className="flex gap-2">
-                      <Button 
+                      <Button
                         onClick={(e) => handleAddToCart(e, product)}
                         className="bg-slate-900 hover:bg-primary text-white hover:text-slate-900 flex-1 h-9 md:h-11 text-[9px] md:text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all"
                       >
                         Add to Cart
                       </Button>
-                      <Button 
+                      <Button
                         variant="outline"
                         onClick={(e) => { e.stopPropagation(); handleProductClick(product); }}
                         className="h-9 w-9 md:h-11 md:w-11 p-0 rounded-xl border-slate-200"
@@ -310,15 +310,15 @@ function ProductList() {
           ))
         ) : (
           <div className="col-span-full py-20 md:py-32 text-center bg-white rounded-[3rem] shadow-sm border border-slate-100 flex flex-col items-center justify-center">
-             <div className="bg-slate-50 h-20 w-20 md:h-28 md:w-28 rounded-[2rem] flex items-center justify-center mb-8 rotate-6">
-                <Loader2 className="h-10 w-10 md:h-14 md:w-14 text-slate-200" />
-             </div>
+            <div className="bg-slate-50 h-20 w-20 md:h-28 md:w-28 rounded-[2rem] flex items-center justify-center mb-8 rotate-6">
+              <Loader2 className="h-10 w-10 md:h-14 md:w-14 text-slate-200" />
+            </div>
             <h3 className="text-xl md:text-3xl font-black text-slate-900 uppercase tracking-tighter">No items found</h3>
             <p className="text-xs md:text-base text-slate-400 mt-3 font-medium max-w-sm mx-auto">
               We couldn't find anything matching your current filters.
             </p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setMaxPriceFilter(absoluteMaxPrice);
                 setSortBy("price-desc");
