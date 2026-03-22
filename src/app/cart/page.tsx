@@ -58,8 +58,8 @@ export default function CartPage() {
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-body">
       <main className="flex-1 max-w-[1400px] mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
         <div className="lg:col-span-8 space-y-6">
-          <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
-            <div className="flex justify-between items-center mb-8">
+          <div className="bg-white rounded-[2rem] p-6 sm:p-8 shadow-sm border border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
               <div className="space-y-1">
                 <h1 className="text-3xl font-black tracking-tight text-slate-900">Your Shopping Basket</h1>
                 <p className="text-slate-500 font-medium">You have {totalItems} items in your cart</p>
@@ -88,7 +88,7 @@ export default function CartPage() {
               <div className="space-y-8">
                 {items.map((item) => (
                   <div key={item.product.id} className="group flex flex-col sm:flex-row gap-6 p-4 rounded-3xl hover:bg-slate-50 transition-all duration-300 relative border border-transparent hover:border-slate-100">
-                    <div className="relative h-48 w-48 bg-white rounded-2xl shrink-0 overflow-hidden shadow-sm border border-slate-50">
+                    <div className="relative h-32 w-32 sm:h-40 sm:w-40 lg:h-48 lg:w-48 bg-white rounded-2xl shrink-0 overflow-hidden shadow-sm border border-slate-50">
                       <Image 
                         src={item.product.imageUrl} 
                         alt={item.product.name} 
@@ -98,7 +98,7 @@ export default function CartPage() {
                     </div>
                     
                     <div className="flex-1 flex flex-col">
-                      <div className="flex justify-between gap-4 mb-2">
+                      <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-2">
                         <Link href={`/products?q=${item.product.name}`} className="text-xl font-black text-slate-900 hover:text-primary transition-colors line-clamp-2 leading-tight">
                           {item.product.name}
                         </Link>
@@ -140,8 +140,8 @@ export default function CartPage() {
         </div>
 
         {items.length > 0 && (
-          <div className="lg:col-span-4 space-y-6 sticky top-[100px]">
-            <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 overflow-hidden relative">
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-[100px]">
+            <div className="bg-white rounded-[2rem] p-5 sm:p-6 shadow-sm border border-slate-100 overflow-hidden relative">
               <div className="flex items-center gap-3 mb-4">
                 <div className={`p-2 rounded-xl ${progressToFreeShipping === 100 ? 'bg-green-100 text-green-600' : 'bg-primary/10 text-primary'}`}>
                   <Truck className="h-5 w-5" />
@@ -158,7 +158,7 @@ export default function CartPage() {
               <Progress value={progressToFreeShipping} className="h-2 mb-2 bg-slate-100" />
             </div>
 
-            <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden">
+            <div className="bg-slate-900 rounded-[2rem] p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden">
                <div className="relative z-10 space-y-6">
                 <h3 className="text-sm font-black uppercase tracking-[0.3em] text-white/50">Order Summary</h3>
                 

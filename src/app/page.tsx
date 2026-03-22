@@ -196,7 +196,7 @@ export default function Home() {
 
         {/* Categories Overlap */}
         <section className="max-w-[1450px] mx-auto px-4 md:px-8 -mt-4 md:-mt-6 relative z-20">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {[
               { title: "Digital Tech", hint: "laptop tech", href: "/products?category=Electronics", seed: "digital" },
               { title: "Luxe Home", hint: "living room", href: "/products?category=Home & Kitchen", seed: "interior" },
@@ -235,7 +235,7 @@ export default function Home() {
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 uppercase tracking-tighter">New Arrivals</h2>
                 </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {curatedSections.newArrivals.map((product) => (
                   <ProductCard 
                     key={product.id} 
@@ -257,7 +257,7 @@ export default function Home() {
                   View All <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {items.slice(0, 4).map((product) => (
                   <ProductCard 
                     key={product.id} 
@@ -279,7 +279,7 @@ export default function Home() {
                   {products.length} items
                 </span>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
