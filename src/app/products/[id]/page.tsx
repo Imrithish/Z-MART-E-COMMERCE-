@@ -120,12 +120,13 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
   }
 
   const handleAddToCart = (productToAdd: any = product) => {
-    addItem(productToAdd);
+    const p = (productToAdd && productToAdd.nativeEvent) ? product : (productToAdd || product);
+    addItem(p);
     
     // figure out image for the added product
-    const addedImage = productToAdd?.id === product?.id 
+    const addedImage = p?.id === product?.id 
         ? (productImages[0] || product?.imageUrl) 
-        : productToAdd?.imageUrl;
+        : p?.imageUrl;
 
     toast({
       title: (
@@ -136,10 +137,10 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ id: s
       description: (
         <div className="flex items-center gap-3 mt-2">
           <div className="relative h-12 w-12 rounded-[0.5rem] bg-slate-50 border border-slate-100 overflow-hidden shrink-0">
-            <Image src={addedImage} alt={productToAdd?.name || "Product"} fill className="object-contain p-1 mix-blend-multiply" />
+            <Image src={addedImage || 'https://picsum.photos/seed/placeholder/400/400'} alt={p?.name || "Product"} fill className="object-contain p-1 mix-blend-multiply" />
           </div>
           <div className="flex flex-col gap-0.5">
-            <p className="text-xs font-black text-slate-900 line-clamp-1">{productToAdd?.name || "Product"}</p>
+            <p className="text-xs font-black text-slate-900 line-clamp-1">{p?.name || "Product"}</p>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ready for checkout</p>
           </div>
         </div>
